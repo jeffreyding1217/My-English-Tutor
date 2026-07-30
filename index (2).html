@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My English Tutor — Volunteer English Bridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --ink:#12232B;
+  --ink-soft:#3F5560;
+  --paper:#F6F8F5;
+  --paper-alt:#ECF2EA;
+  --card:#FFFFFF;
+  --blue:#1D5C8A;
+  --blue-deep:#123E5E;
+  --teal:#2E9E7C;
+  --teal-soft:#E4F3EC;
+  --amber:#E8A33D;
+  --line:#DAE3DC;
+  --radius:14px;
+  --shadow:0 12px 32px -18px rgba(18,35,43,0.28);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  line-height:1.12;
+  margin:0 0 .5em 0;
+  color:var(--ink);
+}
+p{margin:0 0 1em 0; color:var(--ink-soft);}
+a{color:inherit; text-decoration:none;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--teal);
+  font-weight:500;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+section{padding:96px 0;}
+img{max-width:100%; display:block;}
+button{font-family:inherit; cursor:pointer;}
+:focus-visible{outline:2.5px solid var(--blue); outline-offset:3px;}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 24px; border-radius:999px; border:1.5px solid transparent;
+  font-weight:600; font-size:.95rem; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.btn-primary{ background:var(--blue); color:#fff; box-shadow:0 10px 22px -10px rgba(29,92,138,0.55);}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 26px -10px rgba(29,92,138,0.65);}
+.btn-teal{ background:var(--teal); color:#fff; box-shadow:0 10px 22px -10px rgba(46,158,124,0.5);}
+.btn-teal:hover{ transform:translateY(-2px); box-shadow:0 14px 26px -10px rgba(46,158,124,0.6);}
+.btn-ghost{ background:transparent; border-color:var(--line); color:var(--ink);}
+.btn-ghost:hover{ border-color:var(--blue); color:var(--blue);}
+
+/* ---------- Nav ---------- */
+header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(246,248,245,0.88); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1180px; margin:0 auto;}
+.logo{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:1.12rem;}
+.logo-mark{width:30px; height:30px; flex-shrink:0;}
+.nav-links{ display:flex; gap:28px; font-size:.92rem; font-weight:500;}
+.nav-links a{ color:var(--ink-soft); transition:color .15s;}
+.nav-links a:hover{ color:var(--blue);}
+.nav-cta{ display:flex; gap:10px;}
+.nav-toggle{display:none; background:none; border:none;}
+@media (max-width:880px){
+  .nav-links{display:none;}
+  .nav-cta .btn span{display:none;}
+}
+
+/* ---------- Hero ---------- */
+.hero{ padding:72px 0 88px; overflow:hidden;}
+.hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:64px; align-items:center;}
+.hero h1{ font-size:clamp(2.2rem,4.4vw,3.4rem); letter-spacing:-.01em;}
+.hero .lede{ font-size:1.12rem; max-width:46ch;}
+.hero-cta{ display:flex; gap:14px; margin-top:28px; flex-wrap:wrap;}
+
+/* Bridge signature visual */
+.bridge-card{
+  position:relative; background:var(--card); border:1px solid var(--line);
+  border-radius:20px; padding:34px 28px 28px; box-shadow:var(--shadow);
+}
+.bridge-stage{ position:relative; height:150px; margin:18px 0 8px;}
+.node{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:118px; background:var(--paper-alt); border:1px solid var(--line);
+  border-radius:12px; padding:12px 12px 10px; text-align:left;
+}
+.node.volunteer{ left:0;}
+.node.student{ right:0;}
+.node .avatar{
+  width:34px; height:34px; border-radius:50%; margin-bottom:8px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+}
+.node .name{ font-weight:600; font-size:.86rem;}
+.node .meta{ font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--ink-soft); letter-spacing:.02em;}
+.bridge-path{ position:absolute; top:50%; left:126px; right:126px; height:2px;}
+.bridge-path svg{ width:100%; height:64px; overflow:visible; position:absolute; top:-32px;}
+.bridge-path path{ fill:none; stroke:var(--line); stroke-width:2; stroke-dasharray:5 7;}
+.pulse{
+  position:absolute; top:50%; left:126px; width:9px; height:9px; border-radius:50%;
+  background:var(--amber); box-shadow:0 0 0 5px rgba(232,163,61,0.22);
+  animation:travel 3.4s ease-in-out infinite;
+}
+@keyframes travel{
+  0%{ left:126px; top:calc(50% - 22px); opacity:0;}
+  8%{opacity:1;}
+  50%{ left:calc(50% - 4.5px); top:calc(50% - 40px);}
+  92%{opacity:1;}
+  100%{ left:calc(100% - 126px); top:calc(50% - 22px); opacity:0;}
+}
+.bridge-foot{ display:flex; justify-content:space-between; align-items:flex-end; padding-top:14px; border-top:1px dashed var(--line); margin-top:6px;}
+.hours-count{ font-family:'IBM Plex Mono',monospace; font-size:1.7rem; font-weight:500; color:var(--blue-deep);}
+.hours-label{ font-size:.72rem; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase;}
+.bridge-badge{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; background:var(--teal-soft); color:var(--teal); padding:5px 10px; border-radius:999px; letter-spacing:.04em;}
+
+@media (max-width:900px){
+  .hero-grid{ grid-template-columns:1fr;}
+  .bridge-card{ order:-1;}
+}
+
+/* ---------- Trust bar ---------- */
+.statbar{ background:var(--blue-deep); color:#fff; padding:34px 0;}
+.statbar .wrap{ display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between;}
+.stat{ flex:1; min-width:150px;}
+.stat .num{ font-family:'IBM Plex Mono',monospace; font-size:1.7rem; color:var(--amber);}
+.stat .lab{ font-size:.82rem; color:#C9D9E2; margin-top:2px;}
+
+/* ---------- Section heads ---------- */
+.head-row{ max-width:640px; margin-bottom:44px;}
+.head-row.center{ margin-left:auto; margin-right:auto; text-align:center;}
+
+/* ---------- How it works ---------- */
+.tabs{ display:flex; gap:8px; background:var(--paper-alt); padding:5px; border-radius:999px; width:fit-content; margin:0 auto 40px;}
+.tab-btn{ border:none; background:transparent; padding:10px 22px; border-radius:999px; font-weight:600; font-size:.9rem; color:var(--ink-soft);}
+.tab-btn.active{ background:var(--card); color:var(--blue); box-shadow:0 4px 12px -6px rgba(18,35,43,0.25);}
+.steps{ display:none; grid-template-columns:repeat(5,1fr); gap:18px; counter-reset:step;}
+.steps.active{ display:grid;}
+@media (max-width:980px){ .steps{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .steps{ grid-template-columns:1fr;} }
+.step{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 18px; counter-increment:step;}
+.step::before{
+  content:counter(step,decimal-leading-zero);
+  font-family:'IBM Plex Mono',monospace; color:var(--teal); font-size:.8rem; display:block; margin-bottom:10px;
+}
+.step h4{ font-size:1.02rem; margin-bottom:6px;}
+.step p{ font-size:.9rem; margin:0;}
+
+/* ---------- Why join ---------- */
+.why-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media (max-width:980px){ .why-grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .why-grid{ grid-template-columns:1fr;} }
+.why-card{ border-radius:var(--radius); padding:24px 20px; border:1px solid var(--line);}
+.why-card.blue{ background:linear-gradient(180deg,#EEF5F9,var(--card));}
+.why-card.teal{ background:linear-gradient(180deg,var(--teal-soft),var(--card));}
+.why-icon{ width:38px; height:38px; margin-bottom:14px;}
+.why-card h4{ font-size:1rem;}
+.why-card p{ font-size:.9rem;}
+
+/* ---------- Stories ---------- */
+.story-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media (max-width:900px){ .story-grid{ grid-template-columns:1fr;} }
+.story{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:26px; display:flex; flex-direction:column; gap:14px;}
+.story .quote{ font-family:'Fraunces',serif; font-size:1.08rem; color:var(--ink); font-weight:500; font-style:italic;}
+.story .who{ display:flex; align-items:center; gap:10px; margin-top:auto;}
+.story .who .dot{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--amber));}
+.story .who .name{ font-weight:600; font-size:.88rem;}
+.story .who .role{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ---------- Trust & Safety ---------- */
+.safety{ background:var(--blue-deep); color:#fff;}
+.safety h2{ color:#fff;}
+.safety .eyebrow{ color:var(--amber);}
+.safety-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:38px;}
+@media (max-width:900px){ .safety-grid{ grid-template-columns:1fr 1fr;} }
+@media (max-width:600px){ .safety-grid{ grid-template-columns:1fr;} }
+.safety-item{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:20px;}
+.safety-item h4{ color:#fff; font-size:.98rem;}
+.safety-item p{ color:#C9D9E2; font-size:.87rem; margin:0;}
+
+/* ---------- About / values ---------- */
+.about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
+@media (max-width:880px){ .about-grid{ grid-template-columns:1fr;} }
+.values{ list-style:none; margin:24px 0 0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.values li{ display:flex; align-items:center; gap:10px; font-weight:600; font-size:.92rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px;}
+.values li::before{ content:''; width:8px; height:8px; border-radius:50%; background:var(--teal); flex-shrink:0;}
+
+/* ---------- Path detail (volunteer / student) ---------- */
+.path{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;}
+@media (max-width:880px){ .path{ grid-template-columns:1fr;} }
+.path.reverse .path-copy{ order:2;}
+.feature-list{ list-style:none; margin:20px 0 0; padding:0;}
+.feature-list li{ padding:10px 0 10px 26px; position:relative; font-size:.94rem; border-bottom:1px solid var(--line);}
+.feature-list li:last-child{ border-bottom:none;}
+.feature-list li::before{ content:'✓'; position:absolute; left:0; top:9px; color:var(--teal); font-weight:700;}
+
+.profile-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
+.profile-mock .top{ display:flex; gap:14px; align-items:center;}
+.profile-mock .pic{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal));}
+.profile-mock .top .name{ font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem;}
+.profile-mock .top .loc{ font-size:.82rem; color:var(--ink-soft);}
+.profile-mock .tagrow{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;}
+.tag{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; background:var(--paper-alt); padding:5px 10px; border-radius:999px; color:var(--ink-soft);}
+.profile-mock .metrics{ display:flex; gap:22px; padding-top:16px; border-top:1px dashed var(--line);}
+.profile-mock .metrics div .num{ font-family:'IBM Plex Mono',monospace; font-size:1.25rem; color:var(--blue-deep);}
+.profile-mock .metrics div .lab{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+.reg-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
+.reg-mock .field{ margin-bottom:14px;}
+.reg-mock label{ display:block; font-size:.76rem; font-weight:600; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em; font-family:'IBM Plex Mono',monospace;}
+.reg-mock .control{ border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:.92rem; color:var(--ink-soft); background:var(--paper-alt);}
+.reg-mock .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+/* ---------- Dashboard preview ---------- */
+.dash-shell{ background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow);}
+.dash-top{ display:flex; justify-content:space-between; align-items:center; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--paper-alt);}
+.dash-tabs{ display:flex; gap:6px;}
+.dash-tab{ border:none; background:transparent; padding:8px 16px; border-radius:8px; font-weight:600; font-size:.85rem; color:var(--ink-soft);}
+.dash-tab.active{ background:var(--card); color:var(--blue);}
+.dash-body{ padding:26px; display:none; grid-template-columns:2fr 1fr; gap:20px;}
+.dash-body.active{ display:grid;}
+@media (max-width:760px){ .dash-body{ grid-template-columns:1fr;} }
+.lesson-row{ display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border:1px solid var(--line); border-radius:10px; margin-bottom:10px;}
+.lesson-row .who{ font-weight:600; font-size:.9rem;}
+.lesson-row .when{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft);}
+.side-card{ background:var(--paper-alt); border-radius:12px; padding:18px; margin-bottom:14px;}
+.side-card .big{ font-family:'IBM Plex Mono',monospace; font-size:1.5rem; color:var(--blue-deep);}
+.side-card .lab{ font-size:.76rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ---------- FAQ ---------- */
+.faq{ max-width:760px; margin:0 auto;}
+.faq-item{ border-bottom:1px solid var(--line);}
+.faq-q{ width:100%; text-align:left; background:none; border:none; padding:20px 4px; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:1rem; color:var(--ink);}
+.faq-q .plus{ font-family:'IBM Plex Mono',monospace; color:var(--teal); font-size:1.2rem; transition:transform .2s;}
+.faq-item.open .plus{ transform:rotate(45deg);}
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.faq-a p{ padding:0 4px 20px; font-size:.94rem;}
+
+/* ---------- Contact ---------- */
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+@media (max-width:880px){ .contact-grid{ grid-template-columns:1fr;} }
+.contact-info dt{ font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--teal); margin-top:22px;}
+.contact-info dd{ margin:4px 0 0; font-weight:600;}
+.social-row{ display:flex; gap:10px; margin-top:22px;}
+.social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center;}
+.contact-form .field{ margin-bottom:16px;}
+.contact-form label{ display:block; font-size:.8rem; font-weight:600; margin-bottom:6px;}
+.contact-form input, .contact-form textarea{
+  width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-family:inherit; font-size:.92rem; background:var(--paper-alt);
+}
+
+/* ---------- CTA band ---------- */
+.cta-band{ background:linear-gradient(120deg,var(--blue) 0%,var(--teal) 100%); border-radius:24px; padding:56px 44px; color:#fff; text-align:center;}
+.cta-band h2{ color:#fff;}
+.cta-band p{ color:rgba(255,255,255,0.88); max-width:52ch; margin-left:auto; margin-right:auto;}
+.cta-band .hero-cta{ justify-content:center;}
+.cta-band .btn-ghost{ border-color:rgba(255,255,255,0.5); color:#fff;}
+.cta-band .btn-ghost:hover{ background:rgba(255,255,255,0.12); border-color:#fff;}
+
+/* ---------- Footer ---------- */
+footer{ background:var(--ink); color:#B9C6CC; padding:60px 0 28px;}
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:36px; margin-bottom:40px;}
+@media (max-width:760px){ .footer-grid{ grid-template-columns:1fr 1fr;} }
+footer h5{ color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px;}
+footer .flogo{ font-family:'Fraunces',serif; color:#fff; font-size:1.2rem; font-weight:600;}
+footer ul{ list-style:none; margin:0; padding:0;}
+footer li{ margin-bottom:9px; font-size:.88rem;}
+footer a:hover{ color:#fff;}
+.foot-bottom{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.12); font-size:.8rem;}
+
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="#top" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
+        <path d="M4 20c4-8 8-8 12 0s8 8 12 0" stroke="#1D5C8A" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="4" cy="20" r="2.4" fill="#2E9E7C"/>
+        <circle cx="28" cy="20" r="2.4" fill="#E8A33D"/>
+      </svg>
+      My English Tutor
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#why">Why join</a>
+      <a href="#stories">Stories</a>
+      <a href="#safety">Trust &amp; safety</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#volunteer" class="btn btn-ghost"><span>Become a</span> Volunteer</a>
+      <a href="#student" class="btn btn-primary"><span>Register as</span> Student</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Volunteer English Bridge</p>
+        <h1>Connecting English speakers with students across the world.</h1>
+        <p class="lede">Practice English. Share cultures. Earn volunteer hours. Make a difference — one weekly conversation at a time.</p>
+        <div class="hero-cta">
+          <a href="#volunteer" class="btn btn-primary">Become a Volunteer</a>
+          <a href="#student" class="btn btn-ghost">Register as a Student</a>
+        </div>
+      </div>
+
+      <div class="bridge-card">
+        <span class="bridge-badge">live session bridge</span>
+        <div class="bridge-stage">
+          <div class="node volunteer">
+            <div class="avatar"></div>
+            <div class="name">Maya, volunteer</div>
+            <div class="meta">TORONTO · 8:00 PM</div>
+          </div>
+          <div class="bridge-path">
+            <svg viewBox="0 0 300 64" preserveAspectRatio="none"><path d="M0,32 Q150,-18 300,32"/></svg>
+          </div>
+          <div class="pulse"></div>
+          <div class="node student">
+            <div class="avatar"></div>
+            <div class="name">Lin, student</div>
+            <div class="meta">CHENGDU · 8:00 AM</div>
+          </div>
+        </div>
+        <div class="bridge-foot">
+          <div>
+            <div class="hours-count" id="hoursCount">0</div>
+            <div class="hours-label">volunteer hours logged this week</div>
+          </div>
+          <div class="hours-label">session 12 of 20</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAT BAR -->
+  <div class="statbar">
+    <div class="wrap">
+      <div class="stat"><div class="num">41,000+</div><div class="lab">Volunteer hours verified</div></div>
+      <div class="stat"><div class="num">6,200+</div><div class="lab">Students matched</div></div>
+      <div class="stat"><div class="num">38</div><div class="lab">Volunteer countries</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lab">Free, always</div></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="wrap">
+      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="text-align:center;">How it works</p>
+        <h2 style="text-align:center;">Two simple paths, one shared conversation.</h2>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="students">For Students</button>
+        <button class="tab-btn" data-tab="volunteers">For Volunteers</button>
+      </div>
+
+      <div class="steps active" id="steps-students">
+        <div class="step"><h4>Create an account</h4><p>Sign up with a parent or guardian if you're under 18.</p></div>
+        <div class="step"><h4>Take the placement questionnaire</h4><p>A short conversation-style quiz sets your starting level.</p></div>
+        <div class="step"><h4>Get matched</h4><p>We pair you with a background-checked volunteer.</p></div>
+        <div class="step"><h4>Schedule weekly sessions</h4><p>Pick times that fit your week from your volunteer's calendar.</p></div>
+        <div class="step"><h4>Track your progress</h4><p>Watch your level and confidence grow, session by session.</p></div>
+      </div>
+
+      <div class="steps" id="steps-volunteers">
+        <div class="step"><h4>Register</h4><p>Tell us about your background and the languages you speak.</p></div>
+        <div class="step"><h4>Complete orientation</h4><p>A short training on teaching basics and our safety guidelines.</p></div>
+        <div class="step"><h4>Set your availability</h4><p>Choose the weekly hours that work with your schedule.</p></div>
+        <div class="step"><h4>Receive matches</h4><p>We introduce you to students who fit your availability.</p></div>
+        <div class="step"><h4>Teach online</h4><p>Meet in a secure video room built right into the platform.</p></div>
+        <div class="step" style="grid-column:span 1;"><h4>Earn verified hours</h4><p>Every completed lesson adds to your service-hour record.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY JOIN -->
+  <section id="why" style="background:var(--paper-alt);">
+    <div class="wrap">
+      <div class="head-row">
+        <p class="eyebrow">Why join</p>
+        <h2>Built for people on both sides of the screen.</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card blue">
+          <h4>Real conversation practice</h4>
+          <p>Not another app with canned phrases — an actual person, listening and responding.</p>
+        </div>
+        <div class="why-card blue">
+          <h4>Verified service hours</h4>
+          <p>Every session is logged automatically and confirmed by our team.</p>
+        </div>
+        <div class="why-card teal">
+          <h4>A genuine cultural exchange</h4>
+          <p>Volunteers learn as much about their students' world as students learn English.</p>
+        </div>
+        <div class="why-card teal">
+          <h4>Flexible, low-pressure commitment</h4>
+          <p>Set your own weekly hours — an hour a week is enough to matter.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORIES -->
+  <section id="stories">
+    <div class="wrap">
+      <div class="head-row">
+        <p class="eyebrow">Success stories</p>
+        <h2>What the bridge has carried so far.</h2>
+      </div>
+      <div class="story-grid">
+        <div class="story">
+          <p class="quote">"My volunteer didn't just correct my grammar — she asked about my hometown and actually remembered it the next week."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Wei, student</div><div class="role">18 months on the platform</div></div></div>
+        </div>
+        <div class="story">
+          <p class="quote">"I've logged over 90 hours and learned more about patience and teaching than any classroom ever taught me."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Daniel, volunteer</div><div class="role">Retired teacher, Melbourne</div></div></div>
+        </div>
+        <div class="story">
+          <p class="quote">"Watching my daughter go from silent to chatty in English over one semester — that's the whole reason we signed up."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Fang, parent</div><div class="role">Guardian of a student, age 12</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST & SAFETY -->
+  <section id="safety" class="safety">
+    <div class="wrap">
+      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="text-align:center;">Trust &amp; safety</p>
+        <h2 style="text-align:center;">A bridge worth trusting, on both ends.</h2>
+      </div>
+      <div class="safety-grid">
+        <div class="safety-item"><h4>Background-checked volunteers</h4><p>Every volunteer passes an identity and background check before their first match.</p></div>
+        <div class="safety-item"><h4>Guardian consent for minors</h4><p>Students under 18 register with a parent or guardian, who can view schedules and messages at any time.</p></div>
+        <div class="safety-item"><h4>Everything stays on-platform</h4><p>Lessons, messages, and calls happen only inside My English Tutor — never on personal phone numbers or apps.</p></div>
+        <div class="safety-item"><h4>Recorded, reviewable sessions</h4><p>Lessons can be recorded for quality and safety review by our team.</p></div>
+        <div class="safety-item"><h4>Moderated messaging</h4><p>All messages are screened for respectful, on-topic conversation.</p></div>
+        <div class="safety-item"><h4>Easy reporting</h4><p>Anyone can flag a concern in one tap; our team responds within 24 hours.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap about-grid">
+      <div>
+        <p class="eyebrow">About us</p>
+        <h2>Why we built the bridge.</h2>
+        <p>My English Tutor started with a simple observation: millions of students want to speak English with confidence, and just as many native speakers have an hour a week and a genuine interest in the world. Conversation is the missing piece that no app, textbook, or grammar drill can replace — and volunteering is one of the most direct ways to make an international impact.</p>
+        <p>We connect the two, safely and simply, so language can do what it's always done: build friendships, open doors, and bring people closer together.</p>
+      </div>
+      <div>
+        <h4 style="font-size:1rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);">Our core values</h4>
+        <ul class="values">
+          <li>Education</li>
+          <li>Inclusion</li>
+          <li>Respect</li>
+          <li>Cultural exchange</li>
+          <li>Community service</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEER PATH -->
+  <section id="volunteer" style="background:var(--paper-alt);">
+    <div class="wrap path">
+      <div class="path-copy">
+        <p class="eyebrow">For volunteers</p>
+        <h2>Your profile, your hours, your impact — all in one place.</h2>
+        <p>Build a profile students can trust, set the hours that work for your life, and watch your verified service hours add up automatically.</p>
+        <ul class="feature-list">
+          <li>Upload a profile picture and short biography</li>
+          <li>List languages spoken and teaching experience</li>
+          <li>Set your time zone and weekly availability</li>
+          <li>Complete a short required orientation</li>
+          <li>Track total hours and students taught</li>
+          <li>Download official volunteer certificates</li>
+        </ul>
+        <a href="#contact" class="btn btn-primary" style="margin-top:22px;">Start volunteer registration</a>
+      </div>
+      <div class="profile-mock">
+        <div class="top">
+          <div class="pic"></div>
+          <div>
+            <div class="name">Maya Ferreira</div>
+            <div class="loc">Toronto, Canada</div>
+          </div>
+        </div>
+        <div class="tagrow">
+          <span class="tag">English · Portuguese</span>
+          <span class="tag">Business English</span>
+          <span class="tag">Travel &amp; culture</span>
+        </div>
+        <p style="font-size:.88rem; margin-bottom:0;">Former ESL classroom aide who loves helping students find their voice. Free most weekday evenings, GMT-5.</p>
+        <div class="metrics">
+          <div><div class="num">86</div><div class="lab">Hours logged</div></div>
+          <div><div class="num">14</div><div class="lab">Students taught</div></div>
+          <div><div class="num">4.9</div><div class="lab">Avg. rating</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDENT PATH -->
+  <section id="student">
+    <div class="wrap path reverse">
+      <div class="path-copy">
+        <p class="eyebrow">For students</p>
+        <h2>Tell us how you learn — we'll find the right voice for you.</h2>
+        <p>Registration takes a few minutes. A parent or guardian completes it together for students under 18.</p>
+        <ul class="feature-list">
+          <li>Select your age group and English level</li>
+          <li>State your learning goals, in your own words</li>
+          <li>Choose the lesson times that fit your week</li>
+          <li>Request a specific volunteer, if one is available</li>
+          <li>Message your volunteer securely before each lesson</li>
+        </ul>
+        <a href="#contact" class="btn btn-teal" style="margin-top:22px;">Start student registration</a>
+      </div>
+      <div class="reg-mock">
+        <div class="field"><label>Age group</label><div class="control">13–17 (with guardian account)</div></div>
+        <div class="row2">
+          <div class="field"><label>English level</label><div class="control">Intermediate</div></div>
+          <div class="field"><label>Time zone</label><div class="control">GMT+8 · Chengdu</div></div>
+        </div>
+        <div class="field"><label>Learning goal</label><div class="control">Speak more confidently in everyday conversation</div></div>
+        <div class="field"><label>Preferred lesson time</label><div class="control">Saturdays, 8:00 AM</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD PREVIEW -->
+  <section style="background:var(--paper-alt);">
+    <div class="wrap">
+      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="text-align:center;">Your dashboard</p>
+        <h2 style="text-align:center;">Everything for your next session, in one view.</h2>
+      </div>
+      <div class="dash-shell">
+        <div class="dash-top">
+          <div class="dash-tabs">
+            <button class="dash-tab active" data-dash="student">Student view</button>
+            <button class="dash-tab" data-dash="volunteer">Volunteer view</button>
+          </div>
+          <span class="tag">Preview</span>
+        </div>
+
+        <div class="dash-body active" id="dash-student">
+          <div>
+            <h4 style="font-size:.95rem; margin-bottom:14px;">Upcoming lessons</h4>
+            <div class="lesson-row"><span class="who">Session with Maya F.</span><span class="when">SAT · 08:00</span></div>
+            <div class="lesson-row"><span class="who">Session with Maya F.</span><span class="when">SAT · next week</span></div>
+            <h4 style="font-size:.95rem; margin:22px 0 14px;">Lesson history</h4>
+            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">12 sessions completed</span></div>
+          </div>
+          <div>
+            <div class="side-card"><div class="big">Level 3</div><div class="lab">Current progress</div></div>
+            <div class="side-card"><div class="big">12</div><div class="lab">Lessons completed</div></div>
+          </div>
+        </div>
+
+        <div class="dash-body" id="dash-volunteer">
+          <div>
+            <h4 style="font-size:.95rem; margin-bottom:14px;">Lesson requests</h4>
+            <div class="lesson-row"><span class="who">Lin, age 12</span><span class="when">Accept · SAT 08:00</span></div>
+            <div class="lesson-row"><span class="who">Jun, age 15</span><span class="when">Accept · SUN 09:00</span></div>
+            <h4 style="font-size:.95rem; margin:22px 0 14px;">Recent lesson reports</h4>
+            <div class="lesson-row"><span class="who">Submitted for Lin</span><span class="when">Approved</span></div>
+          </div>
+          <div>
+            <div class="side-card"><div class="big">86 hrs</div><div class="lab">Total volunteer hours</div></div>
+            <div class="side-card"><div class="big">14</div><div class="lab">Students taught</div></div>
+            <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center;">Download certificate</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="text-align:center;">FAQ</p>
+        <h2 style="text-align:center;">Good to know before you sign up.</h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item open">
+          <button class="faq-q"><span>Is this free?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>Yes — for both students and volunteers, always. My English Tutor is a nonprofit platform and never charges for lessons.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Who can volunteer?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>Any adult native or fluent English speaker who passes our background check and completes orientation. No teaching degree required.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Do I need teaching experience?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>No. Orientation covers everything you need to run a friendly, effective conversation session.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>How are volunteer hours verified?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>Hours are calculated automatically from completed lessons and reviewed by our admin team before they're added to your certificate.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>What ages are students?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>Students range from age 8 to adult. Anyone under 18 registers and is supervised through a parent or guardian account.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>What technology is required?</span><span class="plus">+</span></button>
+          <div class="faq-a"><p>Just a computer or tablet, a webcam, and an internet connection — our video room runs directly in your browser.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA + CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta-band" style="margin-bottom:96px;">
+        <h2>Ready to build a bridge of your own?</h2>
+        <p>It takes ten minutes to register. It takes one conversation to see why it matters.</p>
+        <div class="hero-cta">
+          <a href="#volunteer" class="btn" style="background:#fff; color:var(--blue);">Become a Volunteer</a>
+          <a href="#student" class="btn btn-ghost">Register as a Student</a>
+        </div>
+      </div>
+
+      <div class="head-row">
+        <p class="eyebrow">Contact</p>
+        <h2>Questions? We're here.</h2>
+      </div>
+      <div class="contact-grid">
+        <form class="contact-form">
+          <div class="field"><label>Name</label><input type="text" placeholder="Your name"></div>
+          <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+          <div class="field"><label>Message</label><textarea rows="4" placeholder="How can we help?"></textarea></div>
+          <button type="button" class="btn btn-primary">Send message</button>
+        </form>
+        <dl class="contact-info">
+          <dt>General email</dt><dd>hello@myenglishtutor.org</dd>
+          <dt>Organization</dt><dd>My English Tutor, a volunteer-powered nonprofit</dd>
+          <dt>Follow along</dt>
+          <div class="social-row">
+            <a href="#" aria-label="Instagram">IG</a>
+            <a href="#" aria-label="Facebook">FB</a>
+            <a href="#" aria-label="LinkedIn">IN</a>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="flogo">My English Tutor</div>
+        <p style="margin-top:12px; font-size:.88rem;">Connecting English speakers with students across the world — one free conversation at a time.</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#volunteer">Volunteer</a></li>
+          <li><a href="#student">Students</a></li>
+          <li><a href="#safety">Trust &amp; safety</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Organization</h5>
+        <ul>
+          <li><a href="#about">About us</a></li>
+          <li><a href="#stories">Success stories</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 My English Tutor. All rights reserved.</span>
+      <span>Made with volunteers, for volunteers.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tabs: How it works
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.steps').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('steps-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Tabs: Dashboard
+  document.querySelectorAll('.dash-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.dash-body').forEach(s=>s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('dash-'+btn.dataset.dash).classList.add('active');
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    if(item.classList.contains('open')){ a.style.maxHeight = a.scrollHeight + 'px'; }
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i=>{
+        i.classList.remove('open');
+        i.querySelector('.faq-a').style.maxHeight = 0;
+      });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Hero hours counter
+  (function(){
+    const el = document.getElementById('hoursCount');
+    let n = 0; const target = 214;
+    const step = ()=>{
+      n += Math.ceil((target-n)/14);
+      if(n>=target){ n=target; el.textContent = n.toLocaleString(); return; }
+      el.textContent = n.toLocaleString();
+      requestAnimationFrame(()=>setTimeout(step, 40));
+    };
+    requestAnimationFrame(()=>setTimeout(step, 400));
+  })();
+</script>
+
+</body>
+</html>
