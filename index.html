@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My English Tutor — Volunteer English Bridge</title>
+<title>My English Tutor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
 :root{
@@ -37,19 +37,28 @@ body{
 h1,h2,h3,h4{
   font-family:'Fraunces',serif;
   font-weight:600;
-  line-height:1.12;
+  line-height:1.15;
   margin:0 0 .5em 0;
   color:var(--ink);
 }
 p{margin:0 0 1em 0; color:var(--ink-soft);}
 a{color:inherit; text-decoration:none;}
-.eyebrow{
-  font-family:'IBM Plex Mono',monospace;
+.label-caps{
+  font-family:'Inter',sans-serif;
   font-size:.72rem;
-  letter-spacing:.14em;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+.eyebrow{
+  font-family:'Inter',sans-serif;
+  font-size:.74rem;
+  letter-spacing:.12em;
   text-transform:uppercase;
   color:var(--teal);
-  font-weight:500;
+  font-weight:700;
+  margin:0 0 10px 0;
 }
 .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
 section{padding:96px 0;}
@@ -59,6 +68,11 @@ button{font-family:inherit; cursor:pointer;}
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
 }
+
+/* ---------- Layout helpers ---------- */
+.head-row{ max-width:640px; margin-bottom:44px;}
+.head-row.center{ margin-left:auto; margin-right:auto; text-align:center;}
+.head-row.center .eyebrow{ display:block; text-align:center;}
 
 /* ---------- Buttons ---------- */
 .btn{
@@ -76,7 +90,7 @@ button{font-family:inherit; cursor:pointer;}
 /* ---------- Nav ---------- */
 header{
   position:sticky; top:0; z-index:50;
-  background:rgba(246,248,245,0.88); backdrop-filter:blur(10px);
+  background:rgba(246,248,245,0.9); backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
 }
 .nav{ display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1180px; margin:0 auto;}
@@ -86,7 +100,6 @@ header{
 .nav-links a{ color:var(--ink-soft); transition:color .15s;}
 .nav-links a:hover{ color:var(--blue);}
 .nav-cta{ display:flex; gap:10px;}
-.nav-toggle{display:none; background:none; border:none;}
 @media (max-width:880px){
   .nav-links{display:none;}
   .nav-cta .btn span{display:none;}
@@ -116,8 +129,8 @@ header{
   width:34px; height:34px; border-radius:50%; margin-bottom:8px;
   background:linear-gradient(135deg,var(--blue),var(--teal));
 }
-.node .name{ font-weight:600; font-size:.86rem;}
-.node .meta{ font-family:'IBM Plex Mono',monospace; font-size:.66rem; color:var(--ink-soft); letter-spacing:.02em;}
+.node .name{ font-weight:600; font-size:.84rem;}
+.node .meta{ font-size:.68rem; color:var(--ink-soft); letter-spacing:.02em; margin-top:2px;}
 .bridge-path{ position:absolute; top:50%; left:126px; right:126px; height:2px;}
 .bridge-path svg{ width:100%; height:64px; overflow:visible; position:absolute; top:-32px;}
 .bridge-path path{ fill:none; stroke:var(--line); stroke-width:2; stroke-dasharray:5 7;}
@@ -134,39 +147,32 @@ header{
   100%{ left:calc(100% - 126px); top:calc(50% - 22px); opacity:0;}
 }
 .bridge-foot{ display:flex; justify-content:space-between; align-items:flex-end; padding-top:14px; border-top:1px dashed var(--line); margin-top:6px;}
-.hours-count{ font-family:'IBM Plex Mono',monospace; font-size:1.7rem; font-weight:500; color:var(--blue-deep);}
-.hours-label{ font-size:.72rem; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase;}
-.bridge-badge{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; background:var(--teal-soft); color:var(--teal); padding:5px 10px; border-radius:999px; letter-spacing:.04em;}
+.hours-count{ font-size:1.6rem; font-weight:700; color:var(--blue-deep); font-variant-numeric:tabular-nums;}
+.hours-label{ font-size:.7rem; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase;}
+.bridge-badge{ font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--teal-soft); color:var(--teal); padding:5px 10px; border-radius:999px;}
 
 @media (max-width:900px){
   .hero-grid{ grid-template-columns:1fr;}
   .bridge-card{ order:-1;}
 }
 
-/* ---------- Trust bar ---------- */
-.statbar{ background:var(--blue-deep); color:#fff; padding:34px 0;}
-.statbar .wrap{ display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between;}
-.stat{ flex:1; min-width:150px;}
-.stat .num{ font-family:'IBM Plex Mono',monospace; font-size:1.7rem; color:var(--amber);}
-.stat .lab{ font-size:.82rem; color:#C9D9E2; margin-top:2px;}
-
-/* ---------- Section heads ---------- */
-.head-row{ max-width:640px; margin-bottom:44px;}
-.head-row.center{ margin-left:auto; margin-right:auto; text-align:center;}
+/* ---------- Feature band (replaces stats) ---------- */
+.featurebar{ background:var(--blue-deep); color:#fff; padding:34px 0;}
+.featurebar .wrap{ display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between;}
+.feature-pill{ flex:1; min-width:190px;}
+.feature-pill .head{ font-weight:700; font-size:1rem; color:#fff;}
+.feature-pill .sub{ font-size:.82rem; color:#C9D9E2; margin-top:4px;}
 
 /* ---------- How it works ---------- */
 .tabs{ display:flex; gap:8px; background:var(--paper-alt); padding:5px; border-radius:999px; width:fit-content; margin:0 auto 40px;}
 .tab-btn{ border:none; background:transparent; padding:10px 22px; border-radius:999px; font-weight:600; font-size:.9rem; color:var(--ink-soft);}
 .tab-btn.active{ background:var(--card); color:var(--blue); box-shadow:0 4px 12px -6px rgba(18,35,43,0.25);}
-.steps{ display:none; grid-template-columns:repeat(5,1fr); gap:18px; counter-reset:step;}
+.steps{ display:none; grid-template-columns:repeat(5,1fr); gap:18px;}
 .steps.active{ display:grid;}
 @media (max-width:980px){ .steps{ grid-template-columns:repeat(2,1fr);} }
 @media (max-width:560px){ .steps{ grid-template-columns:1fr;} }
-.step{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 18px; counter-increment:step;}
-.step::before{
-  content:counter(step,decimal-leading-zero);
-  font-family:'IBM Plex Mono',monospace; color:var(--teal); font-size:.8rem; display:block; margin-bottom:10px;
-}
+.step{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 18px;}
+.step .step-num{ color:var(--teal); font-size:.8rem; font-weight:700; display:block; margin-bottom:10px;}
 .step h4{ font-size:1.02rem; margin-bottom:6px;}
 .step p{ font-size:.9rem; margin:0;}
 
@@ -177,9 +183,8 @@ header{
 .why-card{ border-radius:var(--radius); padding:24px 20px; border:1px solid var(--line);}
 .why-card.blue{ background:linear-gradient(180deg,#EEF5F9,var(--card));}
 .why-card.teal{ background:linear-gradient(180deg,var(--teal-soft),var(--card));}
-.why-icon{ width:38px; height:38px; margin-bottom:14px;}
 .why-card h4{ font-size:1rem;}
-.why-card p{ font-size:.9rem;}
+.why-card p{ font-size:.9rem; margin:0;}
 
 /* ---------- Stories ---------- */
 .story-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
@@ -187,9 +192,9 @@ header{
 .story{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:26px; display:flex; flex-direction:column; gap:14px;}
 .story .quote{ font-family:'Fraunces',serif; font-size:1.08rem; color:var(--ink); font-weight:500; font-style:italic;}
 .story .who{ display:flex; align-items:center; gap:10px; margin-top:auto;}
-.story .who .dot{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--amber));}
+.story .who .dot{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--amber)); flex-shrink:0;}
 .story .who .name{ font-weight:600; font-size:.88rem;}
-.story .who .role{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+.story .who .role{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
 
 /* ---------- Trust & Safety ---------- */
 .safety{ background:var(--blue-deep); color:#fff;}
@@ -205,7 +210,8 @@ header{
 /* ---------- About / values ---------- */
 .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
 @media (max-width:880px){ .about-grid{ grid-template-columns:1fr;} }
-.values{ list-style:none; margin:24px 0 0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.values-head{ margin-bottom:24px; display:block;}
+.values{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px;}
 .values li{ display:flex; align-items:center; gap:10px; font-weight:600; font-size:.92rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px;}
 .values li::before{ content:''; width:8px; height:8px; border-radius:50%; background:var(--teal); flex-shrink:0;}
 
@@ -218,20 +224,23 @@ header{
 .feature-list li:last-child{ border-bottom:none;}
 .feature-list li::before{ content:'✓'; position:absolute; left:0; top:9px; color:var(--teal); font-weight:700;}
 
+.mock-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+.mock-tag{ font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--paper-alt); color:var(--ink-soft); padding:5px 10px; border-radius:999px;}
+
 .profile-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
 .profile-mock .top{ display:flex; gap:14px; align-items:center;}
-.profile-mock .pic{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal));}
+.profile-mock .pic{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal)); flex-shrink:0;}
 .profile-mock .top .name{ font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem;}
 .profile-mock .top .loc{ font-size:.82rem; color:var(--ink-soft);}
 .profile-mock .tagrow{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;}
-.tag{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; background:var(--paper-alt); padding:5px 10px; border-radius:999px; color:var(--ink-soft);}
+.tag{ font-size:.7rem; font-weight:600; background:var(--paper-alt); padding:5px 10px; border-radius:999px; color:var(--ink-soft);}
 .profile-mock .metrics{ display:flex; gap:22px; padding-top:16px; border-top:1px dashed var(--line);}
-.profile-mock .metrics div .num{ font-family:'IBM Plex Mono',monospace; font-size:1.25rem; color:var(--blue-deep);}
-.profile-mock .metrics div .lab{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+.profile-mock .metrics div .num{ font-size:1.2rem; font-weight:700; color:var(--blue-deep);}
+.profile-mock .metrics div .lab{ font-size:.7rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
 
 .reg-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
 .reg-mock .field{ margin-bottom:14px;}
-.reg-mock label{ display:block; font-size:.76rem; font-weight:600; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em; font-family:'IBM Plex Mono',monospace;}
+.reg-mock label{ display:block; font-size:.72rem; font-weight:700; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;}
 .reg-mock .control{ border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:.92rem; color:var(--ink-soft); background:var(--paper-alt);}
 .reg-mock .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px;}
 
@@ -244,18 +253,19 @@ header{
 .dash-body{ padding:26px; display:none; grid-template-columns:2fr 1fr; gap:20px;}
 .dash-body.active{ display:grid;}
 @media (max-width:760px){ .dash-body{ grid-template-columns:1fr;} }
-.lesson-row{ display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border:1px solid var(--line); border-radius:10px; margin-bottom:10px;}
+.dash-subhead{ font-size:.9rem; font-weight:700; margin-bottom:14px;}
+.lesson-row{ display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border:1px solid var(--line); border-radius:10px; margin-bottom:10px; gap:12px;}
 .lesson-row .who{ font-weight:600; font-size:.9rem;}
-.lesson-row .when{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-soft);}
+.lesson-row .when{ font-size:.72rem; color:var(--ink-soft); font-weight:600; white-space:nowrap;}
 .side-card{ background:var(--paper-alt); border-radius:12px; padding:18px; margin-bottom:14px;}
-.side-card .big{ font-family:'IBM Plex Mono',monospace; font-size:1.5rem; color:var(--blue-deep);}
-.side-card .lab{ font-size:.76rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+.side-card .big{ font-size:1.4rem; font-weight:700; color:var(--blue-deep);}
+.side-card .lab{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
 
 /* ---------- FAQ ---------- */
 .faq{ max-width:760px; margin:0 auto;}
 .faq-item{ border-bottom:1px solid var(--line);}
 .faq-q{ width:100%; text-align:left; background:none; border:none; padding:20px 4px; display:flex; justify-content:space-between; align-items:center; font-weight:600; font-size:1rem; color:var(--ink);}
-.faq-q .plus{ font-family:'IBM Plex Mono',monospace; color:var(--teal); font-size:1.2rem; transition:transform .2s;}
+.faq-q .plus{ color:var(--teal); font-size:1.2rem; font-weight:700; transition:transform .2s;}
 .faq-item.open .plus{ transform:rotate(45deg);}
 .faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease;}
 .faq-a p{ padding:0 4px 20px; font-size:.94rem;}
@@ -263,15 +273,16 @@ header{
 /* ---------- Contact ---------- */
 .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px;}
 @media (max-width:880px){ .contact-grid{ grid-template-columns:1fr;} }
-.contact-info dt{ font-family:'IBM Plex Mono',monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--teal); margin-top:22px;}
+.contact-info dt{ font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--teal); margin-top:22px;}
 .contact-info dd{ margin:4px 0 0; font-weight:600;}
 .social-row{ display:flex; gap:10px; margin-top:22px;}
-.social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center;}
+.social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700;}
 .contact-form .field{ margin-bottom:16px;}
 .contact-form label{ display:block; font-size:.8rem; font-weight:600; margin-bottom:6px;}
 .contact-form input, .contact-form textarea{
   width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-family:inherit; font-size:.92rem; background:var(--paper-alt);
 }
+.form-note{ font-size:.78rem; color:var(--ink-soft); margin-top:10px;}
 
 /* ---------- CTA band ---------- */
 .cta-band{ background:linear-gradient(120deg,var(--blue) 0%,var(--teal) 100%); border-radius:24px; padding:56px 44px; color:#fff; text-align:center;}
@@ -285,7 +296,7 @@ header{
 footer{ background:var(--ink); color:#B9C6CC; padding:60px 0 28px;}
 .footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:36px; margin-bottom:40px;}
 @media (max-width:760px){ .footer-grid{ grid-template-columns:1fr 1fr;} }
-footer h5{ color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.76rem; text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px;}
+footer h5{ color:#fff; font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
 footer .flogo{ font-family:'Fraunces',serif; color:#fff; font-size:1.2rem; font-weight:600;}
 footer ul{ list-style:none; margin:0; padding:0;}
 footer li{ margin-bottom:9px; font-size:.88rem;}
@@ -327,9 +338,9 @@ footer a:hover{ color:#fff;}
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="eyebrow">Volunteer English Bridge</p>
+        <p class="eyebrow">A free, nonprofit platform</p>
         <h1>Connecting English speakers with students across the world.</h1>
-        <p class="lede">Practice English. Share cultures. Earn volunteer hours. Make a difference — one weekly conversation at a time.</p>
+        <p class="lede">Practice English, share cultures, and earn volunteer hours, one weekly conversation at a time.</p>
         <div class="hero-cta">
           <a href="#volunteer" class="btn btn-primary">Become a Volunteer</a>
           <a href="#student" class="btn btn-ghost">Register as a Student</a>
@@ -337,12 +348,12 @@ footer a:hover{ color:#fff;}
       </div>
 
       <div class="bridge-card">
-        <span class="bridge-badge">live session bridge</span>
+        <span class="bridge-badge">Example session</span>
         <div class="bridge-stage">
           <div class="node volunteer">
             <div class="avatar"></div>
-            <div class="name">Maya, volunteer</div>
-            <div class="meta">TORONTO · 8:00 PM</div>
+            <div class="name">Jeffrey Ding</div>
+            <div class="meta">VOLUNTEER · TORONTO · 8:00 PM</div>
           </div>
           <div class="bridge-path">
             <svg viewBox="0 0 300 64" preserveAspectRatio="none"><path d="M0,32 Q150,-18 300,32"/></svg>
@@ -350,37 +361,37 @@ footer a:hover{ color:#fff;}
           <div class="pulse"></div>
           <div class="node student">
             <div class="avatar"></div>
-            <div class="name">Lin, student</div>
-            <div class="meta">CHENGDU · 8:00 AM</div>
+            <div class="name">Jeffrey Ding</div>
+            <div class="meta">STUDENT · CHENGDU · 8:00 AM</div>
           </div>
         </div>
         <div class="bridge-foot">
           <div>
             <div class="hours-count" id="hoursCount">0</div>
-            <div class="hours-label">volunteer hours logged this week</div>
+            <div class="hours-label">example hours logged this week</div>
           </div>
-          <div class="hours-label">session 12 of 20</div>
+          <div class="hours-label">example: session 3 of 20</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- STAT BAR -->
-  <div class="statbar">
+  <!-- FEATURE BAND (no fabricated stats, since we haven't launched) -->
+  <div class="featurebar">
     <div class="wrap">
-      <div class="stat"><div class="num">41,000+</div><div class="lab">Volunteer hours verified</div></div>
-      <div class="stat"><div class="num">6,200+</div><div class="lab">Students matched</div></div>
-      <div class="stat"><div class="num">38</div><div class="lab">Volunteer countries</div></div>
-      <div class="stat"><div class="num">100%</div><div class="lab">Free, always</div></div>
+      <div class="feature-pill"><div class="head">Free, always</div><div class="sub">No cost for students or volunteers</div></div>
+      <div class="feature-pill"><div class="head">Background-checked volunteers</div><div class="sub">Every volunteer is verified first</div></div>
+      <div class="feature-pill"><div class="head">Matched to your time zone</div><div class="sub">Sessions built around your week</div></div>
+      <div class="feature-pill"><div class="head">Hours tracked automatically</div><div class="sub">Verified service-hour certificates</div></div>
     </div>
   </div>
 
   <!-- HOW IT WORKS -->
   <section id="how">
     <div class="wrap">
-      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
-        <p class="eyebrow" style="text-align:center;">How it works</p>
-        <h2 style="text-align:center;">Two simple paths, one shared conversation.</h2>
+      <div class="head-row center">
+        <p class="eyebrow">How it works</p>
+        <h2>Two simple paths, one shared conversation.</h2>
       </div>
       <div class="tabs">
         <button class="tab-btn active" data-tab="students">For Students</button>
@@ -388,20 +399,20 @@ footer a:hover{ color:#fff;}
       </div>
 
       <div class="steps active" id="steps-students">
-        <div class="step"><h4>Create an account</h4><p>Sign up with a parent or guardian if you're under 18.</p></div>
-        <div class="step"><h4>Take the placement questionnaire</h4><p>A short conversation-style quiz sets your starting level.</p></div>
-        <div class="step"><h4>Get matched</h4><p>We pair you with a background-checked volunteer.</p></div>
-        <div class="step"><h4>Schedule weekly sessions</h4><p>Pick times that fit your week from your volunteer's calendar.</p></div>
-        <div class="step"><h4>Track your progress</h4><p>Watch your level and confidence grow, session by session.</p></div>
+        <div class="step"><span class="step-num">01</span><h4>Create an account</h4><p>Sign up with a parent or guardian if you're under 18.</p></div>
+        <div class="step"><span class="step-num">02</span><h4>Take the placement questionnaire</h4><p>A short conversation-style quiz sets your starting level.</p></div>
+        <div class="step"><span class="step-num">03</span><h4>Get matched</h4><p>We pair you with a background-checked volunteer.</p></div>
+        <div class="step"><span class="step-num">04</span><h4>Schedule weekly sessions</h4><p>Pick times that fit your week from your volunteer's calendar.</p></div>
+        <div class="step"><span class="step-num">05</span><h4>Track your progress</h4><p>Watch your level and confidence grow, session by session.</p></div>
       </div>
 
       <div class="steps" id="steps-volunteers">
-        <div class="step"><h4>Register</h4><p>Tell us about your background and the languages you speak.</p></div>
-        <div class="step"><h4>Complete orientation</h4><p>A short training on teaching basics and our safety guidelines.</p></div>
-        <div class="step"><h4>Set your availability</h4><p>Choose the weekly hours that work with your schedule.</p></div>
-        <div class="step"><h4>Receive matches</h4><p>We introduce you to students who fit your availability.</p></div>
-        <div class="step"><h4>Teach online</h4><p>Meet in a secure video room built right into the platform.</p></div>
-        <div class="step" style="grid-column:span 1;"><h4>Earn verified hours</h4><p>Every completed lesson adds to your service-hour record.</p></div>
+        <div class="step"><span class="step-num">01</span><h4>Register</h4><p>Tell us about your background and the languages you speak.</p></div>
+        <div class="step"><span class="step-num">02</span><h4>Complete orientation</h4><p>A short training on teaching basics and our safety guidelines.</p></div>
+        <div class="step"><span class="step-num">03</span><h4>Set your availability</h4><p>Choose the weekly hours that work with your schedule.</p></div>
+        <div class="step"><span class="step-num">04</span><h4>Receive matches</h4><p>We introduce you to students who fit your availability.</p></div>
+        <div class="step"><span class="step-num">05</span><h4>Teach online</h4><p>Meet in a secure video room built right into the platform.</p></div>
+        <div class="step"><span class="step-num">06</span><h4>Earn verified hours</h4><p>Every completed lesson adds to your service-hour record.</p></div>
       </div>
     </div>
   </section>
@@ -416,7 +427,7 @@ footer a:hover{ color:#fff;}
       <div class="why-grid">
         <div class="why-card blue">
           <h4>Real conversation practice</h4>
-          <p>Not another app with canned phrases — an actual person, listening and responding.</p>
+          <p>Not just another app with canned phrases. An actual person, listening and responding.</p>
         </div>
         <div class="why-card blue">
           <h4>Verified service hours</h4>
@@ -428,7 +439,7 @@ footer a:hover{ color:#fff;}
         </div>
         <div class="why-card teal">
           <h4>Flexible, low-pressure commitment</h4>
-          <p>Set your own weekly hours — an hour a week is enough to matter.</p>
+          <p>Set your own weekly hours. Even one hour a week is enough to matter.</p>
         </div>
       </div>
     </div>
@@ -438,21 +449,21 @@ footer a:hover{ color:#fff;}
   <section id="stories">
     <div class="wrap">
       <div class="head-row">
-        <p class="eyebrow">Success stories</p>
-        <h2>What the bridge has carried so far.</h2>
+        <p class="eyebrow">What people are looking forward to</p>
+        <h2>Sample conversations from the bridge.</h2>
       </div>
       <div class="story-grid">
         <div class="story">
-          <p class="quote">"My volunteer didn't just correct my grammar — she asked about my hometown and actually remembered it the next week."</p>
-          <div class="who"><div class="dot"></div><div><div class="name">Wei, student</div><div class="role">18 months on the platform</div></div></div>
+          <p class="quote">"I'm hoping my volunteer won't just correct my grammar. I want someone who asks about my hometown and actually remembers it."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Jeffrey Ding</div><div class="role">Student</div></div></div>
         </div>
         <div class="story">
-          <p class="quote">"I've logged over 90 hours and learned more about patience and teaching than any classroom ever taught me."</p>
-          <div class="who"><div class="dot"></div><div><div class="name">Daniel, volunteer</div><div class="role">Retired teacher, Melbourne</div></div></div>
+          <p class="quote">"I want to log real hours and learn as much about patience and teaching as any classroom could teach me."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Jeffrey Ding</div><div class="role">Volunteer</div></div></div>
         </div>
         <div class="story">
-          <p class="quote">"Watching my daughter go from silent to chatty in English over one semester — that's the whole reason we signed up."</p>
-          <div class="who"><div class="dot"></div><div><div class="name">Fang, parent</div><div class="role">Guardian of a student, age 12</div></div></div>
+          <p class="quote">"I'd love to watch my child go from quiet to chatty in English. That's the whole reason we want to sign up."</p>
+          <div class="who"><div class="dot"></div><div><div class="name">Jeffrey Ding</div><div class="role">Parent</div></div></div>
         </div>
       </div>
     </div>
@@ -461,17 +472,17 @@ footer a:hover{ color:#fff;}
   <!-- TRUST & SAFETY -->
   <section id="safety" class="safety">
     <div class="wrap">
-      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
-        <p class="eyebrow" style="text-align:center;">Trust &amp; safety</p>
-        <h2 style="text-align:center;">A bridge worth trusting, on both ends.</h2>
+      <div class="head-row center">
+        <p class="eyebrow">Trust &amp; safety</p>
+        <h2>A bridge worth trusting, on both ends.</h2>
       </div>
       <div class="safety-grid">
         <div class="safety-item"><h4>Background-checked volunteers</h4><p>Every volunteer passes an identity and background check before their first match.</p></div>
         <div class="safety-item"><h4>Guardian consent for minors</h4><p>Students under 18 register with a parent or guardian, who can view schedules and messages at any time.</p></div>
-        <div class="safety-item"><h4>Everything stays on-platform</h4><p>Lessons, messages, and calls happen only inside My English Tutor — never on personal phone numbers or apps.</p></div>
+        <div class="safety-item"><h4>Everything stays on-platform</h4><p>Lessons, messages, and calls happen only inside My English Tutor. We never move conversations to personal phone numbers or outside apps.</p></div>
         <div class="safety-item"><h4>Recorded, reviewable sessions</h4><p>Lessons can be recorded for quality and safety review by our team.</p></div>
         <div class="safety-item"><h4>Moderated messaging</h4><p>All messages are screened for respectful, on-topic conversation.</p></div>
-        <div class="safety-item"><h4>Easy reporting</h4><p>Anyone can flag a concern in one tap; our team responds within 24 hours.</p></div>
+        <div class="safety-item"><h4>Easy reporting</h4><p>Anyone can flag a concern in one tap, and our team responds quickly.</p></div>
       </div>
     </div>
   </section>
@@ -482,11 +493,11 @@ footer a:hover{ color:#fff;}
       <div>
         <p class="eyebrow">About us</p>
         <h2>Why we built the bridge.</h2>
-        <p>My English Tutor started with a simple observation: millions of students want to speak English with confidence, and just as many native speakers have an hour a week and a genuine interest in the world. Conversation is the missing piece that no app, textbook, or grammar drill can replace — and volunteering is one of the most direct ways to make an international impact.</p>
-        <p>We connect the two, safely and simply, so language can do what it's always done: build friendships, open doors, and bring people closer together.</p>
+        <p>My English Tutor started with a simple observation. Millions of students want to speak English with confidence, and just as many native speakers have an hour a week and a genuine interest in the world. Conversation is the missing piece that no app, textbook, or grammar drill can replace, and volunteering is one of the most direct ways to make an international impact.</p>
+        <p>We connect the two, safely and simply, so language can do what it has always done: build friendships, open doors, and bring people closer together.</p>
       </div>
       <div>
-        <h4 style="font-size:1rem; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);">Our core values</h4>
+        <span class="label-caps values-head">Our core values</span>
         <ul class="values">
           <li>Education</li>
           <li>Inclusion</li>
@@ -503,7 +514,7 @@ footer a:hover{ color:#fff;}
     <div class="wrap path">
       <div class="path-copy">
         <p class="eyebrow">For volunteers</p>
-        <h2>Your profile, your hours, your impact — all in one place.</h2>
+        <h2>Your profile, your hours, and your impact, all in one place.</h2>
         <p>Build a profile students can trust, set the hours that work for your life, and watch your verified service hours add up automatically.</p>
         <ul class="feature-list">
           <li>Upload a profile picture and short biography</li>
@@ -516,23 +527,24 @@ footer a:hover{ color:#fff;}
         <a href="#contact" class="btn btn-primary" style="margin-top:22px;">Start volunteer registration</a>
       </div>
       <div class="profile-mock">
+        <div class="mock-head"><span class="mock-tag">Example profile</span></div>
         <div class="top">
           <div class="pic"></div>
           <div>
-            <div class="name">Maya Ferreira</div>
+            <div class="name">Jeffrey Ding</div>
             <div class="loc">Toronto, Canada</div>
           </div>
         </div>
         <div class="tagrow">
-          <span class="tag">English · Portuguese</span>
+          <span class="tag">English · Mandarin</span>
           <span class="tag">Business English</span>
           <span class="tag">Travel &amp; culture</span>
         </div>
-        <p style="font-size:.88rem; margin-bottom:0;">Former ESL classroom aide who loves helping students find their voice. Free most weekday evenings, GMT-5.</p>
+        <p style="font-size:.88rem; margin-bottom:0;">Example bio: a former classroom aide who enjoys helping students find their voice. Free most weekday evenings, GMT-5.</p>
         <div class="metrics">
-          <div><div class="num">86</div><div class="lab">Hours logged</div></div>
-          <div><div class="num">14</div><div class="lab">Students taught</div></div>
-          <div><div class="num">4.9</div><div class="lab">Avg. rating</div></div>
+          <div><div class="num">N/A</div><div class="lab">Hours logged</div></div>
+          <div><div class="num">N/A</div><div class="lab">Students taught</div></div>
+          <div><div class="num">N/A</div><div class="lab">Avg. rating</div></div>
         </div>
       </div>
     </div>
@@ -543,7 +555,7 @@ footer a:hover{ color:#fff;}
     <div class="wrap path reverse">
       <div class="path-copy">
         <p class="eyebrow">For students</p>
-        <h2>Tell us how you learn — we'll find the right voice for you.</h2>
+        <h2>Tell us how you learn, and we'll find the right voice for you.</h2>
         <p>Registration takes a few minutes. A parent or guardian completes it together for students under 18.</p>
         <ul class="feature-list">
           <li>Select your age group and English level</li>
@@ -555,6 +567,7 @@ footer a:hover{ color:#fff;}
         <a href="#contact" class="btn btn-teal" style="margin-top:22px;">Start student registration</a>
       </div>
       <div class="reg-mock">
+        <div class="mock-head"><span class="mock-tag">Example registration</span></div>
         <div class="field"><label>Age group</label><div class="control">13–17 (with guardian account)</div></div>
         <div class="row2">
           <div class="field"><label>English level</label><div class="control">Intermediate</div></div>
@@ -569,9 +582,9 @@ footer a:hover{ color:#fff;}
   <!-- DASHBOARD PREVIEW -->
   <section style="background:var(--paper-alt);">
     <div class="wrap">
-      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
-        <p class="eyebrow" style="text-align:center;">Your dashboard</p>
-        <h2 style="text-align:center;">Everything for your next session, in one view.</h2>
+      <div class="head-row center">
+        <p class="eyebrow">Your dashboard</p>
+        <h2>Everything for your next session, in one view.</h2>
       </div>
       <div class="dash-shell">
         <div class="dash-top">
@@ -579,34 +592,34 @@ footer a:hover{ color:#fff;}
             <button class="dash-tab active" data-dash="student">Student view</button>
             <button class="dash-tab" data-dash="volunteer">Volunteer view</button>
           </div>
-          <span class="tag">Preview</span>
+          <span class="mock-tag">Preview</span>
         </div>
 
         <div class="dash-body active" id="dash-student">
           <div>
-            <h4 style="font-size:.95rem; margin-bottom:14px;">Upcoming lessons</h4>
-            <div class="lesson-row"><span class="who">Session with Maya F.</span><span class="when">SAT · 08:00</span></div>
-            <div class="lesson-row"><span class="who">Session with Maya F.</span><span class="when">SAT · next week</span></div>
-            <h4 style="font-size:.95rem; margin:22px 0 14px;">Lesson history</h4>
-            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">12 sessions completed</span></div>
+            <div class="dash-subhead">Upcoming lessons</div>
+            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · 08:00</span></div>
+            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · next week</span></div>
+            <div class="dash-subhead" style="margin-top:22px;">Lesson history</div>
+            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">example entry</span></div>
           </div>
           <div>
-            <div class="side-card"><div class="big">Level 3</div><div class="lab">Current progress</div></div>
-            <div class="side-card"><div class="big">12</div><div class="lab">Lessons completed</div></div>
+            <div class="side-card"><div class="big">N/A</div><div class="lab">Current level</div></div>
+            <div class="side-card"><div class="big">N/A</div><div class="lab">Lessons completed</div></div>
           </div>
         </div>
 
         <div class="dash-body" id="dash-volunteer">
           <div>
-            <h4 style="font-size:.95rem; margin-bottom:14px;">Lesson requests</h4>
-            <div class="lesson-row"><span class="who">Lin, age 12</span><span class="when">Accept · SAT 08:00</span></div>
-            <div class="lesson-row"><span class="who">Jun, age 15</span><span class="when">Accept · SUN 09:00</span></div>
-            <h4 style="font-size:.95rem; margin:22px 0 14px;">Recent lesson reports</h4>
-            <div class="lesson-row"><span class="who">Submitted for Lin</span><span class="when">Approved</span></div>
+            <div class="dash-subhead">Lesson requests</div>
+            <div class="lesson-row"><span class="who">Jeffrey Ding, age 12</span><span class="when">Accept · SAT 08:00</span></div>
+            <div class="lesson-row"><span class="who">Jeffrey Ding, age 15</span><span class="when">Accept · SUN 09:00</span></div>
+            <div class="dash-subhead" style="margin-top:22px;">Recent lesson reports</div>
+            <div class="lesson-row"><span class="who">Submitted for Jeffrey Ding</span><span class="when">Approved</span></div>
           </div>
           <div>
-            <div class="side-card"><div class="big">86 hrs</div><div class="lab">Total volunteer hours</div></div>
-            <div class="side-card"><div class="big">14</div><div class="lab">Students taught</div></div>
+            <div class="side-card"><div class="big">N/A</div><div class="lab">Total volunteer hours</div></div>
+            <div class="side-card"><div class="big">N/A</div><div class="lab">Students taught</div></div>
             <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center;">Download certificate</a>
           </div>
         </div>
@@ -617,14 +630,14 @@ footer a:hover{ color:#fff;}
   <!-- FAQ -->
   <section id="faq">
     <div class="wrap">
-      <div class="head-row center" style="margin-left:auto;margin-right:auto;">
-        <p class="eyebrow" style="text-align:center;">FAQ</p>
-        <h2 style="text-align:center;">Good to know before you sign up.</h2>
+      <div class="head-row center">
+        <p class="eyebrow">FAQ</p>
+        <h2>Good to know before you sign up.</h2>
       </div>
       <div class="faq">
         <div class="faq-item open">
           <button class="faq-q"><span>Is this free?</span><span class="plus">+</span></button>
-          <div class="faq-a"><p>Yes — for both students and volunteers, always. My English Tutor is a nonprofit platform and never charges for lessons.</p></div>
+          <div class="faq-a"><p>Yes. My English Tutor is a nonprofit platform, and it never charges students or volunteers for lessons.</p></div>
         </div>
         <div class="faq-item">
           <button class="faq-q"><span>Who can volunteer?</span><span class="plus">+</span></button>
@@ -644,7 +657,7 @@ footer a:hover{ color:#fff;}
         </div>
         <div class="faq-item">
           <button class="faq-q"><span>What technology is required?</span><span class="plus">+</span></button>
-          <div class="faq-a"><p>Just a computer or tablet, a webcam, and an internet connection — our video room runs directly in your browser.</p></div>
+          <div class="faq-a"><p>Just a computer or tablet, a webcam, and an internet connection. Our video room runs directly in your browser.</p></div>
         </div>
       </div>
     </div>
@@ -655,7 +668,7 @@ footer a:hover{ color:#fff;}
     <div class="wrap">
       <div class="cta-band" style="margin-bottom:96px;">
         <h2>Ready to build a bridge of your own?</h2>
-        <p>It takes ten minutes to register. It takes one conversation to see why it matters.</p>
+        <p>Registration takes about ten minutes. It only takes one conversation to see why it matters.</p>
         <div class="hero-cta">
           <a href="#volunteer" class="btn" style="background:#fff; color:var(--blue);">Become a Volunteer</a>
           <a href="#student" class="btn btn-ghost">Register as a Student</a>
@@ -667,14 +680,15 @@ footer a:hover{ color:#fff;}
         <h2>Questions? We're here.</h2>
       </div>
       <div class="contact-grid">
-        <form class="contact-form">
-          <div class="field"><label>Name</label><input type="text" placeholder="Your name"></div>
-          <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
-          <div class="field"><label>Message</label><textarea rows="4" placeholder="How can we help?"></textarea></div>
-          <button type="button" class="btn btn-primary">Send message</button>
+        <form class="contact-form" id="contactForm">
+          <div class="field"><label for="cf-name">Name</label><input id="cf-name" type="text" placeholder="Your name"></div>
+          <div class="field"><label for="cf-email">Email</label><input id="cf-email" type="email" placeholder="you@example.com"></div>
+          <div class="field"><label for="cf-msg">Message</label><textarea id="cf-msg" rows="4" placeholder="How can we help?"></textarea></div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+          <p class="form-note">Sends to myenglishtutor1217@gmail.com.</p>
         </form>
         <dl class="contact-info">
-          <dt>General email</dt><dd>hello@myenglishtutor.org</dd>
+          <dt>General email</dt><dd>myenglishtutor1217@gmail.com</dd>
           <dt>Organization</dt><dd>My English Tutor, a volunteer-powered nonprofit</dd>
           <dt>Follow along</dt>
           <div class="social-row">
@@ -694,7 +708,7 @@ footer a:hover{ color:#fff;}
     <div class="footer-grid">
       <div>
         <div class="flogo">My English Tutor</div>
-        <p style="margin-top:12px; font-size:.88rem;">Connecting English speakers with students across the world — one free conversation at a time.</p>
+        <p style="margin-top:12px; font-size:.88rem;">Connecting English speakers with students across the world, one free conversation at a time.</p>
       </div>
       <div>
         <h5>Platform</h5>
@@ -768,18 +782,28 @@ footer a:hover{ color:#fff;}
     });
   });
 
-  // Hero hours counter
+  // Hero example-hours counter (clearly labeled as an example)
   (function(){
     const el = document.getElementById('hoursCount');
-    let n = 0; const target = 214;
+    let n = 0; const target = 6;
     const step = ()=>{
-      n += Math.ceil((target-n)/14);
-      if(n>=target){ n=target; el.textContent = n.toLocaleString(); return; }
-      el.textContent = n.toLocaleString();
-      requestAnimationFrame(()=>setTimeout(step, 40));
+      n += 1;
+      if(n>=target){ el.textContent = n; return; }
+      el.textContent = n;
+      setTimeout(step, 220);
     };
-    requestAnimationFrame(()=>setTimeout(step, 400));
+    setTimeout(step, 400);
   })();
+
+  // Contact form: opens a pre-filled email to the organization address
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('cf-name').value;
+    const email = document.getElementById('cf-email').value;
+    const msg = document.getElementById('cf-msg').value;
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
+    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Message from My English Tutor site&body=${body}`;
+  });
 </script>
 
 </body>
