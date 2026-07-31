@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust & safety — My English Tutor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   My English Tutor — shared stylesheet
+   ============================================================ */
+
+:root{
+  --ink:#12232B;
+  --ink-soft:#3F5560;
+  --paper:#F6F8F5;
+  --paper-alt:#ECF2EA;
+  --card:#FFFFFF;
+  --blue:#1D5C8A;
+  --blue-deep:#123E5E;
+  --teal:#2E9E7C;
+  --teal-soft:#E4F3EC;
+  --amber:#E8A33D;
+  --line:#DAE3DC;
+  --radius:14px;
+  --shadow:0 12px 32px -18px rgba(18,35,43,0.28);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Headings use Fraunces. WONK is explicitly disabled and opsz is fixed
+   because Fraunces' variable-font defaults can render some lowercase
+   letters (like "f") with an odd wonky/swash shape at certain sizes
+   if the axes are left unset. */
+h1,h2,h3,h4{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  line-height:1.15;
+  margin:0 0 .5em 0;
+  color:var(--ink);
+  font-variation-settings:"opsz" 40,"WONK" 0,"SOFT" 0;
+  font-feature-settings:"liga" 1,"dlig" 0,"swsh" 0,"ss01" 0,"ss02" 0,"salt" 0;
+  font-variant-ligatures:common-ligatures;
+}
+
+p{margin:0 0 1em 0; color:var(--ink-soft);}
+a{color:inherit; text-decoration:none;}
+.label-caps{
+  font-family:'Inter',sans-serif;
+  font-size:.72rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+.eyebrow{
+  font-family:'Inter',sans-serif;
+  font-size:.74rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--teal);
+  font-weight:700;
+  margin:0 0 10px 0;
+  display:block;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+section{padding:96px 0;}
+img{max-width:100%; display:block;}
+button{font-family:inherit; cursor:pointer;}
+:focus-visible{outline:2.5px solid var(--blue); outline-offset:3px;}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+/* ---------- Layout helpers ---------- */
+.head-row{ max-width:640px; margin-bottom:44px;}
+.head-row.center{ margin-left:auto; margin-right:auto; text-align:center;}
+.head-row.center .eyebrow{ text-align:center;}
+.breadcrumb{ font-size:.82rem; color:var(--ink-soft); margin-bottom:18px;}
+.breadcrumb a{ color:var(--blue); font-weight:600;}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:13px 24px; border-radius:999px; border:1.5px solid transparent;
+  font-weight:600; font-size:.95rem; white-space:nowrap; flex-shrink:0;
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.btn-primary{ background:var(--blue); color:#fff; box-shadow:0 10px 22px -10px rgba(29,92,138,0.55);}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 26px -10px rgba(29,92,138,0.65);}
+.btn-teal{ background:var(--teal); color:#fff; box-shadow:0 10px 22px -10px rgba(46,158,124,0.5);}
+.btn-teal:hover{ transform:translateY(-2px); box-shadow:0 14px 26px -10px rgba(46,158,124,0.6);}
+.btn-ghost{ background:transparent; border-color:var(--line); color:var(--ink);}
+.btn-ghost:hover{ border-color:var(--blue); color:var(--blue);}
+.btn-sm{ padding:9px 18px; font-size:.85rem;}
+
+/* ---------- Nav ---------- */
+header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(246,248,245,0.92); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; row-gap:10px; column-gap:16px;
+  padding:14px 32px; max-width:1180px; margin:0 auto;
+}
+.logo{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:1.1rem; white-space:nowrap;}
+.logo-mark{width:28px; height:28px; flex-shrink:0;}
+.nav-links{ display:flex; gap:20px; font-size:.9rem; font-weight:500; flex-wrap:wrap;}
+.nav-links a{ color:var(--ink-soft); transition:color .15s;}
+.nav-links a:hover, .nav-links a.current{ color:var(--blue);}
+.nav-cta{ display:flex; gap:10px; flex-wrap:wrap;}
+@media (max-width:940px){
+  .nav-links{display:none;}
+}
+@media (max-width:520px){
+  .nav-cta .btn span{display:none;}
+  .nav-cta .btn{ padding:11px 16px;}
+}
+
+/* ---------- Hero ---------- */
+.hero{ padding:60px 0 88px; overflow:hidden;}
+.hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:64px; align-items:center;}
+.hero h1{ font-size:clamp(2.1rem,4.4vw,3.3rem); letter-spacing:-.01em;}
+.hero .lede{ font-size:1.1rem; max-width:46ch;}
+.hero-cta{ display:flex; gap:14px; margin-top:28px; flex-wrap:wrap;}
+
+/* Bridge signature visual */
+.bridge-card{
+  position:relative; background:var(--card); border:1px solid var(--line);
+  border-radius:20px; padding:34px 28px 28px; box-shadow:var(--shadow);
+}
+.bridge-stage{ position:relative; height:150px; margin:18px 0 8px;}
+.node{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:118px; background:var(--paper-alt); border:1px solid var(--line);
+  border-radius:12px; padding:12px 12px 10px; text-align:left;
+}
+.node.volunteer{ left:0;}
+.node.student{ right:0;}
+.node .avatar{
+  width:34px; height:34px; border-radius:50%; margin-bottom:8px;
+  background:linear-gradient(135deg,var(--blue),var(--teal));
+}
+.node .name{ font-weight:600; font-size:.84rem;}
+.node .meta{ font-size:.68rem; color:var(--ink-soft); letter-spacing:.02em; margin-top:2px;}
+.bridge-path{ position:absolute; top:50%; left:126px; right:126px; height:2px;}
+.bridge-path svg{ width:100%; height:64px; overflow:visible; position:absolute; top:-32px;}
+.bridge-path path{ fill:none; stroke:var(--line); stroke-width:2; stroke-dasharray:5 7;}
+.pulse{
+  position:absolute; top:50%; left:126px; width:9px; height:9px; border-radius:50%;
+  background:var(--amber); box-shadow:0 0 0 5px rgba(232,163,61,0.22);
+  animation:travel 3.4s ease-in-out infinite;
+}
+@keyframes travel{
+  0%{ left:126px; top:calc(50% - 22px); opacity:0;}
+  8%{opacity:1;}
+  50%{ left:calc(50% - 4.5px); top:calc(50% - 40px);}
+  92%{opacity:1;}
+  100%{ left:calc(100% - 126px); top:calc(50% - 22px); opacity:0;}
+}
+.bridge-foot{ display:flex; justify-content:space-between; align-items:flex-end; padding-top:14px; border-top:1px dashed var(--line); margin-top:6px;}
+.hours-count{ font-size:1.6rem; font-weight:700; color:var(--blue-deep); font-variant-numeric:tabular-nums;}
+.hours-label{ font-size:.7rem; color:var(--ink-soft); letter-spacing:.04em; text-transform:uppercase;}
+.bridge-badge{ font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--teal-soft); color:var(--teal); padding:5px 10px; border-radius:999px;}
+
+@media (max-width:900px){
+  .hero-grid{ grid-template-columns:1fr;}
+  .bridge-card{ order:-1;}
+}
+
+/* ---------- Feature band ---------- */
+.featurebar{ background:var(--blue-deep); color:#fff; padding:34px 0;}
+.featurebar .wrap{ display:flex; flex-wrap:wrap; gap:28px; justify-content:space-between;}
+.feature-pill{ flex:1; min-width:190px;}
+.feature-pill .head{ font-weight:700; font-size:1rem; color:#fff;}
+.feature-pill .sub{ font-size:.82rem; color:#C9D9E2; margin-top:4px;}
+
+/* ---------- Topic / explore cards (home page) ---------- */
+.topic-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media (max-width:900px){ .topic-grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:600px){ .topic-grid{ grid-template-columns:1fr;} }
+.topic-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:24px 22px; display:flex; flex-direction:column; gap:10px; height:100%;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.topic-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--blue);}
+.topic-card h3{ font-size:1.08rem; margin-bottom:2px;}
+.topic-card p{ font-size:.9rem; margin:0;}
+.topic-card .go{ margin-top:auto; font-size:.84rem; font-weight:700; color:var(--blue);}
+
+/* ---------- Callout ---------- */
+.callout{ background:var(--paper-alt); border:1px solid var(--line); border-left:4px solid var(--amber); border-radius:12px; padding:22px 24px; margin:32px 0;}
+.callout h4{ font-size:1rem; margin-bottom:8px;}
+.callout p{ font-size:.92rem; margin:0;}
+.callout p + p{ margin-top:10px;}
+
+/* ---------- How it works ---------- */
+.tabs{ display:flex; gap:8px; background:var(--paper-alt); padding:5px; border-radius:999px; width:fit-content; margin:0 auto 40px;}
+.tab-btn{ border:none; background:transparent; padding:10px 22px; border-radius:999px; font-weight:600; font-size:.9rem; color:var(--ink-soft);}
+.tab-btn.active{ background:var(--card); color:var(--blue); box-shadow:0 4px 12px -6px rgba(18,35,43,0.25);}
+.steps{ display:none; grid-template-columns:repeat(5,1fr); gap:18px;}
+.steps.active{ display:grid;}
+@media (max-width:980px){ .steps{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .steps{ grid-template-columns:1fr;} }
+.step{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 18px;}
+.step .step-num{ color:var(--teal); font-size:.8rem; font-weight:700; display:block; margin-bottom:10px;}
+.step h4{ font-size:1.02rem; margin-bottom:6px;}
+.step p{ font-size:.9rem; margin:0;}
+
+/* ---------- Why join ---------- */
+.why-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media (max-width:980px){ .why-grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width:560px){ .why-grid{ grid-template-columns:1fr;} }
+.why-card{ border-radius:var(--radius); padding:24px 20px; border:1px solid var(--line);}
+.why-card.blue{ background:linear-gradient(180deg,#EEF5F9,var(--card));}
+.why-card.teal{ background:linear-gradient(180deg,var(--teal-soft),var(--card));}
+.why-card h4{ font-size:1rem;}
+.why-card p{ font-size:.9rem; margin:0;}
+
+/* ---------- Stories ---------- */
+.story-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+@media (max-width:900px){ .story-grid{ grid-template-columns:1fr;} }
+.story{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:26px; display:flex; flex-direction:column; gap:14px;}
+.story .quote{ font-family:'Fraunces',serif; font-size:1.06rem; color:var(--ink); font-weight:500; font-style:italic; font-variation-settings:"opsz" 24,"WONK" 0,"SOFT" 0;}
+.story .who{ display:flex; align-items:center; gap:10px; margin-top:auto;}
+.story .who .dot{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--teal),var(--amber)); flex-shrink:0;}
+.story .who .name{ font-weight:600; font-size:.88rem;}
+.story .who .role{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ---------- Trust & Safety ---------- */
+.safety{ background:var(--blue-deep); color:#fff;}
+.safety h1, .safety h2{ color:#fff;}
+.safety .eyebrow{ color:var(--amber);}
+.safety-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:38px;}
+@media (max-width:900px){ .safety-grid{ grid-template-columns:1fr 1fr;} }
+@media (max-width:600px){ .safety-grid{ grid-template-columns:1fr;} }
+.safety-item{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:20px;}
+.safety-item h4{ color:#fff; font-size:.98rem;}
+.safety-item p{ color:#C9D9E2; font-size:.87rem; margin:0;}
+.safety .lede{ color:#C9D9E2;}
+
+/* ---------- About / values ---------- */
+.about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;}
+@media (max-width:880px){ .about-grid{ grid-template-columns:1fr;} }
+.values-head{ margin-bottom:24px;}
+.values{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.values li{ display:flex; align-items:center; gap:10px; font-weight:600; font-size:.92rem; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 14px;}
+.values li::before{ content:''; width:8px; height:8px; border-radius:50%; background:var(--teal); flex-shrink:0;}
+
+/* ---------- Path detail (volunteer / student) ---------- */
+.path{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;}
+@media (max-width:880px){ .path{ grid-template-columns:1fr;} }
+.path.reverse .path-copy{ order:2;}
+.feature-list{ list-style:none; margin:20px 0 0; padding:0;}
+.feature-list li{ padding:10px 0 10px 26px; position:relative; font-size:.94rem; border-bottom:1px solid var(--line);}
+.feature-list li:last-child{ border-bottom:none;}
+.feature-list li::before{ content:'✓'; position:absolute; left:0; top:9px; color:var(--teal); font-weight:700;}
+
+.mock-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+.mock-tag{ font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; background:var(--paper-alt); color:var(--ink-soft); padding:5px 10px; border-radius:999px;}
+
+.profile-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
+.profile-mock .top{ display:flex; gap:14px; align-items:center;}
+.profile-mock .pic{ width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal)); flex-shrink:0;}
+.profile-mock .top .name{ font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem;}
+.profile-mock .top .loc{ font-size:.82rem; color:var(--ink-soft);}
+.profile-mock .tagrow{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;}
+.tag{ font-size:.7rem; font-weight:600; background:var(--paper-alt); padding:5px 10px; border-radius:999px; color:var(--ink-soft);}
+.profile-mock .metrics{ display:flex; gap:22px; padding-top:16px; border-top:1px dashed var(--line);}
+.profile-mock .metrics div .num{ font-size:1.2rem; font-weight:700; color:var(--blue-deep);}
+.profile-mock .metrics div .lab{ font-size:.7rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+.reg-mock{ background:var(--card); border:1px solid var(--line); border-radius:18px; padding:26px; box-shadow:var(--shadow);}
+.reg-mock .field{ margin-bottom:14px;}
+.reg-mock label{ display:block; font-size:.72rem; font-weight:700; color:var(--ink-soft); margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;}
+.reg-mock .control{ border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:.92rem; color:var(--ink-soft); background:var(--paper-alt);}
+.reg-mock .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+/* ---------- Dashboard preview ---------- */
+.dash-shell{ background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow);}
+.dash-top{ display:flex; justify-content:space-between; align-items:center; padding:16px 22px; border-bottom:1px solid var(--line); background:var(--paper-alt);}
+.dash-tabs{ display:flex; gap:6px;}
+.dash-tab{ border:none; background:transparent; padding:8px 16px; border-radius:8px; font-weight:600; font-size:.85rem; color:var(--ink-soft);}
+.dash-tab.active{ background:var(--card); color:var(--blue);}
+.dash-body{ padding:26px; display:none; grid-template-columns:2fr 1fr; gap:20px;}
+.dash-body.active{ display:grid;}
+@media (max-width:760px){ .dash-body{ grid-template-columns:1fr;} }
+.dash-subhead{ font-size:.9rem; font-weight:700; margin-bottom:14px;}
+.lesson-row{ display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border:1px solid var(--line); border-radius:10px; margin-bottom:10px; gap:12px;}
+.lesson-row .who{ font-weight:600; font-size:.9rem;}
+.lesson-row .when{ font-size:.72rem; color:var(--ink-soft); font-weight:600; white-space:nowrap;}
+.side-card{ background:var(--paper-alt); border-radius:12px; padding:18px; margin-bottom:14px;}
+.side-card .big{ font-size:1.4rem; font-weight:700; color:var(--blue-deep);}
+.side-card .lab{ font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ---------- FAQ ---------- */
+.faq{ max-width:760px; margin:0 auto;}
+.faq-item{ border-bottom:1px solid var(--line);}
+.faq-q{ width:100%; text-align:left; background:none; border:none; padding:20px 4px; display:flex; justify-content:space-between; align-items:center; gap:12px; font-weight:600; font-size:1rem; color:var(--ink);}
+.faq-q .plus{ color:var(--teal); font-size:1.2rem; font-weight:700; transition:transform .2s; flex-shrink:0;}
+.faq-item.open .plus{ transform:rotate(45deg);}
+.faq-a{ max-height:0; overflow:hidden; transition:max-height .25s ease;}
+.faq-a p{ padding:0 4px 20px; font-size:.94rem;}
+
+/* ---------- Contact ---------- */
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+@media (max-width:880px){ .contact-grid{ grid-template-columns:1fr;} }
+.contact-info dt{ font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--teal); margin-top:22px;}
+.contact-info dd{ margin:4px 0 0; font-weight:600;}
+.social-row{ display:flex; gap:10px; margin-top:22px;}
+.social-row a{ width:38px; height:38px; border-radius:50%; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:.78rem; font-weight:700;}
+.contact-form .field{ margin-bottom:16px;}
+.contact-form label{ display:block; font-size:.8rem; font-weight:600; margin-bottom:6px;}
+.contact-form input, .contact-form textarea{
+  width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-family:inherit; font-size:.92rem; background:var(--paper-alt);
+}
+.form-note{ font-size:.78rem; color:var(--ink-soft); margin-top:10px;}
+
+/* ---------- CTA band ---------- */
+.cta-band{ background:linear-gradient(120deg,var(--blue) 0%,var(--teal) 100%); border-radius:24px; padding:56px 44px; color:#fff; text-align:center;}
+.cta-band h2{ color:#fff;}
+.cta-band p{ color:rgba(255,255,255,0.88); max-width:52ch; margin-left:auto; margin-right:auto;}
+.cta-band .hero-cta{ justify-content:center;}
+.cta-band .btn-ghost{ border-color:rgba(255,255,255,0.5); color:#fff;}
+.cta-band .btn-ghost:hover{ background:rgba(255,255,255,0.12); border-color:#fff;}
+
+/* ---------- Footer ---------- */
+footer{ background:var(--ink); color:#B9C6CC; padding:60px 0 28px;}
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:36px; margin-bottom:40px;}
+@media (max-width:760px){ .footer-grid{ grid-template-columns:1fr 1fr;} }
+footer h5{ color:#fff; font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
+footer .flogo{ font-family:'Fraunces',serif; color:#fff; font-size:1.2rem; font-weight:600; font-variation-settings:"opsz" 40,"WONK" 0;}
+footer ul{ list-style:none; margin:0; padding:0;}
+footer li{ margin-bottom:9px; font-size:.88rem;}
+footer a:hover{ color:#fff;}
+.foot-bottom{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.12); font-size:.8rem;}
+
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <a href="index.html" class="logo">
+      <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
+        <path d="M4 20c4-8 8-8 12 0s8 8 12 0" stroke="#1D5C8A" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="4" cy="20" r="2.4" fill="#2E9E7C"/>
+        <circle cx="28" cy="20" r="2.4" fill="#E8A33D"/>
+      </svg>
+      My English Tutor
+    </a>
+    <div class="nav-links">
+            <a href="how-it-works.html">How it works</a>
+      <a href="why-join.html">Why join</a>
+      <a href="stories.html">Stories</a>
+      <a href="safety.html" class="current">Trust & safety</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <a href="volunteer.html" class="btn btn-ghost"><span>Become a</span> Volunteer</a>
+      <a href="student.html" class="btn btn-primary"><span>Register as</span> Student</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <section class="safety">
+    <div class="wrap">
+      <div class="breadcrumb" style="color:#C9D9E2;"><a href="index.html" style="color:#fff;">Home</a> / Trust &amp; safety</div>
+      <div class="head-row center">
+        <p class="eyebrow">Trust &amp; safety</p>
+        <h1>A bridge worth trusting, on both ends.</h1>
+        <p class="lede">Volunteers are adults speaking one-on-one with students who are sometimes minors, so safety is built into the design, not added on afterward.</p>
+      </div>
+      <div class="safety-grid">
+        <div class="safety-item"><h4>Background-checked volunteers</h4><p>Every volunteer passes an identity and background check before their first match.</p></div>
+        <div class="safety-item"><h4>Guardian consent for minors</h4><p>Students under 18 register with a parent or guardian, who can view schedules and messages at any time.</p></div>
+        <div class="safety-item"><h4>Everything stays on-platform</h4><p>Lessons, messages, and calls happen only inside My English Tutor. We never move conversations to personal phone numbers or outside apps.</p></div>
+        <div class="safety-item"><h4>Recorded, reviewable sessions</h4><p>Lessons can be recorded for quality and safety review by our team.</p></div>
+        <div class="safety-item"><h4>Moderated messaging</h4><p>All messages are screened for respectful, on-topic conversation.</p></div>
+        <div class="safety-item"><h4>Easy reporting</h4><p>Anyone can flag a concern in one tap, and our team responds quickly.</p></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="flogo">My English Tutor</div>
+        <p style="margin-top:12px; font-size:.88rem;">Connecting English speakers with students across the world, one free conversation at a time.</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="volunteer.html">Volunteer</a></li>
+          <li><a href="student.html">Students</a></li>
+          <li><a href="dashboard.html">Dashboard preview</a></li>
+          <li><a href="safety.html">Trust &amp; safety</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Organization</h5>
+        <ul>
+          <li><a href="about.html">About us</a></li>
+          <li><a href="why-join.html">Why join</a></li>
+          <li><a href="stories.html">Sample stories</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 My English Tutor. All rights reserved.</span>
+      <span>Made with volunteers, for volunteers.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// My English Tutor — shared behavior. Every block checks that its
+// elements exist first, so this one file can be included on every
+// page without throwing errors on pages that don't have that widget.
+
+// Tabs: How it works (student / volunteer steps)
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.steps').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.getElementById('steps-'+btn.dataset.tab);
+    if(target) target.classList.add('active');
+  });
+});
+
+// Tabs: Dashboard preview (student / volunteer view)
+document.querySelectorAll('.dash-tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.dash-body').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.getElementById('dash-'+btn.dataset.dash);
+    if(target) target.classList.add('active');
+  });
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item=>{
+  const q = item.querySelector('.faq-q');
+  const a = item.querySelector('.faq-a');
+  if(!q || !a) return;
+  if(item.classList.contains('open')){ a.style.maxHeight = a.scrollHeight + 'px'; }
+  q.addEventListener('click', ()=>{
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>{
+      i.classList.remove('open');
+      const ia = i.querySelector('.faq-a');
+      if(ia) ia.style.maxHeight = 0;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      a.style.maxHeight = a.scrollHeight + 'px';
+    }
+  });
+});
+
+// Hero example-hours counter (home page only, clearly labeled as an example)
+(function(){
+  const el = document.getElementById('hoursCount');
+  if(!el) return;
+  let n = 0; const target = 6;
+  const step = ()=>{
+    n += 1;
+    el.textContent = n;
+    if(n < target) setTimeout(step, 220);
+  };
+  setTimeout(step, 400);
+})();
+
+// Contact form: opens a pre-filled email to the organization address
+(function(){
+  const form = document.getElementById('contactForm');
+  if(!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('cf-name').value;
+    const email = document.getElementById('cf-email').value;
+    const msg = document.getElementById('cf-msg').value;
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
+    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Message from My English Tutor site&body=${body}`;
+  });
+})();
+
+</script>
+</body>
+</html>
