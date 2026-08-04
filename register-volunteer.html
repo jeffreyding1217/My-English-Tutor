@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard preview — Bridge to China</title>
+<title>Volunteer registration — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -400,51 +400,34 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-  <section style="background:var(--paper-alt);">
+  <section>
     <div class="wrap">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Dashboard preview</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Volunteer registration</div>
       <div class="head-row center">
-        <p class="eyebrow">Your dashboard</p>
-        <h1>Everything for your next session, in one view.</h1>
-        <p class="lede">This is a design preview of the dashboard, not a live account. The names and numbers shown are examples.</p>
+        <p class="eyebrow">Volunteer registration</p>
+        <h1>Tell us a bit about yourself.</h1>
+        <p class="lede">Just the basics for now. Once we launch, this becomes your full profile, availability calendar, and orientation sign-up.</p>
       </div>
-      <div class="dash-shell">
-        <div class="dash-top">
-          <div class="dash-tabs">
-            <button class="dash-tab active" data-dash="student">Student view</button>
-            <button class="dash-tab" data-dash="volunteer">Volunteer view</button>
-          </div>
-          <span class="mock-tag">Preview</span>
-        </div>
 
-        <div class="dash-body active" id="dash-student">
-          <div>
-            <div class="dash-subhead">Upcoming lessons</div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · 08:00</span></div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · next week</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Lesson history</div>
-            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">example entry</span></div>
-          </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Current level</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Lessons completed</div></div>
-          </div>
+      <div class="auth-wrap">
+        <div class="auth-shell">
+          <form class="contact-form" id="volunteerForm">
+            <div class="field"><label for="v-name">Full name</label><input id="v-name" type="text" placeholder="Your full name" required></div>
+            <div class="field"><label for="v-email">Email</label><input id="v-email" type="email" placeholder="you@example.com" required></div>
+            <div class="field-row2">
+              <div class="field"><label for="v-country">Country</label><input id="v-country" type="text" placeholder="e.g. United States"></div>
+              <div class="field"><label for="v-tz">Time zone</label><input id="v-tz" type="text" placeholder="e.g. GMT-5"></div>
+            </div>
+            <div class="field"><label for="v-lang">Languages spoken</label><input id="v-lang" type="text" placeholder="e.g. English, Spanish"></div>
+            <div class="field"><label for="v-avail">Weekly availability</label><input id="v-avail" type="text" placeholder="e.g. Weekday evenings, Saturday mornings"></div>
+            <div class="field"><label for="v-exp">Teaching or tutoring experience (optional)</label><textarea id="v-exp" rows="3" placeholder="Any relevant experience"></textarea></div>
+            <div class="field"><label for="v-bio">Short bio</label><textarea id="v-bio" rows="3" placeholder="A few sentences about yourself"></textarea></div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
+            <p class="form-note">This sends your information to our team at myenglishtutor1217@gmail.com. Bridge to China hasn't launched yet, so we'll follow up by email rather than creating an account automatically.</p>
+            <div class="form-msg" id="volunteerMsg">Thanks! Your information has been prepared to send. Complete the email that just opened to finish your application.</div>
+          </form>
         </div>
-
-        <div class="dash-body" id="dash-volunteer">
-          <div>
-            <div class="dash-subhead">Lesson requests</div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 12</span><span class="when">Accept · SAT 08:00</span></div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 15</span><span class="when">Accept · SUN 09:00</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Recent lesson reports</div>
-            <div class="lesson-row"><span class="who">Submitted for Jeffrey Ding</span><span class="when">Approved</span></div>
-          </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Total volunteer hours</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Students taught</div></div>
-            <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center;">Download certificate</a>
-          </div>
-        </div>
+        <p class="auth-switch">Already applied? <a href="login.html">Log in</a></p>
       </div>
     </div>
   </section>

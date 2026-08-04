@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard preview — Bridge to China</title>
+<title>Log in — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -400,50 +400,53 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-  <section style="background:var(--paper-alt);">
+  <section>
     <div class="wrap">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Dashboard preview</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Log in</div>
       <div class="head-row center">
-        <p class="eyebrow">Your dashboard</p>
-        <h1>Everything for your next session, in one view.</h1>
-        <p class="lede">This is a design preview of the dashboard, not a live account. The names and numbers shown are examples.</p>
+        <p class="eyebrow">Log in</p>
+        <h1>Welcome back.</h1>
       </div>
-      <div class="dash-shell">
-        <div class="dash-top">
-          <div class="dash-tabs">
-            <button class="dash-tab active" data-dash="student">Student view</button>
-            <button class="dash-tab" data-dash="volunteer">Volunteer view</button>
-          </div>
-          <span class="mock-tag">Preview</span>
-        </div>
 
-        <div class="dash-body active" id="dash-student">
-          <div>
-            <div class="dash-subhead">Upcoming lessons</div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · 08:00</span></div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · next week</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Lesson history</div>
-            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">example entry</span></div>
+      <div class="auth-wrap">
+        <div class="auth-shell">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-auth="volunteer">Volunteer</button>
+            <button class="auth-tab" data-auth="student">Student</button>
+            <button class="auth-tab" data-auth="parent">Parent / Guardian</button>
           </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Current level</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Lessons completed</div></div>
-          </div>
-        </div>
 
-        <div class="dash-body" id="dash-volunteer">
-          <div>
-            <div class="dash-subhead">Lesson requests</div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 12</span><span class="when">Accept · SAT 08:00</span></div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 15</span><span class="when">Accept · SUN 09:00</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Recent lesson reports</div>
-            <div class="lesson-row"><span class="who">Submitted for Jeffrey Ding</span><span class="when">Approved</span></div>
+          <div class="auth-panel active" id="auth-volunteer">
+            <form class="contact-form auth-form" data-role="Volunteer">
+              <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+              <div class="field"><label>Password</label><input type="password" placeholder="Your password"></div>
+              <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
+              <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Log in as Volunteer</button>
+            </form>
+            <p class="auth-switch">New here? <a href="register-volunteer.html">Apply to volunteer</a></p>
           </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Total volunteer hours</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Students taught</div></div>
-            <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center;">Download certificate</a>
+
+          <div class="auth-panel" id="auth-student">
+            <form class="contact-form auth-form" data-role="Student">
+              <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+              <div class="field"><label>Password</label><input type="password" placeholder="Your password"></div>
+              <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
+              <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center; margin-top:10px;">Log in as Student</button>
+            </form>
+            <p class="auth-switch">New here? <a href="register-student.html">Register as a student</a></p>
           </div>
+
+          <div class="auth-panel" id="auth-parent">
+            <form class="contact-form auth-form" data-role="Parent or guardian">
+              <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
+              <div class="field"><label>Password</label><input type="password" placeholder="Your password"></div>
+              <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
+              <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Log in as Parent/Guardian</button>
+            </form>
+            <p class="auth-switch">Parents and guardians can view schedules and messages for a registered student. New here? <a href="register-student.html">Register your student</a></p>
+          </div>
+
+          <div class="form-msg" id="loginMsg">Bridge to China hasn't launched yet, so accounts aren't active. This is a preview of what logging in will look like.</div>
         </div>
       </div>
     </div>

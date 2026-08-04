@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard preview — Bridge to China</title>
+<title>Student registration — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -400,51 +400,51 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-  <section style="background:var(--paper-alt);">
+  <section>
     <div class="wrap">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Dashboard preview</div>
+      <div class="breadcrumb"><a href="index.html">Home</a> / Student registration</div>
       <div class="head-row center">
-        <p class="eyebrow">Your dashboard</p>
-        <h1>Everything for your next session, in one view.</h1>
-        <p class="lede">This is a design preview of the dashboard, not a live account. The names and numbers shown are examples.</p>
+        <p class="eyebrow">Student registration</p>
+        <h1>Tell us how you'd like to learn.</h1>
+        <p class="lede">A parent or guardian should fill this out together with any student under 18.</p>
       </div>
-      <div class="dash-shell">
-        <div class="dash-top">
-          <div class="dash-tabs">
-            <button class="dash-tab active" data-dash="student">Student view</button>
-            <button class="dash-tab" data-dash="volunteer">Volunteer view</button>
-          </div>
-          <span class="mock-tag">Preview</span>
-        </div>
 
-        <div class="dash-body active" id="dash-student">
-          <div>
-            <div class="dash-subhead">Upcoming lessons</div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · 08:00</span></div>
-            <div class="lesson-row"><span class="who">Session with Jeffrey Ding</span><span class="when">SAT · next week</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Lesson history</div>
-            <div class="lesson-row"><span class="who">Travel &amp; small talk</span><span class="when">example entry</span></div>
-          </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Current level</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Lessons completed</div></div>
-          </div>
+      <div class="auth-wrap">
+        <div class="auth-shell">
+          <form class="contact-form" id="studentForm">
+            <div class="field"><label for="s-name">Student's name</label><input id="s-name" type="text" placeholder="Student's full name" required></div>
+            <div class="field-row2">
+              <div class="field"><label for="s-page">Age group</label>
+                <select id="s-page">
+                  <option>Under 13</option>
+                  <option>13–17</option>
+                  <option>18 and over</option>
+                </select>
+              </div>
+              <div class="field"><label for="s-level">English level</label>
+                <select id="s-level">
+                  <option>Beginner</option>
+                  <option>Intermediate</option>
+                  <option>Advanced</option>
+                </select>
+              </div>
+            </div>
+            <fieldset class="form-fieldset">
+              <legend>Parent or guardian (required for students under 18)</legend>
+              <div class="field-row2">
+                <div class="field"><label for="s-pname">Parent/guardian name</label><input id="s-pname" type="text" placeholder="Full name"></div>
+                <div class="field"><label for="s-pemail">Parent/guardian email</label><input id="s-pemail" type="email" placeholder="you@example.com"></div>
+              </div>
+            </fieldset>
+            <div class="field"><label for="s-tz">Time zone</label><input id="s-tz" type="text" placeholder="e.g. GMT+8"></div>
+            <div class="field"><label for="s-goal">Learning goals</label><textarea id="s-goal" rows="3" placeholder="What would you like to work on?"></textarea></div>
+            <div class="field"><label for="s-time">Preferred lesson times</label><input id="s-time" type="text" placeholder="e.g. Saturdays, 8:00 AM"></div>
+            <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center;">Submit registration</button>
+            <p class="form-note">This sends your information to our team at myenglishtutor1217@gmail.com. Bridge to China hasn't launched yet, so we'll follow up by email rather than creating an account automatically.</p>
+            <div class="form-msg" id="studentMsg">Thanks! Your information has been prepared to send. Complete the email that just opened to finish registration.</div>
+          </form>
         </div>
-
-        <div class="dash-body" id="dash-volunteer">
-          <div>
-            <div class="dash-subhead">Lesson requests</div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 12</span><span class="when">Accept · SAT 08:00</span></div>
-            <div class="lesson-row"><span class="who">Jeffrey Ding, age 15</span><span class="when">Accept · SUN 09:00</span></div>
-            <div class="dash-subhead" style="margin-top:22px;">Recent lesson reports</div>
-            <div class="lesson-row"><span class="who">Submitted for Jeffrey Ding</span><span class="when">Approved</span></div>
-          </div>
-          <div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Total volunteer hours</div></div>
-            <div class="side-card"><div class="big">N/A</div><div class="lab">Students taught</div></div>
-            <a href="#" class="btn btn-ghost" style="width:100%; justify-content:center;">Download certificate</a>
-          </div>
-        </div>
+        <p class="auth-switch">Already registered? <a href="login.html">Log in</a></p>
       </div>
     </div>
   </section>
