@@ -380,6 +380,36 @@ footer{ background:var(--ink); color:#B9C6CC; padding:60px 0 28px;}
 footer h5{ color:#fff; font-size:.76rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px;}
 footer .flogo{ font-family:'Fraunces',serif; color:#fff; font-size:1.2rem; font-weight:600; font-variation-settings:"opsz" 40,"WONK" 0;}
 footer .foot-tagline{ font-family:'Inter',sans-serif; color:#E4EAEA; font-size:.92rem; margin-top:12px; max-width:32ch;}
+/* ---------- Admin dashboard ---------- */
+.admin-header{ background:var(--ink); color:#fff; padding:18px 0;}
+.admin-header .wrap{ display:flex; justify-content:space-between; align-items:center;}
+.admin-header .flogo{ font-family:'Fraunces',serif; font-size:1.1rem; font-weight:600; color:#fff;}
+.admin-header a.back{ color:#C9D9E2; font-size:.86rem; font-weight:600;}
+.admin-gate{ max-width:380px; margin:80px auto; text-align:center;}
+.admin-gate input{ width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 14px; font-size:.95rem; margin:16px 0; text-align:center;}
+.admin-toolbar{ display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center; margin-bottom:22px;}
+.admin-tabgroup{ display:flex; gap:6px; background:var(--paper-alt); padding:5px; border-radius:999px;}
+.admin-tabgroup button{ border:none; background:transparent; padding:8px 16px; border-radius:999px; font-weight:600; font-size:.82rem; color:var(--ink-soft);}
+.admin-tabgroup button.active{ background:var(--card); color:var(--blue); box-shadow:0 4px 12px -6px rgba(18,35,43,0.25);}
+.admin-empty{ text-align:center; padding:60px 20px; color:var(--ink-soft);}
+.admin-card{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:14px;}
+.admin-card .top-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
+.admin-card .summary{ font-weight:700; font-size:.98rem;}
+.admin-card .meta{ font-size:.76rem; color:var(--ink-soft); margin-top:2px;}
+.badge{ font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; padding:5px 10px; border-radius:999px; white-space:nowrap;}
+.badge.Pending{ background:#FFF4E0; color:#A6690A;}
+.badge.Approved{ background:var(--teal-soft); color:var(--teal);}
+.badge.Denied{ background:#FCEAEA; color:#B3261E;}
+.admin-card details{ margin-top:12px;}
+.admin-card summary{ cursor:pointer; font-size:.84rem; font-weight:600; color:var(--blue);}
+.admin-card .detail-grid{ margin-top:10px; display:grid; grid-template-columns:160px 1fr; gap:6px 14px; font-size:.86rem;}
+.admin-card .detail-grid dt{ color:var(--ink-soft); font-weight:600;}
+.admin-card .detail-grid dd{ margin:0;}
+.admin-card .actions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+.admin-card .actions button{ border:1.5px solid var(--line); background:var(--card); border-radius:8px; padding:7px 14px; font-size:.82rem; font-weight:600; color:var(--ink-soft);}
+.admin-card .actions button.act-approve:hover{ border-color:var(--teal); color:var(--teal);}
+.admin-card .actions button.act-deny:hover{ border-color:#B3261E; color:#B3261E;}
+.admin-card .actions button.act-pending:hover{ border-color:var(--amber); color:#A6690A;}
 footer ul{ list-style:none; margin:0; padding:0;}
 footer li{ margin-bottom:9px; font-size:.88rem;}
 footer a:hover{ color:#fff;}
@@ -520,6 +550,22 @@ footer a:hover{ color:#fff;}
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkjwokvg";
 
+// Paste the Web app URL from APPS_SCRIPT_SETUP.md here once you've deployed it.
+const ADMIN_ENDPOINT = "https://script.google.com/macros/s/AKfycbzbGCyc6xTRNd4mtGwmjweWKg98iC4qzkZY61IvWIw7V9tQTAUsfrScFmOqVFJjJVa-bA/exec";
+
+// Logs a submission to the admin dashboard's Google Sheet. Fire-and-forget:
+// it never blocks or fails the actual form submission, since Formspree
+// (the email) is the source of truth for whether the person's application
+// went through.
+function logToAdminSheet(type, summary, details){
+  if(!ADMIN_ENDPOINT || ADMIN_ENDPOINT.indexOf('PASTE_YOUR') === 0) return;
+  fetch(ADMIN_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids a CORS preflight
+    body: JSON.stringify({ type, summary, details })
+  }).catch(() => { /* best-effort only */ });
+}
+
 // Generic Formspree submit helper: posts the form's own data, shows a
 // success or error message, and resets the form on success.
 function submitToFormspree(form, successEl, errorEl){
@@ -604,6 +650,10 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   const errorEl = document.getElementById('contactMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    const val = id => (document.getElementById(id) || {}).value || '';
+    logToAdminSheet('Contact message', val('cf-name') || val('cf-email'), {
+      name: val('cf-name'), email: val('cf-email'), message: val('cf-msg')
+    });
     submitToFormspree(form, successEl, errorEl);
   });
 })();
@@ -639,13 +689,25 @@ document.querySelectorAll('.faq-item').forEach(item=>{
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    const val = id => (document.getElementById(id) || {}).value || '';
     // Roll the checked availability cells into one readable hidden field
+    let avail = 'None selected';
     if(availHidden){
-      const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
+      avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
         .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
         .join(', ') || 'None selected';
       availHidden.value = avail;
     }
+    const isMinor = adultNo && adultNo.checked;
+    logToAdminSheet('Volunteer', `${val('v-name')} <${val('v-email')}>`, {
+      name: val('v-name'), email: val('v-email'), phone: val('v-phone'),
+      city_state: val('v-city'), time_zone: val('v-tz'),
+      is_minor: isMinor ? 'Yes' : 'No',
+      parent_name: val('v-pname'), parent_email: val('v-pemail'),
+      bio: val('v-bio'), experience: val('v-exp'),
+      english_level: val('v-elevel'), chinese_level: val('v-clevel'),
+      other_languages: val('v-lang'), availability: avail
+    });
     submitToFormspree(form, successEl, errorEl);
   });
 })();
@@ -658,6 +720,12 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   const errorEl = document.getElementById('studentMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    const val = id => (document.getElementById(id) || {}).value || '';
+    logToAdminSheet('Student', `${val('s-name')} (guardian: ${val('s-pname') || 'n/a'})`, {
+      student_name: val('s-name'), age_group: val('s-page'), english_level: val('s-level'),
+      parent_name: val('s-pname'), parent_email: val('s-pemail'),
+      time_zone: val('s-tz'), learning_goals: val('s-goal'), preferred_times: val('s-time')
+    });
     submitToFormspree(form, successEl, errorEl);
   });
 })();
@@ -680,6 +748,160 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if(msg) msg.classList.add('show');
     });
   });
+})();
+
+// Admin dashboard: passcode gate + submissions list + approve/deny
+(function(){
+  const app = document.getElementById('adminApp');
+  if(!app) return;
+
+  const gate = document.getElementById('adminGate');
+  const main = document.getElementById('adminMain');
+  const gateForm = document.getElementById('adminGateForm');
+  const gateInput = document.getElementById('adminGateInput');
+  const gateError = document.getElementById('adminGateError');
+  const list = document.getElementById('adminList');
+  const empty = document.getElementById('adminEmpty');
+  const refreshBtn = document.getElementById('adminRefresh');
+
+  let token = sessionStorage.getItem('btc_admin_token') || '';
+  let submissions = [];
+  let statusFilter = 'All';
+  let typeFilter = 'All';
+
+  function setupNotConfigured(){
+    gate.innerHTML = '<div class="callout"><h4>Admin dashboard isn\\'t connected yet</h4>' +
+      '<p>Set ADMIN_ENDPOINT at the top of script.js to your deployed Apps Script URL. See APPS_SCRIPT_SETUP.md for step-by-step instructions.</p></div>';
+    gate.style.display = 'block';
+    main.style.display = 'none';
+  }
+
+  function showGate(msg){
+    gate.style.display = 'block';
+    main.style.display = 'none';
+    if(gateError){ gateError.textContent = msg || ''; gateError.style.display = msg ? 'block' : 'none'; }
+  }
+
+  function showMain(){
+    gate.style.display = 'none';
+    main.style.display = 'block';
+  }
+
+  function fetchSubmissions(){
+    fetch(`${ADMIN_ENDPOINT}?token=${encodeURIComponent(token)}`)
+      .then(r => r.json())
+      .then(data => {
+        if(!data.ok){
+          sessionStorage.removeItem('btc_admin_token');
+          showGate('Incorrect passcode.');
+          return;
+        }
+        submissions = data.submissions || [];
+        showMain();
+        render();
+      })
+      .catch(() => showGate('Could not reach the admin backend. Check your connection and ADMIN_ENDPOINT.'));
+  }
+
+  function render(){
+    const filtered = submissions.filter(s =>
+      (typeFilter === 'All' || s.type === typeFilter) &&
+      (statusFilter === 'All' || s.status === statusFilter)
+    );
+    list.innerHTML = '';
+    empty.style.display = filtered.length ? 'none' : 'block';
+    filtered.forEach(s => list.appendChild(renderCard(s)));
+  }
+
+  function renderCard(s){
+    const card = document.createElement('div');
+    card.className = 'admin-card';
+    let details = {};
+    try { details = JSON.parse(s.details || '{}'); } catch(e){}
+    const detailRows = Object.keys(details).map(k =>
+      `<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(String(details[k] || '—'))}</dd>`
+    ).join('');
+    const when = s.timestamp ? new Date(s.timestamp).toLocaleString() : '';
+
+    card.innerHTML = `
+      <div class="top-row">
+        <div>
+          <div class="summary">${escapeHtml(s.summary || 'Untitled')}</div>
+          <div class="meta">${escapeHtml(s.type)} &middot; ${escapeHtml(when)}</div>
+        </div>
+        <span class="badge ${escapeHtml(s.status)}">${escapeHtml(s.status)}</span>
+      </div>
+      <details>
+        <summary>View details</summary>
+        <dl class="detail-grid">${detailRows}</dl>
+      </details>
+      <div class="actions">
+        <button class="act-approve">Approve</button>
+        <button class="act-deny">Deny</button>
+        <button class="act-pending">Mark pending</button>
+      </div>
+    `;
+    card.querySelector('.act-approve').addEventListener('click', () => updateStatus(s.id, 'Approved', card));
+    card.querySelector('.act-deny').addEventListener('click', () => updateStatus(s.id, 'Denied', card));
+    card.querySelector('.act-pending').addEventListener('click', () => updateStatus(s.id, 'Pending', card));
+    return card;
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function updateStatus(id, status, card){
+    fetch(ADMIN_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'update', id, status, token })
+    }).then(r => r.json()).then(data => {
+      if(data.ok){
+        const sub = submissions.find(s => String(s.id) === String(id));
+        if(sub) sub.status = status;
+        const badge = card.querySelector('.badge');
+        if(badge){ badge.textContent = status; badge.className = `badge ${status}`; }
+      }
+    });
+  }
+
+  document.querySelectorAll('.admin-tabgroup[data-group="status"] button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.admin-tabgroup[data-group="status"] button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      statusFilter = btn.dataset.value;
+      render();
+    });
+  });
+  document.querySelectorAll('.admin-tabgroup[data-group="type"] button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.admin-tabgroup[data-group="type"] button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      typeFilter = btn.dataset.value;
+      render();
+    });
+  });
+  if(refreshBtn) refreshBtn.addEventListener('click', fetchSubmissions);
+
+  if(gateForm){
+    gateForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      token = gateInput.value.trim();
+      sessionStorage.setItem('btc_admin_token', token);
+      fetchSubmissions();
+    });
+  }
+
+  if(!ADMIN_ENDPOINT || ADMIN_ENDPOINT.indexOf('PASTE_YOUR') === 0){
+    setupNotConfigured();
+  } else if(token){
+    fetchSubmissions();
+  } else {
+    showGate();
+  }
 })();
 
 </script>

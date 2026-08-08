@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — Bridge to China</title>
+<title>Admin — Bridge to China</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -419,120 +420,57 @@ footer a:hover{ color:#fff;}
 </head>
 <body>
 
-<header>
-  <nav class="nav">
-    <a href="index.html" class="logo">
-      <svg class="logo-mark" viewBox="0 0 32 32" fill="none">
-        <path d="M4 20c4-8 8-8 12 0s8 8 12 0" stroke="#1D5C8A" stroke-width="2.6" stroke-linecap="round"/>
-        <circle cx="4" cy="20" r="2.4" fill="#2E9E7C"/>
-        <circle cx="28" cy="20" r="2.4" fill="#E8A33D"/>
-      </svg>
-      Bridge to China
-    </a>
-    <div class="nav-links">
-            <a href="how-it-works.html">How it works</a>
-      <a href="why-join.html">Why join</a>
-      <a href="stories.html">Stories</a>
-      <a href="safety.html">Trust & safety</a>
-      <a href="faq.html">FAQ</a>
-      <a href="contact.html" class="current">Contact</a>
-    </div>
-    <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
-      <a href="register-volunteer.html" class="btn btn-ghost">Become a Volunteer</a>
-      <a href="register-student.html" class="btn btn-primary">Register as Student</a>
-    </div>
-  </nav>
-</header>
+<div class="admin-header">
+  <div class="wrap">
+    <span class="flogo">Bridge to China — Admin</span>
+    <a href="index.html" class="back">&larr; Back to site</a>
+  </div>
+</div>
 
-<main id="top">
-
+<main id="adminApp">
   <section>
     <div class="wrap">
-      <div class="breadcrumb"><a href="index.html">Home</a> / Contact</div>
 
-      <div class="cta-band" style="margin-bottom:96px;">
-        <h1 style="color:#fff;">Ready to build a bridge of your own?</h1>
-        <p>Registration takes about ten minutes. It only takes one conversation to see why it matters.</p>
-        <div class="hero-cta">
-          <a href="volunteer.html" class="btn" style="background:#fff; color:var(--blue);">Become a Volunteer</a>
-          <a href="student.html" class="btn btn-ghost">Register as a Student</a>
-        </div>
-      </div>
-
-      <div class="head-row">
-        <p class="eyebrow">Contact</p>
-        <h2>Questions? We're here.</h2>
-      </div>
-      <div class="contact-grid">
-        <form class="contact-form" id="contactForm">
-          <input type="hidden" name="_subject" value="Message from Bridge to China site">
-          <div class="field"><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" placeholder="Your name"></div>
-          <div class="field"><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" placeholder="you@example.com"></div>
-          <div class="field"><label for="cf-msg">Message</label><textarea id="cf-msg" name="message" rows="4" placeholder="How can we help?"></textarea></div>
-          <button type="submit" class="btn btn-primary">Send message</button>
-          <p class="form-note">Sent directly to our team, no email app required.</p>
-          <div class="form-msg" id="contactMsg">Thanks! Your message has been sent.</div>
-          <div class="form-msg error" id="contactMsgError">Something went wrong sending your message. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
+      <div id="adminGate" class="admin-gate">
+        <p class="eyebrow" style="text-align:center;">Admin access</p>
+        <h1>Enter the admin passcode</h1>
+        <form id="adminGateForm">
+          <input id="adminGateInput" type="password" placeholder="Passcode" autocomplete="off">
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Enter</button>
         </form>
-        <dl class="contact-info">
-          <dt>General email</dt><dd>jeffreyding1217@gmail.com</dd>
-          <dt>Organization</dt><dd>Bridge to China, a volunteer-powered nonprofit</dd>
-          <dt>Follow along</dt>
-          <div class="social-row">
-            <a href="#" aria-label="Instagram">IG</a>
-            <a href="#" aria-label="Facebook">FB</a>
-            <a href="#" aria-label="LinkedIn">IN</a>
-          </div>
-        </dl>
+        <p class="form-note error" id="adminGateError" style="display:none; color:#B3261E;"></p>
       </div>
+
+      <div id="adminMain" style="display:none;">
+        <div class="head-row">
+          <p class="eyebrow">Admin dashboard</p>
+          <h1>Applications</h1>
+          <p class="lede">Review volunteer applications, student registrations, and contact messages, and sign off on each one.</p>
+        </div>
+
+        <div class="admin-toolbar">
+          <div class="admin-tabgroup" data-group="type">
+            <button class="active" data-value="All">All types</button>
+            <button data-value="Volunteer">Volunteer</button>
+            <button data-value="Student">Student</button>
+            <button data-value="Contact message">Contact</button>
+          </div>
+          <div class="admin-tabgroup" data-group="status">
+            <button class="active" data-value="All">All statuses</button>
+            <button data-value="Pending">Pending</button>
+            <button data-value="Approved">Approved</button>
+            <button data-value="Denied">Denied</button>
+          </div>
+          <button id="adminRefresh" class="btn btn-ghost btn-sm">Refresh</button>
+        </div>
+
+        <div id="adminList"></div>
+        <div id="adminEmpty" class="admin-empty" style="display:none;">No applications match this filter yet.</div>
+      </div>
+
     </div>
   </section>
-
 </main>
-
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="flogo">Bridge to China</div>
-        <p class="foot-tagline">Connecting English speakers with students across the world, one free conversation at a time.</p>
-      </div>
-      <div>
-        <h5>Platform</h5>
-        <ul>
-          <li><a href="how-it-works.html">How it works</a></li>
-          <li><a href="volunteer.html">Volunteer</a></li>
-          <li><a href="student.html">Students</a></li>
-          <li><a href="login.html">Log in</a></li>
-          <li><a href="dashboard.html">Dashboard preview</a></li>
-          <li><a href="safety.html">Trust &amp; safety</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Organization</h5>
-        <ul>
-          <li><a href="index.html">Our story</a></li>
-          <li><a href="why-join.html">Why join</a></li>
-          <li><a href="stories.html">Sample stories</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Legal</h5>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot-bottom">
-      <span>&copy; 2026 Bridge to China. All rights reserved.</span>
-      <span>Made with volunteers, for volunteers.</span>
-    </div>
-  </div>
-</footer>
 
 <script>
 // Bridge to China — shared behavior. Every block checks that its
