@@ -332,6 +332,7 @@ header{
 .form-note{ font-size:.78rem; color:var(--ink-soft); margin-top:10px;}
 .form-msg{ display:none; margin-top:16px; padding:14px 16px; border-radius:10px; background:var(--teal-soft); color:var(--teal); font-size:.88rem; font-weight:600;}
 .form-msg.show{ display:block;}
+.form-msg.error{ background:#FCEAEA; color:#B3261E;}
 .form-fieldset{ border:1px solid var(--line); border-radius:12px; padding:20px 20px 4px; margin:0 0 24px; transition:border-color .15s ease, background .15s ease;}
 .form-fieldset legend{ font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--teal); padding:0 6px;}
 .form-fieldset .fieldset-note{ font-size:.8rem; color:var(--ink-soft); margin:-8px 0 16px;}
@@ -428,15 +429,16 @@ footer a:hover{ color:#fff;}
       <div class="auth-wrap" style="max-width:640px;">
         <div class="auth-shell">
           <form class="contact-form" id="volunteerForm">
+            <input type="hidden" name="_subject" value="Volunteer application - Bridge to China">
 
             <fieldset class="form-fieldset">
               <legend>Your information</legend>
-              <div class="field"><label for="v-name">Full name</label><input id="v-name" type="text" placeholder="Your full name" required></div>
-              <div class="field"><label for="v-email">Email</label><input id="v-email" type="email" placeholder="you@example.com" required></div>
-              <div class="field"><label for="v-phone">Phone number (optional)</label><input id="v-phone" type="tel" placeholder="(555) 555-5555"></div>
+              <div class="field"><label for="v-name">Full name</label><input id="v-name" name="name" type="text" placeholder="Your full name" required></div>
+              <div class="field"><label for="v-email">Email</label><input id="v-email" name="email" type="email" placeholder="you@example.com" required></div>
+              <div class="field"><label for="v-phone">Phone number (optional)</label><input id="v-phone" name="phone" type="tel" placeholder="(555) 555-5555"></div>
               <div class="field-row2">
-                <div class="field"><label for="v-city">City &amp; state</label><input id="v-city" type="text" placeholder="e.g. Austin, TX"></div>
-                <div class="field"><label for="v-tz">Time zone</label><input id="v-tz" type="text" placeholder="e.g. GMT-5"></div>
+                <div class="field"><label for="v-city">City &amp; state</label><input id="v-city" name="city_state" type="text" placeholder="e.g. Austin, TX"></div>
+                <div class="field"><label for="v-tz">Time zone</label><input id="v-tz" name="time_zone" type="text" placeholder="e.g. GMT-5"></div>
               </div>
             </fieldset>
 
@@ -452,18 +454,18 @@ footer a:hover{ color:#fff;}
               <legend>Parent / guardian information</legend>
               <p class="fieldset-note" id="v-parent-note">Required only if you're under 18.</p>
               <div class="field-row2">
-                <div class="field"><label for="v-pname">Parent/guardian name</label><input id="v-pname" type="text" placeholder="Full name"></div>
-                <div class="field"><label for="v-pemail">Parent/guardian email</label><input id="v-pemail" type="email" placeholder="you@example.com"></div>
+                <div class="field"><label for="v-pname">Parent/guardian name</label><input id="v-pname" name="parent_name" type="text" placeholder="Full name"></div>
+                <div class="field"><label for="v-pemail">Parent/guardian email</label><input id="v-pemail" name="parent_email" type="email" placeholder="you@example.com"></div>
               </div>
             </fieldset>
 
             <fieldset class="form-fieldset">
               <legend>About you</legend>
-              <div class="field"><label for="v-bio">Short bio</label><textarea id="v-bio" rows="3" placeholder="A few sentences about yourself"></textarea></div>
-              <div class="field"><label for="v-exp">Teaching or tutoring experience (optional)</label><textarea id="v-exp" rows="3" placeholder="Any relevant experience"></textarea></div>
+              <div class="field"><label for="v-bio">Short bio</label><textarea id="v-bio" name="bio" rows="3" placeholder="A few sentences about yourself"></textarea></div>
+              <div class="field"><label for="v-exp">Teaching or tutoring experience (optional)</label><textarea id="v-exp" name="experience" rows="3" placeholder="Any relevant experience"></textarea></div>
               <div class="field-row2">
                 <div class="field"><label for="v-elevel">English level</label>
-                  <select id="v-elevel">
+                  <select id="v-elevel" name="english_level">
                     <option>Native</option>
                     <option>Fluent</option>
                     <option>Advanced</option>
@@ -471,7 +473,7 @@ footer a:hover{ color:#fff;}
                   </select>
                 </div>
                 <div class="field"><label for="v-clevel">Chinese level</label>
-                  <select id="v-clevel">
+                  <select id="v-clevel" name="chinese_level">
                     <option>None</option>
                     <option>Beginner</option>
                     <option>Intermediate</option>
@@ -480,7 +482,7 @@ footer a:hover{ color:#fff;}
                   </select>
                 </div>
               </div>
-              <div class="field"><label for="v-lang">Other languages spoken (optional)</label><input id="v-lang" type="text" placeholder="e.g. Spanish, French"></div>
+              <div class="field"><label for="v-lang">Other languages spoken (optional)</label><input id="v-lang" name="other_languages" type="text" placeholder="e.g. Spanish, French"></div>
             </fieldset>
 
             <fieldset class="form-fieldset">
@@ -511,6 +513,7 @@ footer a:hover{ color:#fff;}
                 </table>
               </div>
               <p class="avail-note">Availability can always be updated later from your dashboard.</p>
+              <input type="hidden" name="availability" id="v-availability-hidden">
             </fieldset>
 
             <div class="callout">
@@ -519,8 +522,9 @@ footer a:hover{ color:#fff;}
             </div>
 
             <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
-            <p class="form-note">This sends your information to our team at myenglishtutor1217@gmail.com. Bridge to China hasn't launched yet, so we'll follow up by email, including with a link to the assessment, rather than creating an account automatically.</p>
-            <div class="form-msg" id="volunteerMsg">Thanks! Your information has been prepared to send. Complete the email that just opened to finish your application.</div>
+            <p class="form-note">Submitting sends your information directly to our team. Bridge to China hasn't launched yet, so we'll follow up by email, including a link to the assessment, rather than creating an account automatically.</p>
+            <div class="form-msg" id="volunteerMsg">Thanks! Your application has been sent. We'll be in touch by email.</div>
+            <div class="form-msg error" id="volunteerMsgError">Something went wrong sending your application. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
           </form>
         </div>
         <p class="auth-switch">Already applied? <a href="login.html">Log in</a></p>
@@ -574,9 +578,32 @@ footer a:hover{ color:#fff;}
 </footer>
 
 <script>
-// My English Tutor — shared behavior. Every block checks that its
+// Bridge to China — shared behavior. Every block checks that its
 // elements exist first, so this one file can be included on every
 // page without throwing errors on pages that don't have that widget.
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkjwokvg";
+
+// Generic Formspree submit helper: posts the form's own data, shows a
+// success or error message, and resets the form on success.
+function submitToFormspree(form, successEl, errorEl){
+  const data = new FormData(form);
+  if(errorEl) errorEl.classList.remove('show');
+  fetch(FORMSPREE_ENDPOINT, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if(response.ok){
+      if(successEl) successEl.classList.add('show');
+      form.reset();
+    } else {
+      if(errorEl) errorEl.classList.add('show');
+    }
+  }).catch(() => {
+    if(errorEl) errorEl.classList.add('show');
+  });
+}
 
 // Tabs: How it works (student / volunteer steps)
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -633,21 +660,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   setTimeout(step, 400);
 })();
 
-// Contact form: opens a pre-filled email to the organization address
+// Contact form: submits directly to Formspree
 (function(){
   const form = document.getElementById('contactForm');
   if(!form) return;
+  const successEl = document.getElementById('contactMsg');
+  const errorEl = document.getElementById('contactMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const name = document.getElementById('cf-name').value;
-    const email = document.getElementById('cf-email').value;
-    const msg = document.getElementById('cf-msg').value;
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Message from Bridge to China site&body=${body}`;
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 
-// Volunteer registration form: opens a pre-filled email with the application
+// Volunteer registration form: submits directly to Formspree
 (function(){
   const form = document.getElementById('volunteerForm');
   if(!form) return;
@@ -672,35 +697,32 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   if(adultYes) adultYes.addEventListener('change', syncParentSection);
   if(adultNo) adultNo.addEventListener('change', syncParentSection);
 
+  const successEl = document.getElementById('volunteerMsg');
+  const errorEl = document.getElementById('volunteerMsgError');
+  const availHidden = document.getElementById('v-availability-hidden');
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const val = id => (document.getElementById(id) || {}).value || '';
-    const adult = adultNo && adultNo.checked ? 'No' : 'Yes';
-    const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
-      .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
-      .join(', ') || 'None selected';
-    const body = encodeURIComponent(
-      `Name: ${val('v-name')}\nEmail: ${val('v-email')}\nPhone: ${val('v-phone')}\nCity & state: ${val('v-city')}\nTime zone: ${val('v-tz')}\n18 or older: ${adult}\nParent/guardian name: ${val('v-pname')}\nParent/guardian email: ${val('v-pemail')}\nBio: ${val('v-bio')}\nExperience: ${val('v-exp')}\nEnglish level: ${val('v-elevel')}\nChinese level: ${val('v-clevel')}\nOther languages: ${val('v-lang')}\nAvailability: ${avail}`
-    );
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Volunteer application&body=${body}`;
-    const msg = document.getElementById('volunteerMsg');
-    if(msg) msg.classList.add('show');
+    // Roll the checked availability cells into one readable hidden field
+    if(availHidden){
+      const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
+        .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
+        .join(', ') || 'None selected';
+      availHidden.value = avail;
+    }
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 
-// Student registration form: opens a pre-filled email with the registration
+// Student registration form: submits directly to Formspree
 (function(){
   const form = document.getElementById('studentForm');
   if(!form) return;
+  const successEl = document.getElementById('studentMsg');
+  const errorEl = document.getElementById('studentMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const val = id => (document.getElementById(id) || {}).value || '';
-    const body = encodeURIComponent(
-      `Student name: ${val('s-name')}\nAge group: ${val('s-page')}\nEnglish level: ${val('s-level')}\nParent/guardian name: ${val('s-pname')}\nParent/guardian email: ${val('s-pemail')}\nTime zone: ${val('s-tz')}\nLearning goals: ${val('s-goal')}\nPreferred times: ${val('s-time')}`
-    );
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Student registration&body=${body}`;
-    const msg = document.getElementById('studentMsg');
-    if(msg) msg.classList.add('show');
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 

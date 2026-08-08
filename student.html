@@ -332,6 +332,7 @@ header{
 .form-note{ font-size:.78rem; color:var(--ink-soft); margin-top:10px;}
 .form-msg{ display:none; margin-top:16px; padding:14px 16px; border-radius:10px; background:var(--teal-soft); color:var(--teal); font-size:.88rem; font-weight:600;}
 .form-msg.show{ display:block;}
+.form-msg.error{ background:#FCEAEA; color:#B3261E;}
 .form-fieldset{ border:1px solid var(--line); border-radius:12px; padding:20px 20px 4px; margin:0 0 24px; transition:border-color .15s ease, background .15s ease;}
 .form-fieldset legend{ font-size:.78rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--teal); padding:0 6px;}
 .form-fieldset .fieldset-note{ font-size:.8rem; color:var(--ink-soft); margin:-8px 0 16px;}
@@ -492,9 +493,32 @@ footer a:hover{ color:#fff;}
 </footer>
 
 <script>
-// My English Tutor — shared behavior. Every block checks that its
+// Bridge to China — shared behavior. Every block checks that its
 // elements exist first, so this one file can be included on every
 // page without throwing errors on pages that don't have that widget.
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkjwokvg";
+
+// Generic Formspree submit helper: posts the form's own data, shows a
+// success or error message, and resets the form on success.
+function submitToFormspree(form, successEl, errorEl){
+  const data = new FormData(form);
+  if(errorEl) errorEl.classList.remove('show');
+  fetch(FORMSPREE_ENDPOINT, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(response => {
+    if(response.ok){
+      if(successEl) successEl.classList.add('show');
+      form.reset();
+    } else {
+      if(errorEl) errorEl.classList.add('show');
+    }
+  }).catch(() => {
+    if(errorEl) errorEl.classList.add('show');
+  });
+}
 
 // Tabs: How it works (student / volunteer steps)
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -551,21 +575,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   setTimeout(step, 400);
 })();
 
-// Contact form: opens a pre-filled email to the organization address
+// Contact form: submits directly to Formspree
 (function(){
   const form = document.getElementById('contactForm');
   if(!form) return;
+  const successEl = document.getElementById('contactMsg');
+  const errorEl = document.getElementById('contactMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const name = document.getElementById('cf-name').value;
-    const email = document.getElementById('cf-email').value;
-    const msg = document.getElementById('cf-msg').value;
-    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}`);
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Message from Bridge to China site&body=${body}`;
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 
-// Volunteer registration form: opens a pre-filled email with the application
+// Volunteer registration form: submits directly to Formspree
 (function(){
   const form = document.getElementById('volunteerForm');
   if(!form) return;
@@ -590,35 +612,32 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   if(adultYes) adultYes.addEventListener('change', syncParentSection);
   if(adultNo) adultNo.addEventListener('change', syncParentSection);
 
+  const successEl = document.getElementById('volunteerMsg');
+  const errorEl = document.getElementById('volunteerMsgError');
+  const availHidden = document.getElementById('v-availability-hidden');
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const val = id => (document.getElementById(id) || {}).value || '';
-    const adult = adultNo && adultNo.checked ? 'No' : 'Yes';
-    const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
-      .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
-      .join(', ') || 'None selected';
-    const body = encodeURIComponent(
-      `Name: ${val('v-name')}\nEmail: ${val('v-email')}\nPhone: ${val('v-phone')}\nCity & state: ${val('v-city')}\nTime zone: ${val('v-tz')}\n18 or older: ${adult}\nParent/guardian name: ${val('v-pname')}\nParent/guardian email: ${val('v-pemail')}\nBio: ${val('v-bio')}\nExperience: ${val('v-exp')}\nEnglish level: ${val('v-elevel')}\nChinese level: ${val('v-clevel')}\nOther languages: ${val('v-lang')}\nAvailability: ${avail}`
-    );
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Volunteer application&body=${body}`;
-    const msg = document.getElementById('volunteerMsg');
-    if(msg) msg.classList.add('show');
+    // Roll the checked availability cells into one readable hidden field
+    if(availHidden){
+      const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
+        .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
+        .join(', ') || 'None selected';
+      availHidden.value = avail;
+    }
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 
-// Student registration form: opens a pre-filled email with the registration
+// Student registration form: submits directly to Formspree
 (function(){
   const form = document.getElementById('studentForm');
   if(!form) return;
+  const successEl = document.getElementById('studentMsg');
+  const errorEl = document.getElementById('studentMsgError');
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const val = id => (document.getElementById(id) || {}).value || '';
-    const body = encodeURIComponent(
-      `Student name: ${val('s-name')}\nAge group: ${val('s-page')}\nEnglish level: ${val('s-level')}\nParent/guardian name: ${val('s-pname')}\nParent/guardian email: ${val('s-pemail')}\nTime zone: ${val('s-tz')}\nLearning goals: ${val('s-goal')}\nPreferred times: ${val('s-time')}`
-    );
-    window.location.href = `mailto:myenglishtutor1217@gmail.com?subject=Student registration&body=${body}`;
-    const msg = document.getElementById('studentMsg');
-    if(msg) msg.classList.add('show');
+    submitToFormspree(form, successEl, errorEl);
   });
 })();
 
