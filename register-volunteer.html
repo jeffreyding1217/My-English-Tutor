@@ -834,8 +834,8 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   let typeFilter = 'All';
 
   function setupNotConfigured(){
-    gate.innerHTML = '<div class="callout"><h4>Admin dashboard isn\\'t connected yet</h4>' +
-      '<p>Set ADMIN_ENDPOINT at the top of script.js to your deployed Apps Script URL. See APPS_SCRIPT_SETUP.md for step-by-step instructions.</p></div>';
+    gate.innerHTML = `<div class="callout"><h4>Admin dashboard isn't connected yet</h4>
+      <p>Set ADMIN_ENDPOINT at the top of script.js to your deployed Apps Script URL. See APPS_SCRIPT_SETUP.md for step-by-step instructions.</p></div>`;
     gate.style.display = 'block';
     main.style.display = 'none';
   }
