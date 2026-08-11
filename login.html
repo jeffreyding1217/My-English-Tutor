@@ -439,8 +439,7 @@ footer a:hover{ color:#fff;}
     </div>
     <div class="nav-cta">
       <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
-      <a href="register-volunteer.html" class="btn btn-ghost">Become a Volunteer</a>
-      <a href="register-student.html" class="btn btn-primary">Register as Student</a>
+      <a href="register.html" class="btn btn-primary">Create an Account</a>
     </div>
   </nav>
 </header>
@@ -470,7 +469,7 @@ footer a:hover{ color:#fff;}
               <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
               <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Log in as Volunteer</button>
             </form>
-            <p class="auth-switch">New here? <a href="register-volunteer.html">Apply to volunteer</a></p>
+            <p class="auth-switch">New here? <a href="register.html?as=volunteer">Create an account</a></p>
           </div>
 
           <div class="auth-panel" id="auth-student">
@@ -480,7 +479,7 @@ footer a:hover{ color:#fff;}
               <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
               <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center; margin-top:10px;">Log in as Student</button>
             </form>
-            <p class="auth-switch">New here? <a href="register-student.html">Register as a student</a></p>
+            <p class="auth-switch">New here? <a href="register.html?as=student">Create an account</a></p>
           </div>
 
           <div class="auth-panel" id="auth-parent">
@@ -490,7 +489,7 @@ footer a:hover{ color:#fff;}
               <div class="auth-foot"><span></span><a href="#">Forgot password?</a></div>
               <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Log in as Parent/Guardian</button>
             </form>
-            <p class="auth-switch">Parents and guardians can view schedules and messages for a registered student. New here? <a href="register-student.html">Register your student</a></p>
+            <p class="auth-switch">Parents and guardians can view schedules and messages for a registered student. New here? <a href="register.html?as=student">Create a student account</a></p>
           </div>
 
           <div class="form-msg" id="loginMsg">Bridge to China hasn't launched yet, so accounts aren't active. This is a preview of what logging in will look like.</div>
@@ -512,6 +511,7 @@ footer a:hover{ color:#fff;}
         <h5>Platform</h5>
         <ul>
           <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="register.html">Create an account</a></li>
           <li><a href="volunteer.html">Volunteer</a></li>
           <li><a href="student.html">Students</a></li>
           <li><a href="login.html">Log in</a></li>
@@ -749,6 +749,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if(msg) msg.classList.add('show');
     });
   });
+})();
+
+// Register page: pre-select the Volunteer or Student tab from a link
+// like register.html?as=student, e.g. from the Volunteer/Student info pages
+(function(){
+  const app = document.getElementById('registerApp');
+  if(!app) return;
+  const params = new URLSearchParams(window.location.search);
+  const want = params.get('as');
+  if(want === 'student' || want === 'volunteer'){
+    const tab = app.querySelector(`.auth-tab[data-auth="${want}"]`);
+    if(tab) tab.click();
+  }
 })();
 
 // Admin dashboard: passcode gate + submissions list + approve/deny

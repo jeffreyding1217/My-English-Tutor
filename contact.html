@@ -439,8 +439,7 @@ footer a:hover{ color:#fff;}
     </div>
     <div class="nav-cta">
       <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
-      <a href="register-volunteer.html" class="btn btn-ghost">Become a Volunteer</a>
-      <a href="register-student.html" class="btn btn-primary">Register as Student</a>
+      <a href="register.html" class="btn btn-primary">Create an Account</a>
     </div>
   </nav>
 </header>
@@ -455,8 +454,7 @@ footer a:hover{ color:#fff;}
         <h1 style="color:#fff;">Ready to build a bridge of your own?</h1>
         <p>Registration takes about ten minutes. It only takes one conversation to see why it matters.</p>
         <div class="hero-cta">
-          <a href="volunteer.html" class="btn" style="background:#fff; color:var(--blue);">Become a Volunteer</a>
-          <a href="student.html" class="btn btn-ghost">Register as a Student</a>
+          <a href="register.html" class="btn" style="background:#fff; color:var(--blue);">Create an Account</a>
         </div>
       </div>
 
@@ -502,6 +500,7 @@ footer a:hover{ color:#fff;}
         <h5>Platform</h5>
         <ul>
           <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="register.html">Create an account</a></li>
           <li><a href="volunteer.html">Volunteer</a></li>
           <li><a href="student.html">Students</a></li>
           <li><a href="login.html">Log in</a></li>
@@ -739,6 +738,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if(msg) msg.classList.add('show');
     });
   });
+})();
+
+// Register page: pre-select the Volunteer or Student tab from a link
+// like register.html?as=student, e.g. from the Volunteer/Student info pages
+(function(){
+  const app = document.getElementById('registerApp');
+  if(!app) return;
+  const params = new URLSearchParams(window.location.search);
+  const want = params.get('as');
+  if(want === 'student' || want === 'volunteer'){
+    const tab = app.querySelector(`.auth-tab[data-auth="${want}"]`);
+    if(tab) tab.click();
+  }
 })();
 
 // Admin dashboard: passcode gate + submissions list + approve/deny

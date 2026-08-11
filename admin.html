@@ -679,6 +679,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   });
 })();
 
+// Register page: pre-select the Volunteer or Student tab from a link
+// like register.html?as=student, e.g. from the Volunteer/Student info pages
+(function(){
+  const app = document.getElementById('registerApp');
+  if(!app) return;
+  const params = new URLSearchParams(window.location.search);
+  const want = params.get('as');
+  if(want === 'student' || want === 'volunteer'){
+    const tab = app.querySelector(`.auth-tab[data-auth="${want}"]`);
+    if(tab) tab.click();
+  }
+})();
+
 // Admin dashboard: passcode gate + submissions list + approve/deny
 (function(){
   const app = document.getElementById('adminApp');

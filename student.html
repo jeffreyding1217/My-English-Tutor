@@ -439,8 +439,7 @@ footer a:hover{ color:#fff;}
     </div>
     <div class="nav-cta">
       <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
-      <a href="register-volunteer.html" class="btn btn-ghost">Become a Volunteer</a>
-      <a href="register-student.html" class="btn btn-primary">Register as Student</a>
+      <a href="register.html" class="btn btn-primary">Create an Account</a>
     </div>
   </nav>
 </header>
@@ -462,7 +461,7 @@ footer a:hover{ color:#fff;}
           <li>Message your volunteer securely before each lesson</li>
         </ul>
         <p style="margin-top:20px; font-size:.9rem;">Volunteers are spread across many time zones, so the more lesson times you can offer, the faster a good match will be found. Read more on <a href="how-it-works.html" style="color:var(--blue); font-weight:600;">how scheduling works</a>.</p>
-        <a href="register-student.html" class="btn btn-teal" style="margin-top:10px;">Start student registration</a>
+        <a href="register.html?as=student" class="btn btn-teal" style="margin-top:10px;">Create your account</a>
       </div>
       <div class="reg-mock">
         <div class="mock-head"><span class="mock-tag">Example registration</span></div>
@@ -490,6 +489,7 @@ footer a:hover{ color:#fff;}
         <h5>Platform</h5>
         <ul>
           <li><a href="how-it-works.html">How it works</a></li>
+          <li><a href="register.html">Create an account</a></li>
           <li><a href="volunteer.html">Volunteer</a></li>
           <li><a href="student.html">Students</a></li>
           <li><a href="login.html">Log in</a></li>
@@ -727,6 +727,19 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if(msg) msg.classList.add('show');
     });
   });
+})();
+
+// Register page: pre-select the Volunteer or Student tab from a link
+// like register.html?as=student, e.g. from the Volunteer/Student info pages
+(function(){
+  const app = document.getElementById('registerApp');
+  if(!app) return;
+  const params = new URLSearchParams(window.location.search);
+  const want = params.get('as');
+  if(want === 'student' || want === 'volunteer'){
+    const tab = app.querySelector(`.auth-tab[data-auth="${want}"]`);
+    if(tab) tab.click();
+  }
 })();
 
 // Admin dashboard: passcode gate + submissions list + approve/deny

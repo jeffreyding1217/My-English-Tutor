@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Become a volunteer — Bridge to China</title>
+<title>Create an account — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -446,46 +446,161 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-  <section style="background:var(--paper-alt);">
-    <div class="wrap path">
-      <div class="path-copy">
-        <div class="breadcrumb"><a href="index.html">Home</a> / Volunteer</div>
-        <p class="eyebrow">For volunteers</p>
-        <h1>Your profile, your hours, and your impact, all in one place.</h1>
-        <p>Build a profile students can trust, set the hours that work for your life, and watch your verified service hours add up automatically.</p>
-        <ul class="feature-list">
-          <li>Upload a profile picture and short biography</li>
-          <li>List languages spoken and teaching experience</li>
-          <li>Set your time zone and weekly availability</li>
-          <li>Complete a short English and Chinese language assessment</li>
-          <li>Complete a short required orientation</li>
-          <li>Track total hours and students taught</li>
-          <li>Download official volunteer certificates</li>
-        </ul>
-        <p style="margin-top:20px; font-size:.9rem;">Volunteering is open to students too. If you're under 18, registration includes a short section for a parent or guardian to fill out with you.</p>
-        <p style="margin-top:20px; font-size:.9rem;">Because availability is matched across time zones, the range of hours you list matters more than how many. See <a href="how-it-works.html" style="color:var(--blue); font-weight:600;">how it works</a> for more on why that overlap can take a little patience to find.</p>
-        <a href="register.html?as=volunteer" class="btn btn-primary" style="margin-top:10px;">Create your account</a>
+  <section>
+    <div class="wrap">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Create an account</div>
+      <div class="head-row center">
+        <p class="eyebrow">Get started</p>
+        <h1>Create your account.</h1>
+        <p class="lede">Choose whether you're signing up to learn English or to volunteer as a conversation partner.</p>
       </div>
-      <div class="profile-mock">
-        <div class="mock-head"><span class="mock-tag">Example profile</span></div>
-        <div class="top">
-          <div class="pic"></div>
-          <div>
-            <div class="name">Jeffrey Ding</div>
-            <div class="loc">Toronto, Canada</div>
+
+      <div id="registerApp" class="auth-wrap" style="max-width:640px;">
+        <div class="auth-shell">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-auth="volunteer">Become a Volunteer</button>
+            <button class="auth-tab" data-auth="student">Register as a Student</button>
+          </div>
+
+          <div class="auth-panel active" id="auth-volunteer">
+            <form class="contact-form" id="volunteerForm">
+              <input type="hidden" name="_subject" value="Volunteer application - Bridge to China">
+
+              <fieldset class="form-fieldset">
+                <legend>Your information</legend>
+                <div class="field"><label for="v-name">Full name</label><input id="v-name" name="name" type="text" placeholder="Your full name" required></div>
+                <div class="field"><label for="v-email">Email</label><input id="v-email" name="email" type="email" placeholder="you@example.com" required></div>
+                <div class="field"><label for="v-phone">Phone number (optional)</label><input id="v-phone" name="phone" type="tel" placeholder="(555) 555-5555"></div>
+                <div class="field-row2">
+                  <div class="field"><label for="v-city">City &amp; state</label><input id="v-city" name="city_state" type="text" placeholder="e.g. Austin, TX"></div>
+                  <div class="field"><label for="v-tz">Time zone</label><input id="v-tz" name="time_zone" type="text" placeholder="e.g. GMT-5"></div>
+                </div>
+              </fieldset>
+
+              <div class="field">
+                <label>Are you 18 or older?</label>
+                <div class="radio-row">
+                  <label><input type="radio" name="v-adult" value="yes" id="v-adult-yes" checked> Yes, I'm 18 or older</label>
+                  <label><input type="radio" name="v-adult" value="no" id="v-adult-no"> No, I'm under 18</label>
+                </div>
+              </div>
+
+              <fieldset class="form-fieldset" id="v-parent-fieldset">
+                <legend>Parent / guardian information</legend>
+                <p class="fieldset-note" id="v-parent-note">Required only if you're under 18.</p>
+                <div class="field-row2">
+                  <div class="field"><label for="v-pname">Parent/guardian name</label><input id="v-pname" name="parent_name" type="text" placeholder="Full name"></div>
+                  <div class="field"><label for="v-pemail">Parent/guardian email</label><input id="v-pemail" name="parent_email" type="email" placeholder="you@example.com"></div>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>About you</legend>
+                <div class="field"><label for="v-bio">Short bio</label><textarea id="v-bio" name="bio" rows="3" placeholder="A few sentences about yourself"></textarea></div>
+                <div class="field"><label for="v-exp">Teaching or tutoring experience (optional)</label><textarea id="v-exp" name="experience" rows="3" placeholder="Any relevant experience"></textarea></div>
+                <div class="field-row2">
+                  <div class="field"><label for="v-elevel">English level</label>
+                    <select id="v-elevel" name="english_level">
+                      <option>Native</option>
+                      <option>Fluent</option>
+                      <option>Advanced</option>
+                      <option>Intermediate</option>
+                    </select>
+                  </div>
+                  <div class="field"><label for="v-clevel">Chinese level</label>
+                    <select id="v-clevel" name="chinese_level">
+                      <option>None</option>
+                      <option>Beginner</option>
+                      <option>Intermediate</option>
+                      <option>Advanced</option>
+                      <option>Fluent / native</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field"><label for="v-lang">Other languages spoken (optional)</label><input id="v-lang" name="other_languages" type="text" placeholder="e.g. Spanish, French"></div>
+              </fieldset>
+
+              <fieldset class="form-fieldset">
+                <legend>Weekly availability</legend>
+                <p class="fieldset-note">Check every time block when you're typically free. Times are in the time zone you entered above.</p>
+                <div class="avail-wrap">
+                  <table class="avail-chart" id="availChart">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>6&ndash;9 AM</th>
+                        <th>9&ndash;12 PM</th>
+                        <th>12&ndash;3 PM</th>
+                        <th>3&ndash;6 PM</th>
+                        <th>6&ndash;9 PM</th>
+                        <th>9&ndash;12 AM</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><th>Monday</th><td><input type="checkbox" data-day="Monday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Monday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Monday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Monday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Monday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Monday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Tuesday</th><td><input type="checkbox" data-day="Tuesday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Tuesday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Wednesday</th><td><input type="checkbox" data-day="Wednesday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Wednesday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Thursday</th><td><input type="checkbox" data-day="Thursday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Thursday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Friday</th><td><input type="checkbox" data-day="Friday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Friday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Friday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Friday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Friday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Friday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Saturday</th><td><input type="checkbox" data-day="Saturday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Saturday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="9-12 AM"></td></tr>
+                      <tr><th>Sunday</th><td><input type="checkbox" data-day="Sunday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Sunday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="9-12 AM"></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="avail-note">Availability can always be updated later from your dashboard.</p>
+                <input type="hidden" name="availability" id="v-availability-hidden">
+              </fieldset>
+
+              <div class="callout">
+                <h4>Before you're matched: a short English and Chinese assessment</h4>
+                <p>After you submit this form, you'll be asked to complete a short assessment in both English and Chinese. It helps us accurately understand your language ability so we can match you with the right student and support you well as a volunteer. It isn't a pass/fail test, and no prior Chinese ability is required to volunteer.</p>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
+              <p class="form-note">Submitting sends your information directly to our team. Bridge to China hasn't launched yet, so we'll follow up by email, including a link to the assessment, rather than creating an account automatically.</p>
+              <div class="form-msg" id="volunteerMsg">Thanks! Your application has been sent. We'll be in touch by email.</div>
+              <div class="form-msg error" id="volunteerMsgError">Something went wrong sending your application. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
+            </form>
+          </div>
+
+          <div class="auth-panel" id="auth-student">
+            <form class="contact-form" id="studentForm">
+              <input type="hidden" name="_subject" value="Student registration - Bridge to China">
+              <div class="field"><label for="s-name">Student's name</label><input id="s-name" name="student_name" type="text" placeholder="Student's full name" required></div>
+              <div class="field-row2">
+                <div class="field"><label for="s-page">Age group</label>
+                  <select id="s-page" name="age_group">
+                    <option>Under 13</option>
+                    <option>13–17</option>
+                    <option>18 and over</option>
+                  </select>
+                </div>
+                <div class="field"><label for="s-level">English level</label>
+                  <select id="s-level" name="english_level">
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+              </div>
+              <fieldset class="form-fieldset">
+                <legend>Parent or guardian (required for students under 18)</legend>
+                <div class="field-row2">
+                  <div class="field"><label for="s-pname">Parent/guardian name</label><input id="s-pname" name="parent_name" type="text" placeholder="Full name"></div>
+                  <div class="field"><label for="s-pemail">Parent/guardian email</label><input id="s-pemail" name="parent_email" type="email" placeholder="you@example.com"></div>
+                </div>
+              </fieldset>
+              <div class="field"><label for="s-tz">Time zone</label><input id="s-tz" name="time_zone" type="text" placeholder="e.g. GMT+8"></div>
+              <div class="field"><label for="s-goal">Learning goals</label><textarea id="s-goal" name="learning_goals" rows="3" placeholder="What would you like to work on?"></textarea></div>
+              <div class="field"><label for="s-time">Preferred lesson times</label><input id="s-time" name="preferred_times" type="text" placeholder="e.g. Saturdays, 8:00 AM"></div>
+              <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center;">Submit registration</button>
+              <p class="form-note">Submitting sends your information directly to our team. Bridge to China hasn't launched yet, so we'll follow up by email rather than creating an account automatically.</p>
+              <div class="form-msg" id="studentMsg">Thanks! Your registration has been sent. We'll be in touch by email.</div>
+              <div class="form-msg error" id="studentMsgError">Something went wrong sending your registration. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
+            </form>
           </div>
         </div>
-        <div class="tagrow">
-          <span class="tag">English · Mandarin</span>
-          <span class="tag">Business English</span>
-          <span class="tag">Travel &amp; culture</span>
-        </div>
-        <p style="font-size:.88rem; margin-bottom:0;">Example bio: a former classroom aide who enjoys helping students find their voice. Free most weekday evenings, GMT-5.</p>
-        <div class="metrics">
-          <div><div class="num">N/A</div><div class="lab">Hours logged</div></div>
-          <div><div class="num">N/A</div><div class="lab">Students taught</div></div>
-          <div><div class="num">N/A</div><div class="lab">Avg. rating</div></div>
-        </div>
+        <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
       </div>
     </div>
   </section>
