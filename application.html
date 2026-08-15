@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register as a student — Bridge to China</title>
+<title>Application — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -446,33 +446,122 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-
   <section>
-    <div class="wrap path reverse">
-      <div class="path-copy">
-        <div class="breadcrumb"><a href="index.html">Home</a> / Student</div>
-        <p class="eyebrow">For students</p>
-        <h1>Tell us how you learn, and we'll find the right voice for you.</h1>
-        <p>Registration takes a few minutes. A parent or guardian completes it together for students under 18.</p>
-        <ul class="feature-list">
-          <li>Select your age group and English level</li>
-          <li>State your learning goals, in your own words</li>
-          <li>Choose the lesson times that fit your week</li>
-          <li>Request a specific volunteer, if one is available</li>
-          <li>Message your volunteer securely before each lesson</li>
-        </ul>
-        <p style="margin-top:20px; font-size:.9rem;">Volunteers are spread across many time zones, so the more lesson times you can offer, the faster a good match will be found. Read more on <a href="how-it-works.html" style="color:var(--blue); font-weight:600;">how scheduling works</a>.</p>
-        <a href="register.html?as=student" class="btn btn-teal" style="margin-top:10px;">Create your account</a>
+    <div class="wrap">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Application</div>
+      <div class="head-row center">
+        <p class="eyebrow">Step 3 of 3</p>
+        <h1>Almost done, tell us a bit more.</h1>
+        <p class="lede">The last step. This is what your match, and our team, will see.</p>
       </div>
-      <div class="reg-mock">
-        <div class="mock-head"><span class="mock-tag">Example registration</span></div>
-        <div class="field"><label>Age group</label><div class="control">13–17 (with guardian account)</div></div>
-        <div class="row2">
-          <div class="field"><label>English level</label><div class="control">Intermediate</div></div>
-          <div class="field"><label>Time zone</label><div class="control">GMT+8 · Chengdu</div></div>
+
+      <div class="auth-wrap" style="max-width:640px;">
+        <div class="step-progress">
+          <div class="sp-item done"><span class="sp-num">&#10003;</span> Account</div>
+          <div class="sp-line"></div>
+          <div class="sp-item done"><span class="sp-num">&#10003;</span> Exam</div>
+          <div class="sp-line"></div>
+          <div class="sp-item current"><span class="sp-num">3</span> Application</div>
         </div>
-        <div class="field"><label>Learning goal</label><div class="control">Speak more confidently in everyday conversation</div></div>
-        <div class="field"><label>Preferred lesson time</label><div class="control">Saturdays, 8:00 AM</div></div>
+
+        <div class="auth-shell">
+          <div class="summary-card">
+            <h4>Your account</h4>
+            <dl id="appSummary"></dl>
+          </div>
+
+          <div id="appAlreadyDone" style="display:none;">
+            <div class="callout"><h4>Application already submitted</h4><p>Thanks, we've already received your application. We'll follow up by email.</p></div>
+          </div>
+
+          <form class="contact-form" id="volunteerApp" style="display:none;">
+            <input type="hidden" name="_subject" value="Volunteer application - Bridge to China">
+            <div class="field"><label for="v-phone">Phone number (optional)</label><input id="v-phone" name="phone" type="tel" placeholder="(555) 555-5555"></div>
+            <div class="field-row2">
+              <div class="field"><label for="v-city">City &amp; state</label><input id="v-city" name="city_state" type="text" placeholder="e.g. Austin, TX"></div>
+              <div class="field"><label for="v-tz">Time zone</label><input id="v-tz" name="time_zone" type="text" placeholder="e.g. GMT-5"></div>
+            </div>
+            <div class="field"><label for="v-bio">Short bio</label><textarea id="v-bio" name="bio" rows="3" placeholder="A few sentences about yourself"></textarea></div>
+            <div class="field"><label for="v-exp">Teaching or tutoring experience (optional)</label><textarea id="v-exp" name="experience" rows="3" placeholder="Any relevant experience"></textarea></div>
+
+            <fieldset class="form-fieldset">
+              <legend>Topics you can teach</legend>
+              <p class="topic-note">Pick from our fixed topic list, this keeps every match focused and comparable.</p>
+              <div class="topic-checks" id="v-topics">
+                <label><input type="checkbox" value="Conversational English"><span>Conversational English</span></label>
+                <label><input type="checkbox" value="Grammar &amp; Sentence Structure"><span>Grammar &amp; Sentence Structure</span></label>
+                <label><input type="checkbox" value="Pronunciation &amp; Speaking Confidence"><span>Pronunciation &amp; Speaking Confidence</span></label>
+                <label><input type="checkbox" value="Reading Comprehension"><span>Reading Comprehension</span></label>
+                <label><input type="checkbox" value="Writing Skills"><span>Writing Skills</span></label>
+                <label><input type="checkbox" value="Vocabulary Building"><span>Vocabulary Building</span></label>
+                <label><input type="checkbox" value="Test Prep (IELTS / TOEFL / Gaokao English)"><span>Test Prep (IELTS / TOEFL / Gaokao English)</span></label>
+                <label><input type="checkbox" value="Business &amp; Professional English"><span>Business &amp; Professional English</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-fieldset">
+              <legend>Weekly availability</legend>
+              <p class="fieldset-note">Check every time block when you're typically free. Times are in the time zone you entered above.</p>
+              <div class="avail-wrap">
+                <table class="avail-chart" id="availChart">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>6&ndash;9 AM</th>
+                      <th>9&ndash;12 PM</th>
+                      <th>12&ndash;3 PM</th>
+                      <th>3&ndash;6 PM</th>
+                      <th>6&ndash;9 PM</th>
+                      <th>9&ndash;12 AM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><th>Monday</th><td><input type="checkbox" data-day="Monday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Monday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Monday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Monday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Monday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Monday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Tuesday</th><td><input type="checkbox" data-day="Tuesday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Tuesday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Tuesday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Wednesday</th><td><input type="checkbox" data-day="Wednesday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Wednesday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Wednesday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Thursday</th><td><input type="checkbox" data-day="Thursday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Thursday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Thursday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Friday</th><td><input type="checkbox" data-day="Friday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Friday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Friday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Friday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Friday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Friday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Saturday</th><td><input type="checkbox" data-day="Saturday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Saturday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Saturday" data-time="9-12 AM"></td></tr>
+                    <tr><th>Sunday</th><td><input type="checkbox" data-day="Sunday" data-time="6-9 AM"></td><td><input type="checkbox" data-day="Sunday" data-time="9-12 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="12-3 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="3-6 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="6-9 PM"></td><td><input type="checkbox" data-day="Sunday" data-time="9-12 AM"></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <input type="hidden" name="availability" id="v-availability-hidden">
+            </fieldset>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit application</button>
+            <p class="form-note">Submitting sends your application directly to our team.</p>
+            <div class="form-msg" id="volunteerMsg">Thanks! Your application has been sent. We'll be in touch by email.</div>
+            <div class="form-msg error" id="volunteerMsgError">Something went wrong sending your application. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
+          </form>
+
+          <form class="contact-form" id="studentApp" style="display:none;">
+            <input type="hidden" name="_subject" value="Student registration - Bridge to China">
+            <div class="field"><label for="s-tz">Time zone</label><input id="s-tz" name="time_zone" type="text" placeholder="e.g. GMT+8"></div>
+            <div class="field"><label for="s-goal">What would you like help with? (in your own words)</label><textarea id="s-goal" name="learning_goals" rows="3" placeholder="Tell us more about your goals"></textarea></div>
+            <div class="field"><label for="s-time">Preferred lesson times</label><input id="s-time" name="preferred_times" type="text" placeholder="e.g. Saturdays, 8:00 AM"></div>
+
+            <fieldset class="form-fieldset">
+              <legend>Topics you need help with</legend>
+              <p class="topic-note">Pick from our fixed topic list, this keeps every match focused and comparable.</p>
+              <div class="topic-checks" id="s-topics">
+                <label><input type="checkbox" value="Conversational English"><span>Conversational English</span></label>
+                <label><input type="checkbox" value="Grammar &amp; Sentence Structure"><span>Grammar &amp; Sentence Structure</span></label>
+                <label><input type="checkbox" value="Pronunciation &amp; Speaking Confidence"><span>Pronunciation &amp; Speaking Confidence</span></label>
+                <label><input type="checkbox" value="Reading Comprehension"><span>Reading Comprehension</span></label>
+                <label><input type="checkbox" value="Writing Skills"><span>Writing Skills</span></label>
+                <label><input type="checkbox" value="Vocabulary Building"><span>Vocabulary Building</span></label>
+                <label><input type="checkbox" value="Test Prep (IELTS / TOEFL / Gaokao English)"><span>Test Prep (IELTS / TOEFL / Gaokao English)</span></label>
+                <label><input type="checkbox" value="Business &amp; Professional English"><span>Business &amp; Professional English</span></label>
+              </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-teal" style="width:100%; justify-content:center;">Submit registration</button>
+            <p class="form-note">Submitting sends your registration directly to our team.</p>
+            <div class="form-msg" id="studentMsg">Thanks! Your registration has been sent. We'll be in touch by email.</div>
+            <div class="form-msg error" id="studentMsgError">Something went wrong sending your registration. Please try again, or email us directly at jeffreyding1217@gmail.com.</div>
+          </form>
+        </div>
       </div>
     </div>
   </section>

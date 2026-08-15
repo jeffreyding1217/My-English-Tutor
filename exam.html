@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Register as a student — Bridge to China</title>
+<title>Exam — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -446,33 +446,51 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
-
   <section>
-    <div class="wrap path reverse">
-      <div class="path-copy">
-        <div class="breadcrumb"><a href="index.html">Home</a> / Student</div>
-        <p class="eyebrow">For students</p>
-        <h1>Tell us how you learn, and we'll find the right voice for you.</h1>
-        <p>Registration takes a few minutes. A parent or guardian completes it together for students under 18.</p>
-        <ul class="feature-list">
-          <li>Select your age group and English level</li>
-          <li>State your learning goals, in your own words</li>
-          <li>Choose the lesson times that fit your week</li>
-          <li>Request a specific volunteer, if one is available</li>
-          <li>Message your volunteer securely before each lesson</li>
-        </ul>
-        <p style="margin-top:20px; font-size:.9rem;">Volunteers are spread across many time zones, so the more lesson times you can offer, the faster a good match will be found. Read more on <a href="how-it-works.html" style="color:var(--blue); font-weight:600;">how scheduling works</a>.</p>
-        <a href="register.html?as=student" class="btn btn-teal" style="margin-top:10px;">Create your account</a>
+    <div class="wrap">
+      <div class="breadcrumb"><a href="index.html">Home</a> / Exam</div>
+      <div class="head-row center">
+        <p class="eyebrow">Step 2 of 3</p>
+        <h1 id="examHeading">Let's see where you're starting from.</h1>
+        <p class="lede" id="examLede">A short, informal assessment, not pass/fail, it just helps us match you well.</p>
       </div>
-      <div class="reg-mock">
-        <div class="mock-head"><span class="mock-tag">Example registration</span></div>
-        <div class="field"><label>Age group</label><div class="control">13–17 (with guardian account)</div></div>
-        <div class="row2">
-          <div class="field"><label>English level</label><div class="control">Intermediate</div></div>
-          <div class="field"><label>Time zone</label><div class="control">GMT+8 · Chengdu</div></div>
+
+      <div class="auth-wrap" style="max-width:640px;">
+        <div class="step-progress">
+          <div class="sp-item done"><span class="sp-num">&#10003;</span> Account</div>
+          <div class="sp-line"></div>
+          <div class="sp-item current"><span class="sp-num">2</span> Exam</div>
+          <div class="sp-line"></div>
+          <div class="sp-item"><span class="sp-num">3</span> Application</div>
         </div>
-        <div class="field"><label>Learning goal</label><div class="control">Speak more confidently in everyday conversation</div></div>
-        <div class="field"><label>Preferred lesson time</label><div class="control">Saturdays, 8:00 AM</div></div>
+
+        <div class="auth-shell">
+          <div id="examAlreadyDone" style="display:none;">
+            <div class="callout"><h4>You've already completed your exam</h4><p id="examDoneSummary"></p></div>
+            <a href="application.html" class="btn btn-primary" style="width:100%; justify-content:center;">Continue to application</a>
+            <p class="auth-switch"><a href="#" id="examRetake">Retake the exam instead</a></p>
+          </div>
+
+          <form id="examForm">
+            <h3 class="quiz-section-title">English assessment</h3>
+            <div id="englishQuestions"></div>
+
+            <div id="chineseGate" style="display:none;">
+              <h3 class="quiz-section-title">Chinese assessment</h3>
+              <div class="field">
+                <label>Do you speak any Chinese?</label>
+                <div class="radio-row">
+                  <label><input type="radio" name="speaks-chinese" value="yes" id="chinese-yes"> Yes</label>
+                  <label><input type="radio" name="speaks-chinese" value="no" id="chinese-no" checked> No</label>
+                </div>
+              </div>
+              <div id="chineseQuestions" style="display:none;"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit exam</button>
+            <p class="form-note error" id="examFormError" style="display:none; color:#B3261E;">Please answer every question before submitting.</p>
+          </form>
+        </div>
       </div>
     </div>
   </section>

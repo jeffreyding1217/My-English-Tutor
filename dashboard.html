@@ -446,6 +446,7 @@ footer a:hover{ color:#fff;}
 
 <main id="top">
 
+
   <section style="background:var(--paper-alt);">
     <div class="wrap">
       <div class="breadcrumb"><a href="index.html">Home</a> / Dashboard preview</div>
@@ -550,6 +551,23 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/xkjwokvg";
 
 // Paste the Web app URL from APPS_SCRIPT_SETUP.md here once you've deployed it.
 const ADMIN_ENDPOINT = "https://script.google.com/macros/s/AKfycbzbGCyc6xTRNd4mtGwmjweWKg98iC4qzkZY61IvWIw7V9tQTAUsfrScFmOqVFJjJVa-bA/exec";
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function getAccount(){
+  try { return JSON.parse(localStorage.getItem('btc_account') || 'null'); } catch(e){ return null; }
+}
+function getExam(){
+  try { return JSON.parse(localStorage.getItem('btc_exam') || 'null'); } catch(e){ return null; }
+}
+function hasSubmittedApplication(){
+  return localStorage.getItem('btc_application_submitted') === 'true';
+}
+
 
 // Logs a submission to the admin dashboard's Google Sheet. Fire-and-forget:
 // it never blocks or fails the actual form submission, since Formspree
@@ -656,22 +674,28 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   });
 })();
 
-// Volunteer registration form: submits directly to Formspree
+// STEP 1 — Account creation (register.html)
 (function(){
-  const form = document.getElementById('volunteerForm');
+  const form = document.getElementById('accountForm');
   if(!form) return;
 
-  // Toggle the parent/guardian fieldset styling based on the age question
-  const adultYes = document.getElementById('v-adult-yes');
-  const adultNo = document.getElementById('v-adult-no');
-  const parentFieldset = document.getElementById('v-parent-fieldset');
-  const parentNote = document.getElementById('v-parent-note');
+  const params = new URLSearchParams(window.location.search);
+  const want = params.get('as');
+  if(want === 'student'){
+    const r = document.getElementById('role-student');
+    if(r) r.checked = true;
+  }
+
+  const adultYes = document.getElementById('acc-adult-yes');
+  const adultNo = document.getElementById('acc-adult-no');
+  const parentFieldset = document.getElementById('acc-parent-fieldset');
+  const parentNote = document.getElementById('acc-parent-note');
   function syncParentSection(){
     const isMinor = adultNo && adultNo.checked;
     if(!parentFieldset) return;
     parentFieldset.classList.toggle('required-now', !!isMinor);
-    const pname = document.getElementById('v-pname');
-    const pemail = document.getElementById('v-pemail');
+    const pname = document.getElementById('acc-pname');
+    const pemail = document.getElementById('acc-pemail');
     if(pname) pname.required = !!isMinor;
     if(pemail) pemail.required = !!isMinor;
     if(parentNote) parentNote.textContent = isMinor
@@ -681,51 +705,243 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   if(adultYes) adultYes.addEventListener('change', syncParentSection);
   if(adultNo) adultNo.addEventListener('change', syncParentSection);
 
-  const successEl = document.getElementById('volunteerMsg');
-  const errorEl = document.getElementById('volunteerMsgError');
-  const availHidden = document.getElementById('v-availability-hidden');
-
   form.addEventListener('submit', function(e){
     e.preventDefault();
     const val = id => (document.getElementById(id) || {}).value || '';
-    // Roll the checked availability cells into one readable hidden field
-    let avail = 'None selected';
-    if(availHidden){
-      avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
-        .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
-        .join(', ') || 'None selected';
-      availHidden.value = avail;
+    const pass = val('acc-pass');
+    const pass2 = val('acc-pass2');
+    const errorEl = document.getElementById('accountFormError');
+    if(!val('acc-name') || !val('acc-email') || !pass || pass !== pass2){
+      if(errorEl) errorEl.style.display = 'block';
+      return;
     }
+    if(errorEl) errorEl.style.display = 'none';
+
+    const role = (document.querySelector('input[name="role"]:checked') || {}).value || 'volunteer';
     const isMinor = adultNo && adultNo.checked;
-    logToAdminSheet('Volunteer', `${val('v-name')} <${val('v-email')}>`, {
-      name: val('v-name'), email: val('v-email'), phone: val('v-phone'),
-      city_state: val('v-city'), time_zone: val('v-tz'),
-      is_minor: isMinor ? 'Yes' : 'No',
-      parent_name: val('v-pname'), parent_email: val('v-pemail'),
-      bio: val('v-bio'), experience: val('v-exp'),
-      english_level: val('v-elevel'), chinese_level: val('v-clevel'),
-      other_languages: val('v-lang'), availability: avail
+    const account = {
+      name: val('acc-name'), email: val('acc-email'), role,
+      isMinor: !!isMinor, parentName: val('acc-pname'), parentEmail: val('acc-pemail'),
+      createdAt: new Date().toISOString()
+    };
+    // Password is only used client-side to confirm the two fields match.
+    // It's never stored or sent anywhere, there's no real server-side login yet.
+    localStorage.setItem('btc_account', JSON.stringify(account));
+    localStorage.removeItem('btc_exam');
+    localStorage.removeItem('btc_application_submitted');
+
+    logToAdminSheet('Account', `${account.name} <${account.email}> — ${role}`, {
+      name: account.name, email: account.email, role,
+      is_minor: isMinor ? 'Yes' : 'No', parent_name: account.parentName, parent_email: account.parentEmail
     });
-    submitToFormspree(form, successEl, errorEl);
+
+    window.location.href = 'exam.html';
   });
 })();
 
-// Student registration form: submits directly to Formspree
+// STEP 2 — Exam (exam.html)
 (function(){
-  const form = document.getElementById('studentForm');
+  const form = document.getElementById('examForm');
   if(!form) return;
-  const successEl = document.getElementById('studentMsg');
-  const errorEl = document.getElementById('studentMsgError');
+
+  const account = getAccount();
+  if(!account){ window.location.href = 'register.html'; return; }
+
+  const ENGLISH_QUESTIONS = [
+    { q: "Choose the correct word: She ___ to school every day.", options: ["go","goes","going","gone"], answer: 1 },
+    { q: "Choose the correct word: I have ___ apples in my bag.", options: ["a","an","some","much"], answer: 2 },
+    { q: "Select the closest meaning of 'happy'.", options: ["sad","joyful","angry","tired"], answer: 1 },
+    { q: "Choose the correct sentence.", options: ["He don't like coffee.","He doesn't likes coffee.","He doesn't like coffee.","He not like coffee."], answer: 2 },
+    { q: "What is the past tense of 'go'?", options: ["goed","gone","went","going"], answer: 2 },
+    { q: "Choose the correct word: This book is ___ than that one.", options: ["interesting","more interesting","most interesting","interestinger"], answer: 1 }
+  ];
+  const CHINESE_QUESTIONS = [
+    { q: "What does 你好 mean?", options: ["Goodbye","Thank you","Hello","Sorry"], answer: 2 },
+    { q: "What does 谢谢 mean?", options: ["Please","Thank you","Yes","No"], answer: 1 },
+    { q: "How do you say 'water'?", options: ["火 (huǒ)","水 (shuǐ)","土 (tǔ)","木 (mù)"], answer: 1 },
+    { q: "What does 再见 mean?", options: ["Hello","Goodbye","Excuse me","Welcome"], answer: 1 },
+    { q: "Which character means 'big'?", options: ["小","大","多","少"], answer: 1 },
+    { q: "What does 我爱学习 mean?", options: ["I hate studying","I love studying","I am studying","I finished studying"], answer: 1 }
+  ];
+
+  const heading = document.getElementById('examHeading');
+  const lede = document.getElementById('examLede');
+  const englishBox = document.getElementById('englishQuestions');
+  const chineseGate = document.getElementById('chineseGate');
+  const chineseQBox = document.getElementById('chineseQuestions');
+  const chineseYes = document.getElementById('chinese-yes');
+  const chineseNo = document.getElementById('chinese-no');
+
+  if(account.role === 'student'){
+    if(heading) heading.textContent = "Let's find your English level.";
+    if(lede) lede.textContent = "A short placement quiz, not pass/fail, it just helps us match you with the right volunteer.";
+  } else {
+    if(chineseGate) chineseGate.style.display = 'block';
+  }
+
+  function renderQuestions(container, questions, prefix){
+    container.innerHTML = questions.map((item, i) => `
+      <div class="quiz-q">
+        <div class="question">${i+1}. ${escapeHtml(item.q)}</div>
+        <div class="options">
+          ${item.options.map((opt, j) => `
+            <label><input type="radio" name="${prefix}-${i}" value="${j}"> ${escapeHtml(opt)}</label>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+  renderQuestions(englishBox, ENGLISH_QUESTIONS, 'eng');
+
+  if(chineseYes) chineseYes.addEventListener('change', () => {
+    chineseQBox.style.display = 'block';
+    if(!chineseQBox.dataset.rendered){
+      renderQuestions(chineseQBox, CHINESE_QUESTIONS, 'chi');
+      chineseQBox.dataset.rendered = 'true';
+    }
+  });
+  if(chineseNo) chineseNo.addEventListener('change', () => { chineseQBox.style.display = 'none'; });
+
+  function levelFromScore(correct, total){
+    const pct = total ? correct / total : 0;
+    if(pct >= 0.8) return 'Advanced';
+    if(pct >= 0.5) return 'Intermediate';
+    return 'Beginner';
+  }
+
+  // Already completed? Offer to continue or retake.
+  const already = getExam();
+  if(already){
+    const doneBox = document.getElementById('examAlreadyDone');
+    const doneSummary = document.getElementById('examDoneSummary');
+    if(doneSummary){
+      doneSummary.textContent = account.role === 'volunteer'
+        ? `English: ${already.englishLevel} · Chinese: ${already.chineseLevel}`
+        : `English: ${already.englishLevel}`;
+    }
+    if(doneBox) doneBox.style.display = 'block';
+    form.style.display = 'none';
+    const retake = document.getElementById('examRetake');
+    if(retake) retake.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('btc_exam');
+      doneBox.style.display = 'none';
+      form.style.display = 'block';
+    });
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    const val = id => (document.getElementById(id) || {}).value || '';
-    logToAdminSheet('Student', `${val('s-name')} (guardian: ${val('s-pname') || 'n/a'})`, {
-      student_name: val('s-name'), age_group: val('s-page'), english_level: val('s-level'),
-      parent_name: val('s-pname'), parent_email: val('s-pemail'),
-      time_zone: val('s-tz'), learning_goals: val('s-goal'), preferred_times: val('s-time')
+    const errorEl = document.getElementById('examFormError');
+
+    let engCorrect = 0;
+    for(let i = 0; i < ENGLISH_QUESTIONS.length; i++){
+      const picked = form.querySelector(`input[name="eng-${i}"]:checked`);
+      if(!picked){ if(errorEl) errorEl.style.display = 'block'; return; }
+      if(Number(picked.value) === ENGLISH_QUESTIONS[i].answer) engCorrect++;
+    }
+
+    let chineseLevel = 'None';
+    if(account.role === 'volunteer' && chineseYes && chineseYes.checked){
+      let chiCorrect = 0;
+      for(let i = 0; i < CHINESE_QUESTIONS.length; i++){
+        const picked = form.querySelector(`input[name="chi-${i}"]:checked`);
+        if(!picked){ if(errorEl) errorEl.style.display = 'block'; return; }
+        if(Number(picked.value) === CHINESE_QUESTIONS[i].answer) chiCorrect++;
+      }
+      chineseLevel = levelFromScore(chiCorrect, CHINESE_QUESTIONS.length);
+    }
+    if(errorEl) errorEl.style.display = 'none';
+
+    const englishLevel = levelFromScore(engCorrect, ENGLISH_QUESTIONS.length);
+    const examResult = {
+      englishLevel, englishScore: `${engCorrect}/${ENGLISH_QUESTIONS.length}`,
+      chineseLevel, completedAt: new Date().toISOString()
+    };
+    localStorage.setItem('btc_exam', JSON.stringify(examResult));
+
+    logToAdminSheet('Exam completed', `${account.name} <${account.email}>`, {
+      role: account.role, english_level: englishLevel, chinese_level: chineseLevel
     });
-    submitToFormspree(form, successEl, errorEl);
+
+    window.location.href = 'application.html';
   });
+})();
+
+// STEP 3 — Application (application.html)
+(function(){
+  const summaryEl = document.getElementById('appSummary');
+  if(!summaryEl) return; // not on this page
+
+  const account = getAccount();
+  if(!account){ window.location.href = 'register.html'; return; }
+  const exam = getExam();
+  if(!exam){ window.location.href = 'exam.html'; return; }
+
+  summaryEl.innerHTML = `
+    <dt>Name</dt><dd>${escapeHtml(account.name)}</dd>
+    <dt>Email</dt><dd>${escapeHtml(account.email)}</dd>
+    <dt>Role</dt><dd>${account.role === 'volunteer' ? 'Volunteer' : 'Student'}</dd>
+    <dt>English level</dt><dd>${escapeHtml(exam.englishLevel)}</dd>
+    ${account.role === 'volunteer' ? `<dt>Chinese level</dt><dd>${escapeHtml(exam.chineseLevel)}</dd>` : ''}
+  `;
+
+  if(hasSubmittedApplication()){
+    const doneBox = document.getElementById('appAlreadyDone');
+    if(doneBox) doneBox.style.display = 'block';
+    return;
+  }
+
+  const volunteerForm = document.getElementById('volunteerApp');
+  const studentForm = document.getElementById('studentApp');
+  const activeForm = account.role === 'volunteer' ? volunteerForm : studentForm;
+  if(activeForm) activeForm.style.display = 'block';
+
+  if(volunteerForm){
+    const successEl = document.getElementById('volunteerMsg');
+    const errorEl = document.getElementById('volunteerMsgError');
+    const availHidden = document.getElementById('v-availability-hidden');
+    volunteerForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const val = id => (document.getElementById(id) || {}).value || '';
+      const avail = Array.from(document.querySelectorAll('#availChart input[type="checkbox"]:checked'))
+        .map(cb => `${cb.dataset.day} ${cb.dataset.time}`)
+        .join(', ') || 'None selected';
+      if(availHidden) availHidden.value = avail;
+      const topics = Array.from(document.querySelectorAll('#v-topics input:checked')).map(cb => cb.value).join(', ') || 'None selected';
+
+      logToAdminSheet('Volunteer', `${account.name} <${account.email}>`, {
+        name: account.name, email: account.email,
+        phone: val('v-phone'), city_state: val('v-city'), time_zone: val('v-tz'),
+        is_minor: account.isMinor ? 'Yes' : 'No', parent_name: account.parentName, parent_email: account.parentEmail,
+        bio: val('v-bio'), experience: val('v-exp'),
+        english_level: exam.englishLevel, chinese_level: exam.chineseLevel,
+        topics, availability: avail
+      });
+      submitToFormspree(volunteerForm, successEl, errorEl);
+      localStorage.setItem('btc_application_submitted', 'true');
+    });
+  }
+
+  if(studentForm){
+    const successEl = document.getElementById('studentMsg');
+    const errorEl = document.getElementById('studentMsgError');
+    studentForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const val = id => (document.getElementById(id) || {}).value || '';
+      const topics = Array.from(document.querySelectorAll('#s-topics input:checked')).map(cb => cb.value).join(', ') || 'None selected';
+
+      logToAdminSheet('Student', `${account.name} <${account.email}>`, {
+        student_name: account.name, email: account.email,
+        is_minor: account.isMinor ? 'Yes' : 'No', parent_name: account.parentName, parent_email: account.parentEmail,
+        english_level: exam.englishLevel,
+        time_zone: val('s-tz'), learning_goals: val('s-goal'), preferred_times: val('s-time'),
+        topics
+      });
+      submitToFormspree(studentForm, successEl, errorEl);
+      localStorage.setItem('btc_application_submitted', 'true');
+    });
+  }
 })();
 
 // Login page: role tabs + a clear, honest message since accounts aren't live yet
@@ -746,19 +962,6 @@ document.querySelectorAll('.faq-item').forEach(item=>{
       if(msg) msg.classList.add('show');
     });
   });
-})();
-
-// Register page: pre-select the Volunteer or Student tab from a link
-// like register.html?as=student, e.g. from the Volunteer/Student info pages
-(function(){
-  const app = document.getElementById('registerApp');
-  if(!app) return;
-  const params = new URLSearchParams(window.location.search);
-  const want = params.get('as');
-  if(want === 'student' || want === 'volunteer'){
-    const tab = app.querySelector(`.auth-tab[data-auth="${want}"]`);
-    if(tab) tab.click();
-  }
 })();
 
 // Admin dashboard: passcode gate + submissions list + approve/deny
@@ -856,12 +1059,6 @@ document.querySelectorAll('.faq-item').forEach(item=>{
     card.querySelector('.act-deny').addEventListener('click', () => updateStatus(s.id, 'Denied', card));
     card.querySelector('.act-pending').addEventListener('click', () => updateStatus(s.id, 'Pending', card));
     return card;
-  }
-
-  function escapeHtml(str){
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
   }
 
   function updateStatus(id, status, card){
