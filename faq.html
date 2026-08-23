@@ -365,6 +365,48 @@ header{
 .auth-switch{ text-align:center; margin-top:22px; font-size:.88rem; color:var(--ink-soft);}
 .auth-switch a{ color:var(--blue); font-weight:600;}
 
+/* ---------- Step progress (account -> exam -> application) ---------- */
+.step-progress{ display:flex; align-items:center; justify-content:center; gap:8px; margin:0 0 36px; flex-wrap:wrap;}
+.step-progress .sp-item{ display:flex; align-items:center; gap:8px; font-size:.82rem; font-weight:600; color:var(--ink-soft);}
+.step-progress .sp-num{ width:24px; height:24px; border-radius:50%; background:var(--paper-alt); color:var(--ink-soft); display:flex; align-items:center; justify-content:center; font-size:.74rem; font-weight:700;}
+.step-progress .sp-item.done .sp-num{ background:var(--teal); color:#fff;}
+.step-progress .sp-item.current .sp-num{ background:var(--blue); color:#fff;}
+.step-progress .sp-item.current{ color:var(--blue);}
+.step-progress .sp-line{ width:32px; height:1.5px; background:var(--line);}
+
+/* ---------- Role picker (register.html) ---------- */
+.role-picker{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;}
+.role-picker label{ border:1.5px solid var(--line); border-radius:12px; padding:16px; text-align:center; font-weight:700; font-size:.92rem; cursor:pointer; color:var(--ink-soft);}
+.role-picker input{ display:none;}
+.role-picker input:checked + span{ color:var(--blue);}
+.role-picker label:has(input:checked){ border-color:var(--blue); background:#EEF5F9;}
+
+/* ---------- Quiz (exam.html) ---------- */
+.quiz-q{ border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:14px;}
+.quiz-q .question{ font-weight:700; font-size:.94rem; margin:14px 0 12px;}
+.quiz-q .question:first-of-type{ margin-top:0;}
+.quiz-q .options label{ display:flex; align-items:center; gap:10px; padding:7px 0; font-size:.9rem; cursor:pointer;}
+.quiz-q .options input{ width:16px; height:16px; accent-color:var(--teal);}
+.quiz-tier-label{ font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--teal); margin-bottom:4px;}
+.quiz-passage{ background:var(--paper-alt); border-left:3px solid var(--line); border-radius:6px; padding:12px 14px; font-size:.88rem; font-style:italic; color:var(--ink-soft); margin:8px 0;}
+.quiz-writing{ width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:inherit; font-size:.9rem; background:var(--paper-alt); margin-top:6px;}
+.quiz-section-title{ margin:32px 0 16px;}
+.quiz-section-title:first-child{ margin-top:0;}
+
+/* ---------- Fixed topic checkboxes ---------- */
+.topic-checks{ display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+@media (max-width:560px){ .topic-checks{ grid-template-columns:1fr;} }
+.topic-checks label{ display:flex; align-items:center; gap:10px; background:var(--paper-alt); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:.88rem; font-weight:600; cursor:pointer;}
+.topic-checks input{ width:17px; height:17px; accent-color:var(--teal); flex-shrink:0;}
+.topic-note{ font-size:.78rem; color:var(--ink-soft); margin:-6px 0 16px;}
+
+/* ---------- Summary card (account + exam results recap) ---------- */
+.summary-card{ background:var(--teal-soft); border:1px solid var(--line); border-left:4px solid var(--teal); border-radius:12px; padding:20px 22px; margin:0 0 28px;}
+.summary-card h4{ font-size:.94rem; margin-bottom:10px;}
+.summary-card dl{ display:grid; grid-template-columns:150px 1fr; gap:6px 14px; margin:0; font-size:.88rem;}
+.summary-card dt{ color:var(--ink-soft); font-weight:600;}
+.summary-card dd{ margin:0; font-weight:600;}
+
 /* ---------- CTA band ---------- */
 .cta-band{ background:linear-gradient(120deg,var(--blue) 0%,var(--teal) 100%); border-radius:24px; padding:56px 44px; color:#fff; text-align:center;}
 .cta-band h2{ color:#fff;}
@@ -742,21 +784,52 @@ document.querySelectorAll('.faq-item').forEach(item=>{
   const account = getAccount();
   if(!account){ window.location.href = 'register.html'; return; }
 
-  const ENGLISH_QUESTIONS = [
-    { q: "Choose the correct word: She ___ to school every day.", options: ["go","goes","going","gone"], answer: 1 },
-    { q: "Choose the correct word: I have ___ apples in my bag.", options: ["a","an","some","much"], answer: 2 },
-    { q: "Select the closest meaning of 'happy'.", options: ["sad","joyful","angry","tired"], answer: 1 },
-    { q: "Choose the correct sentence.", options: ["He don't like coffee.","He doesn't likes coffee.","He doesn't like coffee.","He not like coffee."], answer: 2 },
-    { q: "What is the past tense of 'go'?", options: ["goed","gone","went","going"], answer: 2 },
-    { q: "Choose the correct word: This book is ___ than that one.", options: ["interesting","more interesting","most interesting","interestinger"], answer: 1 }
+  const TIER_NAMES = ['Basic', 'Novice', 'Intermediate', 'Advanced'];
+
+  const ENGLISH_TIERS = [
+    {
+      grammar: { q: "There ___ a lot of information on the internet.", options: ["is","are","be","being"], answer: 0 },
+      reading: { passage: "Tom has a red ball, but his sister Mia prefers the blue one. Every afternoon, they take turns playing in the backyard until it gets dark.", q: "Whose ball is blue?", options: ["Tom's","Mia's","Their neighbor's","Nobody's"], answer: 1 },
+      writing: "Write three sentences describing your daily routine. Use at least one time expression (for example, 'in the morning')."
+    },
+    {
+      grammar: { q: "By the time we arrived, the movie ___ already started.", options: ["has","have","had","having"], answer: 2 },
+      reading: { passage: "Emma wakes up at 7:00 every morning. Even though she loves watching television, she always finishes her homework first because her parents don't allow screens before schoolwork is done.", q: "Why does Emma finish her homework before watching television?", options: ["Because she loves homework","Because her parents have a rule about it","Because the television is broken","Because she has no homework"], answer: 1 },
+      writing: "Write 3-4 sentences comparing a food you love to a food you dislike. Use a linking word such as 'but' or 'however'."
+    },
+    {
+      grammar: { q: "Neither the teacher nor the students ___ ready for the test.", options: ["was","were","is","are"], answer: 1 },
+      reading: { passage: "Mia wanted to buy a new book, but she didn't have enough money. Instead of asking her parents for help, she decided to save part of her allowance every week. Although it took longer than she expected, she finally had enough after five weeks.", q: "What can we infer about Mia?", options: ["She is impatient and gives up easily","She is responsible and willing to wait for what she wants","She dislikes reading","She often asks other people for help"], answer: 1 },
+      writing: "Write 4-5 sentences describing a time you had to be patient in order to get something you wanted."
+    },
+    {
+      grammar: { q: "If I ___ known about the traffic, I would have left earlier.", options: ["have","had","has","would have"], answer: 1 },
+      reading: { passage: "Many students use technology to help them study. Online videos, educational websites, and digital books can make learning easier and more flexible. However, students who lack self-discipline can easily become distracted by games or social media, which may lower the quality of their studying rather than improve it.", q: "According to the passage, when does technology become a problem for students?", options: ["When students use videos to study","When students lack self-discipline and get distracted","When students read digital books","Technology is never a problem for students"], answer: 1 },
+      writing: "In 6-8 sentences, argue whether schools should reduce homework. Address at least one counterargument in your response."
+    }
   ];
-  const CHINESE_QUESTIONS = [
-    { q: "What does 你好 mean?", options: ["Goodbye","Thank you","Hello","Sorry"], answer: 2 },
-    { q: "What does 谢谢 mean?", options: ["Please","Thank you","Yes","No"], answer: 1 },
-    { q: "How do you say 'water'?", options: ["火 (huǒ)","水 (shuǐ)","土 (tǔ)","木 (mù)"], answer: 1 },
-    { q: "What does 再见 mean?", options: ["Hello","Goodbye","Excuse me","Welcome"], answer: 1 },
-    { q: "Which character means 'big'?", options: ["小","大","多","少"], answer: 1 },
-    { q: "What does 我爱学习 mean?", options: ["I hate studying","I love studying","I am studying","I finished studying"], answer: 1 }
+
+  const CHINESE_TIERS = [
+    {
+      grammar: { q: "Choose the correct sentence for \u201cI don't like coffee.\u201d", options: ["我不喜欢咖啡。","我喜欢咖啡不。","不喜欢我咖啡。","咖啡不我喜欢。"], answer: 0 },
+      reading: { passage: "我家有三个人：爸爸、妈妈和我。我们住在北京。", q: "根据这段话，说话人的家里有几个人？", options: ["两个","三个","四个","五个"], answer: 1 },
+      writing: "用中文写两句话介绍你的家人（至少提到一位家人）。"
+    },
+    {
+      grammar: { q: "Choose the correct sentence for \u201cI have already eaten dinner.\u201d", options: ["我已经吃晚饭了。","我已经了吃晚饭。","我吃了已经晚饭。","已经我吃晚饭了。"], answer: 0 },
+      reading: { passage: "小丽每天早上七点起床，可是星期六和星期天她喜欢睡到九点才起床，因为不用上学。", q: "小丽周末为什么可以晚起床？", options: ["她生病了","她不用上学","她要去公园","她每天都晚起"], answer: 1 },
+      writing: "用中文写两到三句话，说说你周末通常做什么。"
+    },
+    {
+      grammar: { q: "Choose the correct sentence for \u201cThis book is more interesting than that one.\u201d", options: ["这本书比那本有意思。","这本书有意思比那本。","比那本这本书有意思。","那本书这本比有意思。"], answer: 0 },
+      reading: { passage: "小王很喜欢运动，他每天放学以后都会去公园跑步，可是上个星期他生病了，所以没有去跑步。这个星期他已经好了，又开始每天锻炼身体。", q: "小王上个星期为什么没有去跑步？", options: ["他太忙了","他生病了","他不喜欢跑步了","公园关门了"], answer: 1 },
+      writing: "用中文写三到四句话，说一说你有一次不能做自己平时喜欢做的事情，并说明原因。"
+    },
+    {
+      grammar: { q: "要不是他帮忙，我们___做不完这个项目。", options: ["就","也","都","才"], answer: 0 },
+      reading: { passage: "现在很多学生喜欢用手机学习，因为手机不但可以查字典，还可以看视频、听录音，甚至可以跟外国朋友聊天练习口语。但是，如果学生自制力不够，很容易被手机上的游戏和社交软件吸引，反而影响学习效果。", q: "根据这段话，手机对学生的影响是什么？", options: ["只有好处，没有坏处","只有坏处，没有好处","既有好处也有坏处，要看学生能不能自我控制","手机对学生完全没有影响"], answer: 2 },
+      writing: "用五到六句话，说说你觉得手机对学生学习是好还是坏，并说明理由。"
+    }
   ];
 
   const heading = document.getElementById('examHeading');
@@ -769,39 +842,68 @@ document.querySelectorAll('.faq-item').forEach(item=>{
 
   if(account.role === 'student'){
     if(heading) heading.textContent = "Let's find your English level.";
-    if(lede) lede.textContent = "A short placement quiz, not pass/fail, it just helps us match you with the right volunteer.";
+    if(lede) lede.textContent = "A short placement test, not pass/fail, it just helps us match you with the right volunteer.";
   } else {
     if(chineseGate) chineseGate.style.display = 'block';
   }
 
-  function renderQuestions(container, questions, prefix){
-    container.innerHTML = questions.map((item, i) => `
+  function renderTiers(container, tiers, prefix){
+    container.innerHTML = tiers.map((tier, i) => `
       <div class="quiz-q">
-        <div class="question">${i+1}. ${escapeHtml(item.q)}</div>
+        <div class="quiz-tier-label">${TIER_NAMES[i]}</div>
+        <div class="question">Grammar &amp; vocabulary: ${escapeHtml(tier.grammar.q)}</div>
         <div class="options">
-          ${item.options.map((opt, j) => `
-            <label><input type="radio" name="${prefix}-${i}" value="${j}"> ${escapeHtml(opt)}</label>
+          ${tier.grammar.options.map((opt, j) => `
+            <label><input type="radio" name="${prefix}-${i}-grammar" value="${j}"> ${escapeHtml(opt)}</label>
           `).join('')}
         </div>
+        <div class="quiz-passage">${escapeHtml(tier.reading.passage)}</div>
+        <div class="question">Reading: ${escapeHtml(tier.reading.q)}</div>
+        <div class="options">
+          ${tier.reading.options.map((opt, j) => `
+            <label><input type="radio" name="${prefix}-${i}-reading" value="${j}"> ${escapeHtml(opt)}</label>
+          `).join('')}
+        </div>
+        <div class="question">Writing: ${escapeHtml(tier.writing)}</div>
+        <textarea class="quiz-writing" name="${prefix}-${i}-writing" rows="3" placeholder="Write your answer here"></textarea>
       </div>
     `).join('');
   }
-  renderQuestions(englishBox, ENGLISH_QUESTIONS, 'eng');
+  renderTiers(englishBox, ENGLISH_TIERS, 'eng');
 
   if(chineseYes) chineseYes.addEventListener('change', () => {
     chineseQBox.style.display = 'block';
     if(!chineseQBox.dataset.rendered){
-      renderQuestions(chineseQBox, CHINESE_QUESTIONS, 'chi');
+      renderTiers(chineseQBox, CHINESE_TIERS, 'chi');
       chineseQBox.dataset.rendered = 'true';
     }
   });
   if(chineseNo) chineseNo.addEventListener('change', () => { chineseQBox.style.display = 'none'; });
 
-  function levelFromScore(correct, total){
-    const pct = total ? correct / total : 0;
-    if(pct >= 0.8) return 'Advanced';
-    if(pct >= 0.5) return 'Intermediate';
-    return 'Beginner';
+  // Tier-based placement: keep advancing through Basic -> Advanced as long as
+  // the test-taker gets at least one of the two multiple-choice questions
+  // right in that tier; stop at the first tier they miss entirely.
+  function evaluateTiers(tiers, prefix){
+    let correct = 0;
+    let level = 'Beginner';
+    const writing = {};
+    for(let i = 0; i < tiers.length; i++){
+      const g = form.querySelector(`input[name="${prefix}-${i}-grammar"]:checked`);
+      const r = form.querySelector(`input[name="${prefix}-${i}-reading"]:checked`);
+      if(!g || !r) return { incomplete: true };
+      const gRight = Number(g.value) === tiers[i].grammar.answer;
+      const rRight = Number(r.value) === tiers[i].reading.answer;
+      if(gRight) correct++;
+      if(rRight) correct++;
+      const wField = form.querySelector(`textarea[name="${prefix}-${i}-writing"]`);
+      writing[TIER_NAMES[i].toLowerCase()] = wField ? wField.value : '';
+      if(gRight || rRight){
+        level = TIER_NAMES[i];
+      } else {
+        break; // stop advancing at the first tier they miss completely
+      }
+    }
+    return { level, score: `${correct}/${tiers.length * 2}`, writing };
   }
 
   // Already completed? Offer to continue or retake.
@@ -829,34 +931,31 @@ document.querySelectorAll('.faq-item').forEach(item=>{
     e.preventDefault();
     const errorEl = document.getElementById('examFormError');
 
-    let engCorrect = 0;
-    for(let i = 0; i < ENGLISH_QUESTIONS.length; i++){
-      const picked = form.querySelector(`input[name="eng-${i}"]:checked`);
-      if(!picked){ if(errorEl) errorEl.style.display = 'block'; return; }
-      if(Number(picked.value) === ENGLISH_QUESTIONS[i].answer) engCorrect++;
-    }
+    const englishResult = evaluateTiers(ENGLISH_TIERS, 'eng');
+    if(englishResult.incomplete){ if(errorEl) errorEl.style.display = 'block'; return; }
 
-    let chineseLevel = 'None';
+    let chineseResult = { level: 'None', score: null, writing: {} };
     if(account.role === 'volunteer' && chineseYes && chineseYes.checked){
-      let chiCorrect = 0;
-      for(let i = 0; i < CHINESE_QUESTIONS.length; i++){
-        const picked = form.querySelector(`input[name="chi-${i}"]:checked`);
-        if(!picked){ if(errorEl) errorEl.style.display = 'block'; return; }
-        if(Number(picked.value) === CHINESE_QUESTIONS[i].answer) chiCorrect++;
-      }
-      chineseLevel = levelFromScore(chiCorrect, CHINESE_QUESTIONS.length);
+      chineseResult = evaluateTiers(CHINESE_TIERS, 'chi');
+      if(chineseResult.incomplete){ if(errorEl) errorEl.style.display = 'block'; return; }
     }
     if(errorEl) errorEl.style.display = 'none';
 
-    const englishLevel = levelFromScore(engCorrect, ENGLISH_QUESTIONS.length);
     const examResult = {
-      englishLevel, englishScore: `${engCorrect}/${ENGLISH_QUESTIONS.length}`,
-      chineseLevel, completedAt: new Date().toISOString()
+      englishLevel: englishResult.level, englishScore: englishResult.score, englishWriting: englishResult.writing,
+      chineseLevel: chineseResult.level, chineseScore: chineseResult.score, chineseWriting: chineseResult.writing,
+      completedAt: new Date().toISOString()
     };
     localStorage.setItem('btc_exam', JSON.stringify(examResult));
 
     logToAdminSheet('Exam completed', `${account.name} <${account.email}>`, {
-      role: account.role, english_level: englishLevel, chinese_level: chineseLevel
+      role: account.role,
+      english_level: englishResult.level, english_score: englishResult.score,
+      english_writing_basic: englishResult.writing.basic, english_writing_novice: englishResult.writing.novice,
+      english_writing_intermediate: englishResult.writing.intermediate, english_writing_advanced: englishResult.writing.advanced,
+      chinese_level: chineseResult.level, chinese_score: chineseResult.score,
+      chinese_writing_basic: chineseResult.writing.basic, chinese_writing_novice: chineseResult.writing.novice,
+      chinese_writing_intermediate: chineseResult.writing.intermediate, chinese_writing_advanced: chineseResult.writing.advanced
     });
 
     window.location.href = 'application.html';
