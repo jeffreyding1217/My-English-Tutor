@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson Library — Volunteer World Tutors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48;
+    --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',sans-serif; background:#eef3f2; color:var(--ink); }
+  input, textarea{ font-family:'Inter',sans-serif; }
+
+  .topbar{
+    background:var(--blue-deep); color:#fff; padding:14px 22px; display:flex; align-items:center;
+    justify-content:space-between; position:sticky; top:0; z-index:20; flex-wrap:wrap; gap:8px;
+  }
+  .topbar .brand{ font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:10px; }
+  .brand .mark{ width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,var(--blue),var(--green)); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; }
+  .topbar .hint{ font-size:0.78rem; color:#bcd0e4; }
+
+  .app{ display:grid; grid-template-columns: 290px 1fr; min-height: calc(100vh - 56px); }
+
+  .sidebar{ background:#fff; border-right:1px solid var(--line); padding: 18px 10px; overflow-y:auto; }
+  .lesson-btn{
+    width:100%; text-align:left; background:none; border:none; padding:11px 12px; border-radius:9px;
+    cursor:pointer; font-family:'Inter',sans-serif; font-size:0.86rem; font-weight:600; color:var(--ink-soft);
+    display:flex; align-items:center; gap:10px; margin-bottom:3px; transition: background .12s ease, color .12s ease;
+  }
+  .lesson-btn:hover{ background:var(--tint); color:var(--ink); }
+  .lesson-btn.active{ background:var(--blue); color:#fff; }
+  .lesson-btn .num{
+    width:24px; height:24px; border-radius:50%; background:var(--tint); color:var(--green-deep);
+    display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .lesson-btn.active .num{ background:rgba(255,255,255,0.2); color:#fff; }
+
+  .viewer{ display:flex; flex-direction:column; align-items:center; padding: 26px 20px 40px; }
+  .stage-wrap{ width:100%; max-width: 1100px; }
+  .lesson-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.3rem; color:var(--blue-deep); margin: 0 0 4px; }
+  .lesson-sub{ font-size:0.86rem; color:var(--ink-soft); margin-bottom:16px; }
+
+  .stage{
+    position:relative; width:100%; aspect-ratio: 16/9; background:#fff; border-radius:12px;
+    overflow:hidden; box-shadow: 0 16px 40px rgba(19,36,54,0.18); border:1px solid var(--line);
+  }
+  .stage:fullscreen{ border-radius:0; aspect-ratio:unset; }
+  .slide{ position:absolute; inset:0; padding: 4.2% 4.6%; display:flex; flex-direction:column; font-size: clamp(9px, 1.05vw, 16px); }
+  .slide.dark{ background:var(--blue-deep); color:#fff; }
+  .slide.tint{ background:var(--tint); }
+  .slide.light{ background:#fff; }
+
+  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:0.78em; font-weight:700; letter-spacing:0.12em; color:var(--green-deep); margin-bottom:0.6em; }
+  .slide.dark .eyebrow{ color:#7fd9b2; }
+  .slide h1{ font-family:'Fraunces',serif; font-weight:700; font-size:2.6em; line-height:1.08; margin:0 0 0.3em; color:var(--blue-deep); }
+  .slide.dark h1{ color:#fff; }
+  .slide .meta{ font-size:1.05em; color: var(--ink-soft); margin-bottom: 0.8em; }
+  .slide.dark .meta{ color:#d7e4ee; }
+
+  .field-row{ display:flex; gap: 2.2em; margin-top:auto; padding-top: 1em; flex-wrap:wrap; }
+  .field{ flex:1; min-width: 110px; }
+  .field label{ display:block; font-family:'IBM Plex Mono',monospace; font-size:0.68em; font-weight:700; letter-spacing:0.08em; color:#9fb3c8; margin-bottom:0.4em; }
+  .field input{
+    width:100%; background:transparent; border:none; border-bottom:1.5px solid #44608a; color:#fff;
+    font-size:1.05em; padding:0.25em 0.1em; outline:none;
+  }
+  .field input::placeholder{ color:#5e7ba3; }
+  .slide.light .field label, .slide.tint .field label{ color:var(--ink-soft); }
+  .slide.light .field input, .slide.tint .field input{ border-bottom-color:#c7d3d0; color:var(--ink); }
+  .field input:focus{ border-bottom-color:var(--amber); }
+
+  .icon-circle{
+    width: 2em; height:2em; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:0.95em; color:#fff; flex-shrink:0;
+  }
+
+  .focus-row{ display:flex; gap:0.9em; align-items:flex-start; padding: 0.9em 0; border-bottom:1px solid var(--line); }
+  .focus-row:last-child{ border-bottom:none; }
+  .focus-row b{ display:block; font-size:1.12em; margin-bottom:0.2em; }
+  .focus-row p{ margin:0; color:var(--ink-soft); font-size:0.92em; line-height:1.5; }
+
+  .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 1.4em; flex:1; min-height:0; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:0.7em; padding: 1em 1.2em; overflow-y:auto; }
+  .card.tintbg{ background:var(--tint); }
+  .card h4{ margin:0 0 0.8em; font-family:'IBM Plex Mono',monospace; font-size:0.78em; letter-spacing:0.1em; color:var(--green-deep); }
+  .flow-item{ display:flex; gap:0.8em; margin-bottom:0.7em; }
+  .flow-time{ font-family:'IBM Plex Mono',monospace; font-size:0.78em; font-weight:700; color:var(--green-deep); width:5.4em; flex-shrink:0; white-space:nowrap; }
+  .flow-item b{ display:block; font-size:0.95em; }
+  .flow-item span{ color:var(--ink-soft); font-size:0.82em; }
+
+  .line-input{
+    width:100%; border:none; border-bottom:1.5px dashed #c7d3d0; background:transparent; padding:0.4em 0.1em;
+    font-size:0.95em; color:var(--ink); outline:none; margin-bottom:0.9em;
+  }
+  .line-input:focus{ border-bottom-color:var(--blue); border-bottom-style:solid; }
+
+  .question-row{ display:flex; align-items:center; gap:0.8em; padding:0.55em 0; }
+  .question-row span{ font-size:0.98em; }
+  .chk{ width:1.3em; height:1.3em; border-radius:4px; border:2px solid var(--green); flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .chk.checked{ background:var(--green); }
+  .chk.checked::after{ content:"✓"; color:#fff; font-size:0.85em; font-weight:700; }
+
+  .ib-row{ display:flex; align-items:center; gap:0.8em; background:var(--tint); border-radius:0.6em; padding:0.7em 1em; margin-bottom:0.6em; }
+  .ib-num{ width:1.9em; height:1.9em; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9em; flex-shrink:0; }
+
+  .avatar-upload{
+    width:5.5em; height:5.5em; border-radius:50%; background:var(--blue); display:flex; align-items:center;
+    justify-content:center; color:#fff; font-size:0.7em; font-weight:700; cursor:pointer; background-size:cover; background-position:center;
+    border: 2px dashed rgba(255,255,255,0.5);
+  }
+  .band-pill{
+    flex:1; text-align:center; border-radius:0.6em; padding: 0.9em 0.4em; font-weight:700; font-size:0.92em;
+    border: 2px solid; cursor:pointer; background:#fff; color:var(--ink);
+  }
+  .band-pill.selected{ color:#fff; }
+
+  .controls{ display:flex; align-items:center; justify-content:space-between; margin-top:16px; width:100%; max-width:1100px; gap:10px; flex-wrap:wrap; }
+  .nav-btn{
+    display:flex; align-items:center; gap:8px; background:#fff; border:1.5px solid var(--line); color:var(--ink);
+    font-weight:600; font-size:0.9rem; padding:10px 18px; border-radius:999px; cursor:pointer; transition: all .15s ease;
+  }
+  .nav-btn:hover:not(:disabled){ border-color:var(--blue); color:var(--blue); }
+  .nav-btn:disabled{ opacity:0.35; cursor:default; }
+  .counter{ font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:var(--ink-soft); }
+  .fs-btn{ background: var(--green); color:#fff; border:none; padding:10px 18px; border-radius:999px; font-weight:600; font-size:0.9rem; cursor:pointer; }
+  .fs-btn:hover{ background:var(--green-deep); }
+  .clear-btn{ background:none; border:none; color:var(--ink-soft); font-size:0.78rem; text-decoration:underline; cursor:pointer; padding:4px; }
+
+  @media (max-width: 820px){
+    .app{ grid-template-columns: 1fr; }
+    .sidebar{ border-right:none; border-bottom:1px solid var(--line); display:flex; overflow-x:auto; gap:6px; padding:12px; }
+    .lesson-btn{ white-space:nowrap; width:auto; margin-bottom:0; }
+    .stage{ aspect-ratio: 4/5; }
+    .two-col{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="mark">WT</span> Lesson Library</div>
+  <div class="hint">Fill in your name and notes right on the slide, then share this tab on your VooV call.</div>
+</div>
+
+<div class="app">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="viewer">
+    <div class="stage-wrap">
+      <h2 class="lesson-title" id="lessonTitle"></h2>
+      <p class="lesson-sub" id="lessonSub"></p>
+      <div class="stage" id="stage"></div>
+      <div class="controls">
+        <button class="nav-btn" id="prevBtn">&#8592; Prev</button>
+        <span class="counter" id="counter"></span>
+        <button class="clear-btn" id="clearBtn">Clear my filled-in info for this lesson</button>
+        <button class="fs-btn" id="fsBtn">Fullscreen for Sharing</button>
+        <button class="nav-btn" id="nextBtn">Next &#8594;</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ---------------- Content data ---------------- */
+const topics = [
+  { title: "Pronunciation Basics", level: "Beginner", focus: [
+    ['The "TH" Sounds', "Mastering the /ð/ (this) and /θ/ (think) sounds."],
+    ["Ending Consonants", "Pronouncing final consonants (/t/, /d/, /p/, /k/) clearly, without dropping them or adding a vowel sound."],
+    ["L vs. R Distinction", "Training the tongue to clearly separate /l/ and /r/ sounds."] ] },
+  { title: "Functional Survival Phrases", level: "Beginner", focus: [
+    ["Daily Requests", 'Asking for help, directions, prices, or clarification (e.g., "Could you repeat that?").'],
+    ["Self-Introduction", "Stating name, hometown, occupation, and basic hobbies."],
+    ["Polite Markers", "Moving past a direct translation style by using please, thank you, and excuse me."] ] },
+  { title: "Subject-Verb Mechanics", level: "Beginner", focus: [
+    ["Gendered Pronouns", "Breaking the habit of mixing up he and she in spoken conversation."],
+    ["Singular vs. Plural", 'Remembering to add plural "-s" or "-es" suffixes to nouns.'],
+    ["Basic Word Order", "Mastering Subject + Verb + Object structures without dropping verbs."] ] },
+  { title: "Basic Timeline Shifts", level: "Beginner-High", focus: [
+    ["Past vs. Present", 'Moving from time markers (like "yesterday") to changing the verb form (go to went).'],
+    ["Future Tense", "Using will and going to for upcoming actions."],
+    ["Continuous Actions", 'Using the "-ing" form for things happening right now.'] ] },
+  { title: "Determiners and Connectors", level: "Beginner-High", focus: [
+    ["Articles", "Learning when to use a, an, and the (concepts that don't exist in Chinese grammar)."],
+    ["Prepositions of Place/Time", "Correctly applying in, on, and at for locations and dates."],
+    ["Simple Conjunctions", "Linking ideas logically using and, but, because, and so."] ] },
+  { title: "Sentence Rhythm and Intonation", level: "Intermediate-Low", focus: [
+    ["Word Stress", "Identifying which syllable in a multi-syllable word carries the primary accent."],
+    ["Sentence Stress", "Emphasizing content words while shrinking function words for natural rhythm."],
+    ["Linking Sounds", 'Smoothly connecting words (e.g., "an apple" becomes anapple).'] ] },
+  { title: "Conversational Expansion", level: "Intermediate-Low", focus: [
+    ["Idiomatic Fillers", "Using conversational anchors like well, actually, and you know to buy time to think."],
+    ["Follow-up Questions", "Keeping a conversation flowing by asking open-ended questions."],
+    ["Expressing Opinions", "Using soft openers like I think..., In my opinion..., or I feel like...."] ] },
+  { title: "Compound Grammar & Conditions", level: "Intermediate", focus: [
+    ["Perfect Tenses", "Mastering the Present Perfect (I have done) for life experiences or ongoing situations."],
+    ["Relative Clauses", "Using who, which, and that to combine two sentences into one."],
+    ["Basic Conditionals", "Expressing hypothetical situations using If... I would... structures."] ] },
+  { title: "Contextual Vocabulary & Phrasal Verbs", level: "Intermediate", focus: [
+    ["Phrasal Verbs", "Moving from formal verbs to common multi-word verbs (pick up instead of collect)."],
+    ["Collocations", "Learning which words naturally pair together (make a mistake, not do a mistake)."],
+    ["Synonym Variety", "Expanding past good, bad, happy to precise words like excellent, terrible, thrilled."] ] },
+  { title: "Thinking in English", level: "Intermediate-High", focus: [
+    ["Direct Association", "Eliminating the internal Chinese-to-English translation loop."],
+    ["Paraphrasing", "Explaining a missing vocabulary word using alternative English phrasing."],
+    ["Cultural Nuance", "Understanding when a phrase fits casual, polite, or formal settings."] ] },
+];
+
+const flow = [
+  ["0:00–0:05", "Warm-Up", "Greet the student, review last session's homework."],
+  ["0:05–0:10", "Introduce", "Present today's focus with clear examples."],
+  ["0:10–0:20", "Guided Practice", "Practice together — repetition, sentences, role-play."],
+  ["0:20–0:27", "Free Practice", "Apply the focus in open conversation."],
+  ["0:27–0:30", "Wrap-Up", "Recap, assign homework, say goodbye."],
+];
+
+const icebreakers = [
+  "What's your name, and where are you from?",
+  "What do you enjoy doing after school or work?",
+  "Why do you want to improve your English?",
+  "What are you hoping to be able to do with English?",
+];
+
+const levelBands = [
+  { band: "Beginner", color: "#1f8a5f", note: "START HERE", questions: [
+    "Can say the alphabet and count to 20", 'Can answer "What is your name?" and "How old are you?"',
+    "Knows basic colors, numbers, and family words", 'Can form a simple sentence: "I am a student."',
+    "Understands simple yes/no questions" ] },
+  { band: "Intermediate", color: "#1e4e8c", note: "IF BEGINNER PASSES", questions: [
+    "Can describe daily routine using present simple", "Can talk about a past event using past tense",
+    'Can ask and answer "Why" and "How" questions', "Uses connecting words: and, but, because",
+    "Can hold a short back-and-forth conversation" ] },
+  { band: "Advanced", color: "#f2a73b", note: "IF INTERMEDIATE PASSES", questions: [
+    "Can discuss opinions and give reasons", "Uses a mix of past, present, and future naturally",
+    "Can explain a word they forgot using other words", "Uses idioms or phrasal verbs comfortably",
+    "Can debate or compare two ideas in conversation" ] },
+];
+
+/* ---------------- Build lesson/slide model ---------------- */
+function introSlides(){
+  return [
+    { type: "title", badge: "Lesson 0 · First Session", title: "Welcome & Level Check", level: "All Levels", note: "This is the student's first session — use it to welcome them and find their level." },
+    { type: "teacher" },
+    { type: "icebreaker" },
+    { type: "levelcheck", data: levelBands[0] },
+    { type: "levelcheck", data: levelBands[1] },
+    { type: "levelcheck", data: levelBands[2] },
+    { type: "introwrap" },
+  ];
+}
+function topicSlides(topic){
+  return [
+    { type: "title", badge: "Skill-Based", title: topic.title, level: topic.level, note: "Fill in the fields below before your session begins." },
+    { type: "focus", title: topic.title, focus: topic.focus },
+    { type: "practice", title: topic.title },
+    { type: "wrap", title: topic.title },
+  ];
+}
+
+const lessons = [
+  { id: 0, label: "Lesson 0", title: "Welcome & Level Check", slides: introSlides(),
+    sub: "First-session welcome, teacher introduction, and level check." },
+  ...topics.map((t, i) => ({
+    id: i + 1, label: `Lesson ${i+1}`, title: t.title, slides: topicSlides(t),
+    sub: "Fill-in lesson template — title, focus areas, teach & practice, wrap-up.",
+  })),
+];
+
+/* ---------------- State + storage ---------------- */
+let currentLesson = 0;
+let currentSlide = 0;
+
+function storeKey(field){ return `vwt-slide:${currentLesson}:${currentSlide}:${field}`; }
+function save(field, value){ try{ localStorage.setItem(storeKey(field), value); }catch(e){} }
+function load(field, fallback=""){ try{ const v = localStorage.getItem(storeKey(field)); return v===null?fallback:v; }catch(e){ return fallback; } }
+
+/* ---------------- Rendering ---------------- */
+const sidebar = document.getElementById('sidebar');
+const stage = document.getElementById('stage');
+const counter = document.getElementById('counter');
+const lessonTitle = document.getElementById('lessonTitle');
+const lessonSub = document.getElementById('lessonSub');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+function renderSidebar(){
+  sidebar.innerHTML = '';
+  lessons.forEach(l => {
+    const btn = document.createElement('button');
+    btn.className = 'lesson-btn' + (l.id === currentLesson ? ' active' : '');
+    btn.innerHTML = `<span class="num">${l.id}</span> ${l.title}`;
+    btn.onclick = () => { currentLesson = l.id; currentSlide = 0; render(); };
+    sidebar.appendChild(btn);
+  });
+}
+
+function fieldRowHTML(fields){
+  return `<div class="field-row">${fields.map(f => `
+    <div class="field">
+      <label>${f.label}</label>
+      <input type="text" data-field="${f.id}" placeholder="${f.placeholder||''}">
+    </div>`).join('')}</div>`;
+}
+
+function titleSlideHTML(s){
+  const iconColor = s.badge.includes('Lesson 0') ? '#f2a73b' : '#1f8a5f';
+  return `
+    <div class="slide dark">
+      <div class="eyebrow" style="color:${s.badge.includes('Lesson 0')?'#f2a73b':'#7fd9b2'}">${s.badge.toUpperCase()}</div>
+      <h1>${s.title}</h1>
+      <div class="meta">Level: ${s.level} &nbsp;·&nbsp; Duration: 30 minutes</div>
+      <div style="display:flex; align-items:center; gap:0.8em; margin-bottom:1.2em;">
+        <span class="icon-circle" style="background:${iconColor}">${currentLesson}</span>
+        <span style="font-style:italic; color:#c7d6e6; font-size:0.95em;">${s.note}</span>
+      </div>
+      ${fieldRowHTML([
+        {id:'volunteer', label:'Volunteer Name'},
+        {id:'student', label:'Student Name'},
+        {id:'date', label:'Date'},
+        {id:'session', label:'Session #'},
+      ])}
+    </div>`;
+}
+
+function focusSlideHTML(s){
+  const colors = ['#1f8a5f','#1e4e8c','#f2a73b'];
+  return `
+    <div class="slide light">
+      <div class="eyebrow">FOCUS AREAS</div>
+      <h1 style="font-size:1.9em;">${s.title}</h1>
+      <div>
+        ${s.focus.map(([name,desc],i) => `
+          <div class="focus-row">
+            <span class="icon-circle" style="background:${colors[i%3]}">${i+1}</span>
+            <div><b>${name}</b><p>${desc}</p></div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function practiceSlideHTML(s){
+  return `
+    <div class="slide light">
+      <div class="eyebrow">TEACH &amp; PRACTICE</div>
+      <h1 style="font-size:1.5em;">${s.title}</h1>
+      <div class="two-col">
+        <div class="card tintbg">
+          <h4>SUGGESTED FLOW</h4>
+          ${flow.map(([time,step,desc]) => `
+            <div class="flow-item">
+              <div class="flow-time">${time}</div>
+              <div><b>${step}</b><span>${desc}</span></div>
+            </div>`).join('')}
+        </div>
+        <div class="card">
+          <h4 style="color:#1e4e8c;">PRACTICE SPACE</h4>
+          <p style="font-size:0.85em; color:var(--ink-soft); font-style:italic; margin:0 0 0.9em;">Write 3–4 example sentences or questions to practice this focus area.</p>
+          ${[1,2,3,4].map(n => `<input class="line-input" type="text" data-field="practice${n}" placeholder="${n}. ...">`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function wrapSlideHTML(s){
+  return `
+    <div class="slide tint">
+      <div class="eyebrow">WRAP-UP</div>
+      <h1 style="font-size:1.5em;">${s.title}</h1>
+      <div class="two-col">
+        <div class="card">
+          <h4>KEY VOCABULARY &amp; PHRASES</h4>
+          ${[1,2,3,4].map(n => `<input class="line-input" type="text" data-field="vocab${n}" placeholder="${n}. ...">`).join('')}
+        </div>
+        <div class="card">
+          <h4 style="color:#1e4e8c;">HOMEWORK &amp; SESSION NOTES</h4>
+          ${[1,2,3,4].map(n => `<input class="line-input" type="text" data-field="notes${n}" placeholder="...">`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function teacherSlideHTML(){
+  return `
+    <div class="slide light">
+      <div class="eyebrow">MEET YOUR TEACHER</div>
+      <h1 style="font-size:1.9em;">Introduce Yourself</h1>
+      <p style="font-size:0.85em; color:var(--ink-soft); font-style:italic; margin:0 0 1em;">Volunteers: fill this in before your first session, and click the circle to add your photo.</p>
+      <div class="two-col" style="grid-template-columns: 1fr 1.6fr;">
+        <div class="card tintbg" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+          <div class="avatar-upload" id="avatarCircle">CLICK TO ADD PHOTO</div>
+          <input type="file" id="avatarFile" accept="image/*" style="display:none;">
+          <input class="line-input" style="margin-top:1em;" type="text" data-field="t_name" placeholder="Name">
+          <input class="line-input" type="text" data-field="t_country" placeholder="Country">
+          <input class="line-input" type="text" data-field="t_lang" placeholder="Languages spoken">
+        </div>
+        <div class="card">
+          <h4>A LITTLE ABOUT ME</h4>
+          ${[1,2,3].map(n => `<input class="line-input" type="text" data-field="t_bio${n}" placeholder="...">`).join('')}
+          <h4 style="margin-top:0.8em;">HOBBIES &amp; INTERESTS</h4>
+          <input class="line-input" type="text" data-field="t_hobbies" placeholder="...">
+          <h4 style="margin-top:0.8em;">WHY I VOLUNTEER</h4>
+          <input class="line-input" type="text" data-field="t_why" placeholder="...">
+        </div>
+      </div>
+    </div>`;
+}
+
+function icebreakerSlideHTML(){
+  return `
+    <div class="slide light">
+      <div class="eyebrow">STUDENT SELF-INTRODUCTION</div>
+      <h1 style="font-size:1.9em;">Icebreaker Questions</h1>
+      <p style="font-size:0.85em; color:var(--ink-soft); font-style:italic; margin:0 0 1em;">Ask these first — they work at any level and help the student relax.</p>
+      <div style="overflow-y:auto;">
+        ${icebreakers.map((q,i) => `<div class="ib-row"><span class="ib-num">${i+1}</span><span>${q}</span></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function levelCheckSlideHTML(s){
+  const d = s.data;
+  return `
+    <div class="slide light">
+      <div class="eyebrow">LEVEL CHECK</div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <h1 style="font-size:1.9em; margin-bottom:0.5em;">${d.band}</h1>
+        <span style="background:${d.color}; color:#fff; font-size:0.75em; font-weight:700; padding:0.5em 1em; border-radius:999px;">${d.note}</span>
+      </div>
+      <div class="card tintbg" style="flex:1;">
+        ${d.questions.map((q,i) => `
+          <div class="question-row">
+            <span class="chk" style="border-color:${d.color}" data-chk="lvl${i}"></span>
+            <span>${q}</span>
+          </div>`).join('')}
+      </div>
+      <p style="font-size:0.78em; color:var(--ink-soft); font-style:italic; margin:0.6em 0 0;">Check off what the student answers comfortably.</p>
+    </div>`;
+}
+
+function introWrapSlideHTML(){
+  const bands = [["Beginner","#1f8a5f"],["Beginner-High","#3e8f6b"],["Intermediate","#1e4e8c"],["Intermediate-High","#f2a73b"]];
+  return `
+    <div class="slide tint">
+      <div class="eyebrow">WRAP-UP</div>
+      <h1 style="font-size:1.6em;">Set the Starting Level</h1>
+      <div style="display:flex; gap:0.7em; margin-bottom:0.8em;">
+        ${bands.map(([label,color]) => `<div class="band-pill" style="border-color:${color};" data-band="${label}" data-color="${color}">${label}</div>`).join('')}
+      </div>
+      <div class="card" style="flex:1;">
+        <h4>FIRST REGULAR LESSON PLAN</h4>
+        <input class="line-input" type="text" data-field="plan_topic" placeholder="Recommended starting topic...">
+        <input class="line-input" type="text" data-field="plan_time" placeholder="Suggested weekly time...">
+        <input class="line-input" type="text" data-field="plan_notes" placeholder="Notes for the next volunteer / admin...">
+      </div>
+    </div>`;
+}
+
+function slideHTML(s){
+  switch(s.type){
+    case 'title': return titleSlideHTML(s);
+    case 'focus': return focusSlideHTML(s);
+    case 'practice': return practiceSlideHTML(s);
+    case 'wrap': return wrapSlideHTML(s);
+    case 'teacher': return teacherSlideHTML();
+    case 'icebreaker': return icebreakerSlideHTML();
+    case 'levelcheck': return levelCheckSlideHTML(s);
+    case 'introwrap': return introWrapSlideHTML();
+    default: return '';
+  }
+}
+
+function wireInputs(){
+  stage.querySelectorAll('input[data-field]').forEach(inp => {
+    inp.value = load(inp.dataset.field, '');
+    inp.addEventListener('input', () => save(inp.dataset.field, inp.value));
+  });
+  stage.querySelectorAll('.chk').forEach(chk => {
+    const key = 'chk_' + chk.dataset.chk;
+    if(load(key) === '1') chk.classList.add('checked');
+    chk.addEventListener('click', () => {
+      chk.classList.toggle('checked');
+      save(key, chk.classList.contains('checked') ? '1' : '0');
+    });
+  });
+  stage.querySelectorAll('.band-pill').forEach(pill => {
+    const key = 'band_selected';
+    if(load(key) === pill.dataset.band){
+      pill.classList.add('selected');
+      pill.style.background = pill.dataset.color;
+    }
+    pill.addEventListener('click', () => {
+      stage.querySelectorAll('.band-pill').forEach(p => { p.classList.remove('selected'); p.style.background = '#fff'; p.style.color = 'var(--ink)'; });
+      pill.classList.add('selected');
+      pill.style.background = pill.dataset.color;
+      pill.style.color = '#fff';
+      save(key, pill.dataset.band);
+    });
+  });
+  const avatarCircle = stage.querySelector('#avatarCircle');
+  const avatarFile = stage.querySelector('#avatarFile');
+  if(avatarCircle && avatarFile){
+    const saved = load('t_photo', '');
+    if(saved){ avatarCircle.style.backgroundImage = `url(${saved})`; avatarCircle.textContent = ''; }
+    avatarCircle.addEventListener('click', () => avatarFile.click());
+    avatarFile.addEventListener('change', () => {
+      const file = avatarFile.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        avatarCircle.style.backgroundImage = `url(${reader.result})`;
+        avatarCircle.textContent = '';
+        save('t_photo', reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+function render(){
+  const l = lessons.find(x => x.id === currentLesson);
+  const s = l.slides[currentSlide];
+  stage.innerHTML = slideHTML(s);
+  wireInputs();
+  counter.textContent = `Slide ${currentSlide + 1} of ${l.slides.length}`;
+  lessonTitle.textContent = `${l.label}: ${l.title}`;
+  lessonSub.textContent = l.sub;
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide === l.slides.length - 1;
+  renderSidebar();
+}
+
+prevBtn.onclick = () => { if(currentSlide > 0){ currentSlide--; render(); } };
+nextBtn.onclick = () => {
+  const l = lessons.find(x => x.id === currentLesson);
+  if(currentSlide < l.slides.length - 1){ currentSlide++; render(); }
+};
+document.addEventListener('keydown', (e) => {
+  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if(e.key === 'ArrowRight') nextBtn.click();
+  if(e.key === 'ArrowLeft') prevBtn.click();
+});
+document.getElementById('fsBtn').onclick = () => { if(stage.requestFullscreen) stage.requestFullscreen(); };
+document.getElementById('clearBtn').onclick = () => {
+  if(!confirm('Clear everything typed in for this lesson? This cannot be undone.')) return;
+  const prefix = `vwt-slide:${currentLesson}:`;
+  Object.keys(localStorage).filter(k => k.startsWith(prefix)).forEach(k => localStorage.removeItem(k));
+  render();
+};
+
+render();
+</script>
+
+</body>
+</html>
