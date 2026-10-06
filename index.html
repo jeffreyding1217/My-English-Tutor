@@ -107,8 +107,14 @@
   }
   nav.links a:hover{ color: var(--blue); }
   .nav-ctas{ display:flex; align-items:center; gap: 12px; }
-  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:6px; }
-  .nav-toggle span{ display:block; width:22px; height:2px; background: var(--ink); margin:5px 0; border-radius:2px; }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:6px; z-index:200; position:relative; }
+  .nav-toggle span{ display:block; width:22px; height:2px; background: var(--ink); margin:5px 0; border-radius:2px; transition: transform .2s ease, opacity .2s ease; }
+  .nav-toggle.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2){ opacity:0; }
+  .nav-toggle.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+  .mobile-links{ display:none; flex-direction:column; gap:4px; padding: 10px 28px 18px; border-top: 1px solid var(--line); }
+  .mobile-links a{ padding:12px 4px; font-size:0.95rem; font-weight:500; color: var(--ink-soft); border-bottom:1px solid var(--line); }
+  .mobile-links.open{ display:flex; }
 
   /* HERO */
   .hero{
@@ -415,6 +421,8 @@
     .contact-grid{ grid-template-columns: 1fr; }
     .footer-grid{ grid-template-columns: 1fr 1fr; }
     nav.links{ display:none; }
+    .nav-ctas{ display:none; }
+    .nav-toggle{ display:block; }
   }
   @media (max-width: 620px){
     .nav-ctas .btn-ghost{ display:none; }
@@ -453,9 +461,23 @@
     </nav>
     <div class="nav-ctas">
       <a href="login.html" class="btn btn-ghost btn-sm">Log In</a>
-      <a href="login.html" class="btn btn-primary btn-sm">Become a Volunteer</a>
+      <a href="login.html?mode=signup" class="btn btn-primary btn-sm">Become a Volunteer</a>
     </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+  <nav class="mobile-links" id="mobileLinks">
+    <a href="#about">About</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#volunteer">Volunteer</a>
+    <a href="#students">Students</a>
+    <a href="#stories">Stories</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact</a>
+    <a href="login.html">Log In</a>
+    <a href="login.html?mode=signup" class="btn btn-primary btn-sm" style="margin-top:6px;">Become a Volunteer</a>
+  </nav>
 </header>
 
 <section class="hero" id="home">
@@ -469,9 +491,9 @@
         <a href="#students" class="btn btn-secondary">Register as a Student</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><b>4,200+</b><span>Volunteer tutors</span></div>
-        <div class="stat"><b>11,600+</b><span>Students matched</span></div>
-        <div class="stat"><b>38,000</b><span>Hours served</span></div>
+        <div class="stat"><b>100%</b><span>Free, always</span></div>
+        <div class="stat"><b>30 min</b><span>Weekly sessions</span></div>
+        <div class="stat"><b>1-on-1</b><span>Real conversation</span></div>
       </div>
     </div>
     <div class="hero-visual">
@@ -577,7 +599,7 @@
         <li><span class="chk">✓</span> Download official volunteer service-hour certificates</li>
       </ul>
       <div class="hero-ctas" style="margin-top:28px;">
-        <a href="login.html" class="btn btn-primary">Become a Volunteer</a>
+        <a href="login.html?mode=signup" class="btn btn-primary">Become a Volunteer</a>
       </div>
     </div>
     <div class="split-visual profile-card">
@@ -617,7 +639,7 @@
         <li><span class="chk">✓</span> Always free — no fees, no subscriptions</li>
       </ul>
       <div class="hero-ctas" style="margin-top:28px;">
-        <a href="login.html" class="btn btn-primary">Register as a Student</a>
+        <a href="login.html?role=student" class="btn btn-primary">Register as a Student</a>
       </div>
     </div>
     <div class="split-visual form-mock">
@@ -693,21 +715,22 @@
 <section class="section" id="stories">
   <div class="wrap">
     <div class="section-head center" style="max-width:600px; margin:0 auto 48px; text-align:center;">
-      <span class="eyebrow">Success stories</span>
+      <span class="eyebrow">What to expect</span>
       <h2>What ten weeks of conversation can do.</h2>
+      <p>We're a new program, so here's what a typical journey is designed to look like — real stories will replace this section as they come in.</p>
     </div>
     <div class="stories">
       <div class="story-card">
-        <p class="story-quote">"I used to freeze up in English class. Now I look forward to Tuesdays — we talk about everything from movies to university plans."</p>
-        <div class="story-who"><div class="avatar">W</div><div><b>Wei, 16</b><span>Student · Xi'an, China</span></div></div>
+        <p class="story-quote">A student who used to freeze up in English class starts looking forward to their weekly session — talking about everyday things like movies, school, and plans for the future.</p>
+        <div class="story-who"><div class="avatar">💬</div><div><b>Week 1–4</b><span>Building comfort &amp; confidence</span></div></div>
       </div>
       <div class="story-card">
-        <p class="story-quote">"I retired and thought my teaching days were over. Turns out I just needed a new classroom — this one happens to be online."</p>
-        <div class="story-who"><div class="avatar two">D</div><div><b>David</b><span>Volunteer · Manchester, UK</span></div></div>
+        <p class="story-quote">A volunteer finds a new way to put their experience to use — one weekly conversation, a real connection, no classroom required.</p>
+        <div class="story-who"><div class="avatar two">🌱</div><div><b>Week 5–8</b><span>Real two-way exchange</span></div></div>
       </div>
       <div class="story-card">
-        <p class="story-quote">"My daughter's confidence changed completely. She now records short videos in English just for fun, something she never did before."</p>
-        <div class="story-who"><div class="avatar">L</div><div><b>Lian's parent</b><span>Student family · Chengdu, China</span></div></div>
+        <p class="story-quote">A family notices their child using English outside of lessons — a little more willing to try, a little less afraid of getting it wrong.</p>
+        <div class="story-who"><div class="avatar">🎯</div><div><b>Week 9–10</b><span>Confidence that carries over</span></div></div>
       </div>
     </div>
   </div>
@@ -754,8 +777,8 @@
       <h2>Your next conversation is waiting.</h2>
       <p>Join thousands of volunteers and students already building bridges, one lesson at a time.</p>
       <div class="hero-ctas">
-        <a href="login.html" class="btn btn-secondary">Become a Volunteer</a>
-        <a href="login.html" class="btn btn-ghost">Register as a Student</a>
+        <a href="login.html?mode=signup" class="btn btn-secondary">Become a Volunteer</a>
+        <a href="login.html?role=student" class="btn btn-ghost">Register as a Student</a>
       </div>
     </div>
   </div>
@@ -842,6 +865,20 @@
 </footer>
 
 <script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const mobileLinks = document.getElementById('mobileLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = mobileLinks.classList.toggle('open');
+    navToggle.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  mobileLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileLinks.classList.remove('open');
+    navToggle.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', false);
+  }));
+
   // Tab switching for How It Works
   document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{

@@ -70,14 +70,14 @@
 <div class="topbar">
   <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
   <div class="who">
-    <span class="avatar-sm" id="avatarInitial">S</span>
-    Logged in as <b id="whoName">Student</b> &nbsp;·&nbsp; <a href="login.html">Log Out</a>
+    <span class="avatar-sm">👁</span>
+    <b>Preview Mode</b> — students don't need an account &nbsp;·&nbsp; <a href="index.html">Exit Preview</a>
   </div>
 </div>
 
 <div class="wrap">
-  <h1 class="hello" id="helloName">Welcome back 👋</h1>
-  <p class="hello-sub">Here's your next lesson and how your English is coming along.</p>
+  <h1 class="hello">A Student's View</h1>
+  <p class="hello-sub">This is an example of what a student would see — with sample lesson data, since students log in to join a call, not to track an account.</p>
 
   <div class="stat-row">
     <div class="stat-chip"><b>Thu, 7:00 PM</b><span>Your next lesson</span></div>
@@ -133,14 +133,7 @@
   </div>
 </div>
 
-<script>
-  try{
-    const name = localStorage.getItem('btc-demo-name') || 'Student';
-    document.getElementById('whoName').textContent = name;
-    document.getElementById('helloName').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
-    document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase() || 'S';
-  }catch(e){}
-</script>
+
 
 </body>
 </html>

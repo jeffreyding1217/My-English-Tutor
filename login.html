@@ -6,6 +6,7 @@
 <title>Log In — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48;
@@ -18,28 +19,46 @@
   .logo{ display:flex; align-items:center; gap:10px; justify-content:center; font-family:var(--font-display); font-weight:700; font-size:1.3rem; color:var(--blue-deep); margin-bottom:28px; }
   .logo .mark{ width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--blue),var(--green)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.85rem; font-weight:700; }
 
-  .card{ background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 20px 50px rgba(19,36,54,0.1); padding:38px; width:100%; max-width:420px; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:0 20px 50px rgba(19,36,54,0.1); padding:38px; width:100%; max-width:440px; }
   .tabs{ display:flex; background:var(--bg-tint); border-radius:999px; padding:4px; margin-bottom:26px; }
   .tab{ flex:1; text-align:center; padding:10px; border-radius:999px; font-weight:700; font-size:0.9rem; cursor:pointer; color:var(--ink-soft); }
   .tab.active{ background:var(--blue); color:#fff; }
+
   h1{ font-family:var(--font-display); font-size:1.4rem; margin:0 0 6px; color:var(--blue-deep); }
-  .sub{ font-size:0.88rem; color:var(--ink-soft); margin-bottom:24px; }
+  .sub{ font-size:0.88rem; color:var(--ink-soft); margin-bottom:22px; }
+
+  .mode-row{ display:flex; gap:18px; margin-bottom:20px; font-size:0.86rem; }
+  .mode-row a{ color:var(--ink-soft); cursor:pointer; font-weight:600; padding-bottom:3px; border-bottom:2px solid transparent; }
+  .mode-row a.active{ color:var(--blue); border-bottom-color:var(--blue); }
+
   label{ display:block; font-size:0.8rem; font-weight:600; color:var(--ink-soft); margin-bottom:6px; }
   .field{ margin-bottom:16px; }
   input{ width:100%; padding:11px 14px; border-radius:9px; border:1.5px solid var(--line); font-size:0.92rem; font-family:var(--font-body); background:var(--bg-tint); color:var(--ink); }
   input:focus{ outline:none; border-color:var(--blue); }
   .btn{ width:100%; padding:13px; border-radius:999px; border:none; background:var(--blue); color:#fff; font-weight:700; font-size:0.95rem; cursor:pointer; margin-top:6px; }
   .btn:hover{ background:var(--blue-deep); }
-  .demo-note{ margin-top:18px; font-size:0.78rem; color:var(--ink-soft); background:var(--bg-tint); border-radius:10px; padding:12px 14px; line-height:1.5; }
-  .switch{ text-align:center; margin-top:18px; font-size:0.85rem; color:var(--ink-soft); }
-  .switch a{ color:var(--blue); font-weight:600; text-decoration:none; cursor:pointer; }
+  .btn:disabled{ opacity:0.6; cursor:default; }
+
+  .msg{ margin-top:16px; font-size:0.85rem; padding:12px 14px; border-radius:10px; line-height:1.5; display:none; }
+  .msg.show{ display:block; }
+  .msg.error{ background:#fdecea; color:#a3312a; }
+  .msg.info{ background:var(--bg-tint); color:var(--ink-soft); }
+  .msg.success{ background:#e7f5ee; color:var(--green-deep); }
+
+  .setup-note{ font-size:0.8rem; color:#9a6b1a; background:#fdf1e0; border-radius:10px; padding:12px 14px; line-height:1.55; margin-bottom:20px; }
+
+  .student-info{ text-align:left; }
+  .student-info .icon{ width:44px; height:44px; border-radius:12px; background:var(--bg-tint); color:var(--green-deep); display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:14px; }
+  .student-info p{ font-size:0.92rem; color:var(--ink-soft); line-height:1.6; margin:0 0 14px; }
+  .student-info a.btn{ display:block; text-align:center; text-decoration:none; }
+
   .back{ text-align:center; margin-top:22px; }
   .back a{ color:var(--ink-soft); font-size:0.85rem; text-decoration:none; }
 </style>
 </head>
 <body>
 
-<div style="width:100%; max-width:420px;">
+<div style="width:100%; max-width:440px;">
   <div class="logo"><span class="mark">BC</span> Bridge to China</div>
 
   <div class="card">
@@ -48,53 +67,139 @@
       <div class="tab" id="tabStudent" onclick="setRole('student')">Student</div>
     </div>
 
-    <h1 id="formTitle">Volunteer Log In</h1>
-    <p class="sub" id="formSub">Welcome back — log in to see your sessions and lesson materials.</p>
+    <!-- VOLUNTEER PANEL -->
+    <div id="volunteerPanel">
+      <div class="setup-note" id="setupNote" style="display:none;">
+        <b>Not connected yet:</b> this form needs a free Supabase project before it can create real accounts. Open <code>auth-config.js</code> and follow the instructions inside — it's a 5-minute setup.
+      </div>
 
-    <form id="loginForm" onsubmit="return handleLogin(event)">
-      <div class="field">
-        <label>Full Name</label>
-        <input type="text" id="nameInput" placeholder="e.g. Maren Ostrowski" required>
-      </div>
-      <div class="field">
-        <label>Email</label>
-        <input type="email" placeholder="you@example.com" required>
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input type="password" placeholder="••••••••" required>
-      </div>
-      <button class="btn" type="submit" id="submitBtn">Log In as Volunteer</button>
-    </form>
+      <h1 id="formTitle">Volunteer Log In</h1>
+      <p class="sub" id="formSub">Welcome back — log in to see your sessions and lesson materials.</p>
 
-    <div class="demo-note">
-      <b>Demo note:</b> this site isn't wired to a real account system yet — any name/email/password will work and will take you straight to a sample dashboard, so you can see what the real one should look like.
+      <div class="mode-row">
+        <a id="modeLogin" class="active" onclick="setMode('login')">Log In</a>
+        <a id="modeSignup" onclick="setMode('signup')">Create an Account</a>
+      </div>
+
+      <form id="loginForm" onsubmit="return handleSubmit(event)">
+        <div class="field" id="nameField" style="display:none;">
+          <label>Full Name</label>
+          <input type="text" id="nameInput" placeholder="e.g. Maren Ostrowski">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="emailInput" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="passwordInput" placeholder="••••••••" required minlength="6">
+        </div>
+        <button class="btn" type="submit" id="submitBtn">Log In</button>
+      </form>
+
+      <div class="msg" id="formMsg"></div>
     </div>
 
-    <div class="switch">New here? <a href="index.html#volunteer">Create an account</a></div>
-  </div>
+    <!-- STUDENT PANEL -->
+    <div id="studentPanel" class="student-info" style="display:none;">
+      <div class="icon">💬</div>
+      <h1>No Account Needed</h1>
+      <p>Students don't need to sign up or log in. Before each lesson, your volunteer will send you a link to join the video call directly — just tap it when it's time.</p>
+      <p>Want to see what a student's lesson tracker could look like once you're a regular? Here's a preview:</p>
+      <a class="btn" href="student-dashboard.html">Preview a Student Dashboard</a>
+    </div>
 
-  <div class="back"><a href="index.html">&larr; Back to the homepage</a></div>
+    <div class="back" style="margin-top:0; padding-top:20px;"><a href="index.html">&larr; Back to the homepage</a></div>
+  </div>
 </div>
 
+<script src="auth-config.js"></script>
 <script>
   let role = 'volunteer';
+  let mode = 'login';
+
+  if (!isConfigured) {
+    document.getElementById('setupNote').style.display = 'block';
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('mode') === 'signup') setMode('signup');
+  if (params.get('role') === 'student') setRole('student');
+
   function setRole(r){
     role = r;
     document.getElementById('tabVolunteer').classList.toggle('active', r==='volunteer');
     document.getElementById('tabStudent').classList.toggle('active', r==='student');
-    document.getElementById('formTitle').textContent = r==='volunteer' ? 'Volunteer Log In' : 'Student Log In';
-    document.getElementById('formSub').textContent = r==='volunteer'
-      ? 'Welcome back — log in to see your sessions and lesson materials.'
-      : 'Welcome back — log in to see your upcoming lessons and progress.';
-    document.getElementById('submitBtn').textContent = r==='volunteer' ? 'Log In as Volunteer' : 'Log In as Student';
-    document.getElementById('nameInput').placeholder = r==='volunteer' ? 'e.g. Maren Ostrowski' : 'e.g. Yue Li';
+    document.getElementById('volunteerPanel').style.display = r==='volunteer' ? 'block' : 'none';
+    document.getElementById('studentPanel').style.display = r==='student' ? 'block' : 'none';
   }
-  function handleLogin(e){
+
+  function setMode(m){
+    mode = m;
+    document.getElementById('modeLogin').classList.toggle('active', m==='login');
+    document.getElementById('modeSignup').classList.toggle('active', m==='signup');
+    document.getElementById('nameField').style.display = m==='signup' ? 'block' : 'none';
+    document.getElementById('nameInput').required = m==='signup';
+    document.getElementById('formTitle').textContent = m==='login' ? 'Volunteer Log In' : 'Create Your Volunteer Account';
+    document.getElementById('formSub').textContent = m==='login'
+      ? 'Welcome back — log in to see your sessions and lesson materials.'
+      : "Takes under a minute — you'll be on your dashboard right after.";
+    document.getElementById('submitBtn').textContent = m==='login' ? 'Log In' : 'Create Account';
+    hideMsg();
+  }
+
+  function showMsg(text, type){
+    const el = document.getElementById('formMsg');
+    el.textContent = text;
+    el.className = 'msg show ' + type;
+  }
+  function hideMsg(){
+    document.getElementById('formMsg').className = 'msg';
+  }
+
+  async function handleSubmit(e){
     e.preventDefault();
-    const name = document.getElementById('nameInput').value || (role === 'volunteer' ? 'Volunteer' : 'Student');
-    try{ localStorage.setItem('btc-demo-name', name); }catch(err){}
-    window.location.href = role === 'volunteer' ? 'volunteer-dashboard.html' : 'student-dashboard.html';
+    hideMsg();
+
+    if (!isConfigured) {
+      showMsg("Supabase isn't connected yet — see the note above and auth-config.js.", 'error');
+      return false;
+    }
+
+    const email = document.getElementById('emailInput').value.trim();
+    const password = document.getElementById('passwordInput').value;
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+
+    try {
+      if (mode === 'signup') {
+        const fullName = document.getElementById('nameInput').value.trim();
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) throw error;
+
+        if (data.user) {
+          await supabaseClient.from('profiles').insert({
+            id: data.user.id,
+            full_name: fullName,
+            role: 'volunteer',
+          });
+        }
+
+        if (data.session) {
+          window.location.href = 'volunteer-dashboard.html';
+        } else {
+          showMsg('Account created! Check your email to confirm it, then log in. (Or turn off "Confirm email" in Supabase for instant access while testing.)', 'success');
+          setMode('login');
+        }
+      } else {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        window.location.href = 'volunteer-dashboard.html';
+      }
+    } catch (err) {
+      showMsg(err.message || 'Something went wrong — please try again.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
     return false;
   }
 </script>

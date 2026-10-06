@@ -6,6 +6,7 @@
 <title>Volunteer Dashboard — Bridge to China</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --bg-tint-2:#eef6f2; --blue:#1e4e8c; --blue-deep:#133761;
@@ -76,13 +77,14 @@
   <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
   <div class="who">
     <span class="avatar-sm" id="avatarInitial">V</span>
-    Logged in as <b id="whoName">Volunteer</b> &nbsp;·&nbsp; <a href="login.html">Log Out</a>
+    Logged in as <b id="whoName">Volunteer</b> &nbsp;·&nbsp; <a href="#" id="logoutLink">Log Out</a>
   </div>
 </div>
 
 <div class="wrap">
   <h1 class="hello" id="helloName">Welcome back 👋</h1>
   <p class="hello-sub">Here's what's happening with your tutoring this week.</p>
+  <div style="display:inline-block; background:#fdf1e0; color:#9a6b1a; font-family:var(--font-mono); font-size:0.72rem; font-weight:700; padding:6px 12px; border-radius:999px; margin-bottom:22px;">⚠ SAMPLE DATA — lessons/hours below aren't real yet, only your login is</div>
 
   <div class="stat-row">
     <div class="stat-chip"><b>8.5</b><span>Hours this month</span></div>
@@ -159,13 +161,44 @@
   </div>
 </div>
 
+<script src="auth-config.js"></script>
 <script>
-  try{
-    const name = localStorage.getItem('btc-demo-name') || 'Volunteer';
+  async function loadVolunteer(){
+    if (!isConfigured) {
+      // No Supabase project connected yet — fall back to a clearly-labeled sample view
+      // instead of a broken redirect loop, so the dashboard is still viewable as a preview.
+      document.getElementById('whoName').textContent = 'Sample Volunteer';
+      document.getElementById('helloName').textContent = 'Welcome back, Sample 👋';
+      document.getElementById('avatarInitial').textContent = 'S';
+      return;
+    }
+
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    let name = session.user.email;
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('full_name')
+      .eq('id', session.user.id)
+      .single();
+    if (profile && profile.full_name) name = profile.full_name;
+
     document.getElementById('whoName').textContent = name;
     document.getElementById('helloName').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
     document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase() || 'V';
-  }catch(e){}
+  }
+
+  document.getElementById('logoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (isConfigured) await supabaseClient.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  loadVolunteer();
 </script>
 
 </body>
