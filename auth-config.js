@@ -21,8 +21,8 @@
    you only ever update your keys in one place.
    ====================================================================== */
 
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";      // e.g. "https://abcdxyz.supabase.co"
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";     // the long "anon public" key
+const SUPABASE_URL = "https://vzxtgbctxosjhyzxilve.supabase.co";      // e.g. "https://abcdxyz.supabase.co"
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6eHRnYmN0eG9zamh5enhpbHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNDQ4OTIsImV4cCI6MjEwNjgyMDg5Mn0.HovOfG9Tjxdo2SS-TowHkGrFHpIeOKQpe5XgMhosUtI";     // the long "anon public" key
 
 const isConfigured = SUPABASE_URL.startsWith("https://") && SUPABASE_ANON_KEY.length > 20;
 
