@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Assessment — Bridge to China</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b;
+    --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; --tint2:#eef6f2; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter','Noto Sans SC',sans-serif; color:var(--ink); background:var(--tint); }
+  .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
+  .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
+  .wrap{ max-width:760px; margin:0 auto; padding:30px 24px 90px; }
+  h1{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 8px; }
+  .lead{ color:var(--ink-soft); line-height:1.6; font-size:.95rem; }
+  .sec{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; margin-top:22px; }
+  .sec h2{ font-family:'Fraunces',serif; font-size:1.2rem; color:var(--blue-deep); margin:0 0 4px; }
+  .sec .tag{ font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--green-deep); letter-spacing:.1em; }
+  .q{ padding:18px 0; border-bottom:1px solid var(--line); }
+  .q:last-child{ border-bottom:none; }
+  .q .stem{ font-weight:600; font-size:.95rem; margin-bottom:10px; line-height:1.55; }
+  .q .cat{ font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--ink-soft); letter-spacing:.08em; }
+  .opt{ display:block; padding:10px 14px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:.9rem; }
+  .opt:hover{ background:var(--tint); }
+  .opt.sel{ border-color:var(--blue); background:#eaf1fa; }
+  .passage{ background:var(--tint); border-left:4px solid var(--green); padding:16px 18px; border-radius:8px; font-size:.92rem; line-height:1.7; margin:12px 0 4px; }
+  textarea{ width:100%; min-height:200px; padding:14px; border:1.5px solid var(--line); border-radius:10px; font-family:inherit; font-size:.95rem; line-height:1.6; background:var(--tint); }
+  .btn{ padding:11px 22px; border-radius:999px; border:none; font-weight:700; font-size:.88rem; cursor:pointer; background:var(--blue); color:#fff; }
+  .btn:hover{ background:var(--blue-deep); }
+  .btn.ghost{ background:#fff; color:var(--blue); border:1.5px solid var(--line); }
+  .btn.green{ background:var(--green); } .btn.red{ background:#c0392b; }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  .counter{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+  .rec-row{ padding:16px 0; border-bottom:1px solid var(--line); }
+  .rec-row:last-child{ border-bottom:none; }
+  .rec-row .prompt{ font-weight:600; margin-bottom:10px; line-height:1.55; }
+  .rec-state{ font-size:.8rem; margin-left:10px; color:var(--ink-soft); }
+  .rec-state.ok{ color:var(--green-deep); font-weight:600; }
+  .note{ font-size:.82rem; color:#9a6b1a; background:#fdf1e0; border-radius:10px; padding:12px 14px; line-height:1.55; margin-top:14px; }
+  .err{ color:#a3312a; background:#fdecea; padding:12px 14px; border-radius:10px; font-size:.88rem; margin-top:16px; display:none; }
+  .center{ text-align:center; padding:60px 20px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
+  <a href="application.html" style="font-size:.85rem;color:var(--blue);font-weight:600;text-decoration:none;">← Back to application</a>
+</div>
+<div class="wrap" id="root"></div>
+
+<script src="auth-config.js"></script>
+<script>
+/* ======================================================================
+   QUESTION BANKS. Each MC item: [category, stem, [options], correctIndex]
+   Correct-answer positions are deliberately spread out.
+   NOTE: answers live in this file, so scores are advisory (see schema
+   file's "known limitation"). Humans make the final decision.
+   ====================================================================== */
+const BANK = {
+english: {
+  title: 'English Assessment',
+  htmlLang: 'en', ttsLang: 'en-US',
+  mc: [
+    ['grammar','She ____ to the store yesterday afternoon.',['go','goes','went','gone'],2],
+    ['grammar','If I ____ more time, I would travel the world.',['have','had','will have','having'],1],
+    ['grammar','Neither the teacher nor the students ____ aware of the schedule change.',['was','were','is','has been'],1],
+    ['grammar','The report ____ by the committee before the deadline passed.',['completed','was completed','has completing','is complete'],1],
+    ['grammar','He insisted that she ____ present at the meeting.',['is','was','be','being'],2],
+    ['grammar','The author, ____ latest novel won several awards, will visit our school.',['who','which','whose','whom'],2],
+    ['grammar','By next June, they ____ in this city for ten years.',['will have lived','will live','have lived','are living'],0],
+    ['grammar','Which sentence is grammatically correct?',['Between you and I, the plan is flawed.','Between you and myself, the plan is flawed.','Between I and you, the plan is flawed.','Between you and me, the plan is flawed.'],3],
+    ['vocabulary','Her ____ explanation left no room for doubt.',['ambiguous','tenuous','lucid','convoluted'],2],
+    ['vocabulary','Choose the closest meaning of "ubiquitous".',['rare','widespread','hidden','ancient'],1],
+    ['vocabulary','Choose the opposite of "frugal".',['thrifty','careful','modest','lavish'],3],
+    ['vocabulary','"He took the criticism in stride." This means he…',['resented it','accepted it calmly','walked away from it','ignored the critic'],1],
+    ['vocabulary','The politician\'s remarks were deliberately equivocal. "Equivocal" means…',['open to more than one interpretation','extremely angry','clearly false','very short'],0],
+    ['vocabulary','Choose the closest meaning of "mitigate".',['worsen','explain','ignore','lessen'],3],
+    ['reading','Which best states the main idea of the passage?',['Four-day school weeks have been proven to harm learning.','Four-day school weeks are a debated cost-saving trend with mixed evidence.','Teachers overwhelmingly prefer shorter weeks.','Districts should abolish the fifth school day everywhere.'],1],
+    ['reading','Which benefit do supporters mention?',['Lower student absence','Cheaper textbooks','Improved teacher recruitment','Higher math scores'],2],
+    ['reading','As used in the passage, "inconclusive" means…',['proving harm','unfair to families','out of date','not leading to a definite conclusion'],3],
+    ['reading','The mention of optional tutoring suggests that…',['tutoring is legally required','outcomes may depend on how districts use the extra day','tutoring removes all cost savings','students dislike the fifth day'],1],
+  ],
+  passage: 'Several rural school districts have shifted to a four-day week to save on transportation and staffing costs. Supporters say the change has improved teacher recruitment and given students a full day for appointments and part-time jobs. Critics worry that longer daily sessions tire younger children and that families without reliable childcare face a new burden on the fifth day. Early studies are inconclusive: some show stable test scores, while others show modest declines in math. Researchers caution that results may depend heavily on how districts use the extra day — for example, whether they offer optional tutoring.',
+  passageStartsAtCategory: 'reading',
+  listening: [
+    ['I\'m meeting my friend at the library at four o\'clock, but I need to stop by the post office first.','Where is the speaker going first?',['The library','The post office','Home','School'],1],
+    ['The train to the city leaves at nine fifteen, not nine fifty. If you miss it, the next one is at ten thirty.','What time does the train leave?',['9:50','10:30','9:15','9:30'],2],
+    ['Although the museum is free on Sundays, the special exhibit still requires a ticket, which must be reserved online at least a day in advance.','What must visitors do to see the special exhibit?',['Arrive early on Sunday','Pay at the door','Bring a membership card','Reserve a ticket online beforehand'],3],
+    ['I would have called earlier, but my phone died, and by the time I found a charger, it was past midnight.','Why didn\'t the speaker call earlier?',['The phone battery ran out','They forgot','They were angry','They had no number'],0],
+  ],
+  essayPrompt: 'Write 200–300 words explaining why learning a second language can be valuable. Give specific examples and support your opinion.',
+  essayMin: 150, essayUnit: 'words',
+  speaking: [
+    'Introduce yourself and explain why you want to volunteer.',
+    'Explain how you would teach a student the difference between two commonly confused English words.',
+    'Describe a difficult situation you experienced and explain how you handled it.',
+    'Explain why cultural exchange can be valuable to students.',
+  ],
+},
+chinese: {
+  title: 'Chinese Assessment (中文测试)',
+  htmlLang: 'zh', ttsLang: 'zh-CN',
+  mc: [
+    ['grammar','我昨天去书店____一本很有意思的书。',['买着','正在买','买了','要买'],2],
+    ['grammar','他的汉语说得____我好。',['比','和','把','被'],0],
+    ['grammar','我买了三____书。',['个','张','条','本'],3],
+    ['grammar','请____门关上，外面很吵。',['被','让','把','对'],2],
+    ['grammar','我的手机____小偷偷走了。',['把','被','对','向'],1],
+    ['grammar','我从来没____这么好吃的菜。',['吃的','吃着','吃过','吃了'],2],
+    ['grammar','____明天下雨，我们就不去公园了。',['虽然','因为','但是','如果'],3],
+    ['grammar','____他很累，____他还是坚持完成了工作。',['如果……就','虽然……但是','因为……所以','不但……而且'],1],
+    ['grammar','下面哪个句子是正确的？',['我明天下午在图书馆见面朋友。','我在图书馆明天下午见朋友。','我明天下午在图书馆见朋友。','明天我见朋友在图书馆下午。'],2],
+    ['vocabulary','这位老师的讲解非常____，大家一听就懂了。',['模糊','复杂','危险','清楚'],3],
+    ['vocabulary','"宁静"的意思最接近哪个词？',['热闹','安静','拥挤','忙碌'],1],
+    ['vocabulary','"节约"的反义词是？',['节省','储蓄','浪费','爱护'],2],
+    ['vocabulary','成语"画蛇添足"的意思是？',['画画画得很好','小心谨慎','很会画画','做多余的事，反而不好'],3],
+    ['vocabulary','他对这个消息感到十分____，因为他完全没有想到。',['意外','熟悉','满意','普通'],0],
+    ['reading','这段话的主要内容是什么？',['自行车比汽车便宜','所有城市都修了自行车道','鼓励骑车出行既有好处也有问题','共享单车应该被禁止'],2],
+    ['reading','下面哪一项不是支持者提到的好处？',['环保','健康','速度比汽车快','缓解交通拥堵'],2],
+    ['reading','"效果明显"的意思最接近哪一项？',['价格很高','作用很清楚','速度很快','看起来很旧'],1],
+    ['reading','专家的建议是什么？',['禁止共享单车','只增加自行车道','不再鼓励骑车','增加设施的同时加强管理'],3],
+  ],
+  passage: '近年来，越来越多的城市鼓励市民骑自行车出行。支持者认为，骑车既环保又健康，还能缓解交通拥堵。但也有人担心，道路上自行车道不够多，骑车并不安全。有的城市为此专门修建了自行车道，并提供共享单车，效果明显，不过停放混乱的问题也随之出现。专家建议，政府应该在增加设施的同时，加强管理。',
+  passageStartsAtCategory: 'reading',
+  listening: [
+    ['我先去邮局寄信，然后四点在图书馆跟朋友见面。','说话的人先去哪儿？',['图书馆','学校','家','邮局'],3],
+    ['去市中心的火车九点十五分开，不是九点五十。如果你赶不上，下一班是十点半。','火车几点开？',['九点十五分','九点五十分','十点半','九点半'],0],
+    ['虽然星期天博物馆免费，但是看特别展览还是需要门票，而且必须提前一天在网上预约。','参观特别展览需要做什么？',['星期天直接进去','在门口买票','不需要票','提前一天在网上预约门票'],3],
+    ['我本来想早点给你打电话，可是手机没电了，等我找到充电器，已经过了半夜了。','说话的人为什么没有早点打电话？',['他忘记了','手机没电了','他太生气了','他没有电话号码'],1],
+  ],
+  essayPrompt: '请用中文写一篇 200–300 字的短文，介绍你为什么学习中文，以及学习中文对你有什么帮助。',
+  essayMin: 100, essayUnit: 'characters',
+  speaking: [
+    '请用中文介绍一下你自己。',
+    '请用中文说一说你为什么想做志愿者。',
+    '请用中文描述你平时的生活，或者学习/工作的日常安排。',
+    '请用中文说一说，如果一个学生学英语有困难，你会怎么帮助他。',
+  ],
+},
+};
+
+const GRADING_NOTE = 'Multiple-choice and listening sections are scored automatically. The writing and speaking sections are read and listened to by a real person on our team.';
+
+let L, lang, session, appRow;
+let answers = {};      // mc index -> chosen option index
+let listenAns = {};
+let recorded = {};     // speaking prompt index -> true once uploaded
+let listenPlays = {};
+const root = document.getElementById('root');
+
+async function init(){
+  lang = new URLSearchParams(location.search).get('lang') === 'chinese' ? 'chinese' : 'english';
+  L = BANK[lang];
+  document.documentElement.lang = 'en';
+  if (!isConfigured){ root.innerHTML = '<div class="sec">Supabase isn\'t connected yet — see auth-config.js.</div>'; return; }
+  const { data:{ session:s } } = await supabaseClient.auth.getSession();
+  if (!s){ location.href = 'login.html'; return; }
+  session = s;
+  const { data: row } = await supabaseClient.from('applications').select('*').eq('id', s.user.id).single();
+  appRow = row;
+  if (!appRow){ location.href = 'application.html'; return; }
+  if (!s.user.email_confirmed_at){ location.href = 'application.html'; return; }
+  if (lang === 'chinese' && appRow.english_mc_score == null){
+    root.innerHTML = '<div class="sec center"><h2>Please complete the English assessment first</h2><p class="lead">The assessments are taken in order.</p><a class="btn" href="assessment.html?lang=english" style="text-decoration:none;display:inline-block">Go to English assessment</a></div>';
+    return;
+  }
+  if (appRow[lang+'_mc_score'] != null){
+    root.innerHTML = `<div class="sec center"><h2>✓ You've already completed the ${lang === 'english' ? 'English' : 'Chinese'} assessment</h2><p class="lead">Each assessment can be taken once. If you believe something went wrong, contact our team and they can reset it.</p><a class="btn" href="application.html" style="text-decoration:none;display:inline-block">Back to application</a></div>`;
+    return;
+  }
+  if (['submitted','under_review','approved','not_approved','needs_additional_training','suspended'].includes(appRow.status)){
+    location.href = 'application.html'; return;
+  }
+  render();
+}
+
+function render(){
+  const cats = {grammar:'GRAMMAR', vocabulary:'VOCABULARY', reading:'READING'};
+  let lastCat = '';
+  const mcHTML = L.mc.map((q,i) => {
+    let pre = '';
+    if (q[0] !== lastCat){
+      lastCat = q[0];
+      pre = `<div style="margin:22px 0 4px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--green-deep);letter-spacing:.1em;">${cats[q[0]]}</div>`;
+      if (q[0] === 'reading') pre += `<div class="passage" ${lang==='chinese'?'style="font-size:1rem"':''}>${L.passage}</div>`;
+    }
+    return pre + `<div class="q"><div class="stem">${i+1}. ${q[1]}</div>${q[2].map((o,j)=>`<label class="opt" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div>`;
+  }).join('');
+
+  const listenHTML = L.listening.map((q,i)=>`
+    <div class="q">
+      <div class="stem">Audio ${i+1}: <button class="btn ghost play" data-i="${i}" style="padding:6px 14px;margin-left:6px;">▶ Play</button> <span class="rec-state" id="plays${i}">2 plays left</span></div>
+      <div class="stem" style="margin-top:12px;">${q[1]}</div>
+      ${q[2].map((o,j)=>`<label class="opt" data-l="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}
+    </div>`).join('');
+
+  const speakHTML = L.speaking.map((p,i)=>`
+    <div class="rec-row"><div class="prompt">${i+1}. ${p}</div>
+      <button class="btn green rec" data-i="${i}">● Start recording</button>
+      <button class="btn red stop" data-i="${i}" style="display:none;">■ Stop</button>
+      <span class="rec-state" id="recstate${i}">Not recorded yet — aim for about 1–2 minutes</span></div>`).join('');
+
+  root.innerHTML = `
+    <h1>${L.title}</h1>
+    <p class="lead">${GRADING_NOTE} Take your time, work on your own, and please don't use translators, dictionaries, or AI tools — the point is to learn your real level so students get the right match.</p>
+    <p class="lead" style="margin-top:8px;">You can take this assessment <b>once</b>. Answers aren't saved until you submit at the bottom, so don't close this page partway through (voice recordings upload immediately).</p>
+
+    <div class="sec"><span class="tag">PART 1 OF 4</span><h2>Grammar, Vocabulary &amp; Reading</h2>${mcHTML}</div>
+
+    <div class="sec"><span class="tag">PART 2 OF 4</span><h2>Listening</h2>
+      <p class="lead">Each clip is read aloud by your browser's built-in voice. You can play each clip twice. The text is intentionally not shown.</p>
+      <div id="ttsWarn" class="note" style="display:none;">Your browser doesn't seem to support spoken audio. Try Chrome, Edge, or Safari on a computer.</div>
+      ${listenHTML}</div>
+
+    <div class="sec"><span class="tag">PART 3 OF 4</span><h2>Writing</h2>
+      <p class="lead" ${lang==='chinese'?'style="font-size:1rem"':''}>${L.essayPrompt}</p>
+      <textarea id="essay" placeholder="Start writing here…"></textarea>
+      <div class="counter" id="essayCount">0 ${L.essayUnit}</div></div>
+
+    <div class="sec"><span class="tag">PART 4 OF 4</span><h2>Speaking</h2>
+      <p class="lead">Record a natural answer for each prompt — please don't read from a script. Your browser will ask for microphone permission. You can re-record any answer.</p>
+      <div id="micWarn" class="note" style="display:none;">Recording isn't available in this browser. Try Chrome, Edge, or Firefox on a computer.</div>
+      ${speakHTML}</div>
+
+    <div class="err" id="err"></div>
+    <div style="text-align:right;margin-top:24px;"><button class="btn" id="submitBtn" style="padding:14px 34px;">Submit Assessment</button></div>`;
+
+  if (!('speechSynthesis' in window)) document.getElementById('ttsWarn').style.display = 'block';
+  if (!navigator.mediaDevices || !window.MediaRecorder) document.getElementById('micWarn').style.display = 'block';
+  wire();
+}
+
+function wire(){
+  root.querySelectorAll('.opt[data-q]').forEach(el => el.onclick = () => {
+    root.querySelectorAll(`.opt[data-q="${el.dataset.q}"]`).forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); answers[el.dataset.q] = +el.dataset.o;
+  });
+  root.querySelectorAll('.opt[data-l]').forEach(el => el.onclick = () => {
+    root.querySelectorAll(`.opt[data-l="${el.dataset.l}"]`).forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); listenAns[el.dataset.l] = +el.dataset.o;
+  });
+  root.querySelectorAll('.play').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i;
+    listenPlays[i] = listenPlays[i] || 0;
+    if (listenPlays[i] >= 2) return;
+    if (!('speechSynthesis' in window)) return;
+    listenPlays[i]++;
+    document.getElementById('plays'+i).textContent = (2 - listenPlays[i]) + ' play' + (2-listenPlays[i]===1?'':'s') + ' left';
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(L.listening[i][0]);
+    u.lang = L.ttsLang; u.rate = 0.95;
+    const voices = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(L.ttsLang.slice(0,2).toLowerCase()));
+    if (voices.length) u.voice = voices[0];
+    speechSynthesis.speak(u);
+    if (listenPlays[i] >= 2) b.disabled = true;
+  });
+  const essay = document.getElementById('essay');
+  essay.oninput = () => {
+    const t = essay.value.trim();
+    const n = lang === 'chinese' ? t.replace(/\s/g,'').length : (t ? t.split(/\s+/).length : 0);
+    document.getElementById('essayCount').textContent = n + ' ' + L.essayUnit + ' (aim for 200–300)';
+  };
+  root.querySelectorAll('.rec').forEach(b => b.onclick = () => startRec(+b.dataset.i));
+  root.querySelectorAll('.stop').forEach(b => b.onclick = () => stopRec());
+  document.getElementById('submitBtn').onclick = submit;
+}
+
+let recorder = null, chunks = [], recIndex = null, stream = null;
+async function startRec(i){
+  if (recorder) return;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio:true }); }
+  catch(e){ setState(i,'Microphone permission was blocked. Allow it in your browser settings and try again.',false); return; }
+  chunks = []; recIndex = i;
+  recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => uploadRec(i);
+  recorder.start();
+  root.querySelector(`.rec[data-i="${i}"]`).style.display = 'none';
+  root.querySelector(`.stop[data-i="${i}"]`).style.display = 'inline-block';
+  setState(i,'Recording… speak naturally',false);
+}
+function stopRec(){ if (recorder && recorder.state !== 'inactive') recorder.stop(); }
+function setState(i, text, ok){ const el = document.getElementById('recstate'+i); el.textContent = text; el.className = 'rec-state' + (ok?' ok':''); }
+
+async function uploadRec(i){
+  const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+  stream.getTracks().forEach(t=>t.stop());
+  recorder = null;
+  root.querySelector(`.rec[data-i="${i}"]`).style.display = 'inline-block';
+  root.querySelector(`.rec[data-i="${i}"]`).textContent = '● Re-record';
+  root.querySelector(`.stop[data-i="${i}"]`).style.display = 'none';
+  if (blob.size < 2000){ setState(i,'That recording was empty — please try again.',false); return; }
+  setState(i,'Uploading…',false);
+  const ext = (blob.type.includes('mp4')) ? 'mp4' : (blob.type.includes('ogg') ? 'ogg' : 'webm');
+  const path = `${session.user.id}/${lang}-${i}-${Date.now()}.${ext}`;
+  const { error } = await supabaseClient.storage.from('recordings').upload(path, blob, { contentType: blob.type });
+  if (error){ setState(i,'Upload failed: '+error.message,false); return; }
+  await supabaseClient.from('speaking_recordings').delete().eq('application_id', session.user.id).eq('language', lang).eq('prompt_index', i);
+  const { error: e2 } = await supabaseClient.from('speaking_recordings').insert({ application_id: session.user.id, language: lang, prompt_index: i, storage_path: path });
+  if (e2){ setState(i,'Saved the file but not its record: '+e2.message,false); return; }
+  recorded[i] = true;
+  setState(i,'✓ Recorded and uploaded',true);
+}
+
+function showErr(t){ const e = document.getElementById('err'); e.textContent = t; e.style.display = 'block'; e.scrollIntoView({behavior:'smooth',block:'center'}); }
+
+async function submit(){
+  document.getElementById('err').style.display = 'none';
+  if (recorder){ showErr('Please stop your current recording first.'); return; }
+  const unanswered = L.mc.filter((_,i)=>answers[i]===undefined).length + L.listening.filter((_,i)=>listenAns[i]===undefined).length;
+  if (unanswered){ showErr(`Please answer every question — ${unanswered} still unanswered.`); return; }
+  const essay = document.getElementById('essay').value.trim();
+  const n = lang === 'chinese' ? essay.replace(/\s/g,'').length : (essay ? essay.split(/\s+/).length : 0);
+  if (n < L.essayMin){ showErr(`Your written response is too short (${n} ${L.essayUnit}). Please write at least ${L.essayMin}.`); return; }
+  const missing = L.speaking.map((_,i)=>i).filter(i=>!recorded[i]);
+  if (missing.length){ showErr(`Please record an answer for every speaking prompt (${missing.length} left).`); return; }
+  if (!confirm('Submit your assessment? You can only take it once.')) return;
+
+  // score
+  const tally = { grammar:[0,0], vocabulary:[0,0], reading:[0,0] };
+  L.mc.forEach((q,i)=>{ tally[q[0]][1]++; if (answers[i] === q[3]) tally[q[0]][0]++; });
+  const pct = ([a,b]) => Math.round(a/b*100);
+  const listenCorrect = L.listening.filter((q,i)=>listenAns[i]===q[3]).length;
+  const breakdown = { grammar:pct(tally.grammar), vocabulary:pct(tally.vocabulary), reading:pct(tally.reading), listening: Math.round(listenCorrect/L.listening.length*100) };
+  const mcTotal = L.mc.filter((q,i)=>answers[i]===q[3]).length;
+  const mcScore = Math.round(mcTotal / L.mc.length * 100);
+
+  const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'Submitting…';
+  const upd = {};
+  upd[lang+'_mc_score'] = mcScore;
+  upd[lang+'_listening_score'] = breakdown.listening;
+  upd[lang+'_breakdown'] = breakdown;
+  upd[lang+'_essay_text'] = essay;
+  upd[lang+'_answers'] = { mc: answers, listening: listenAns };
+  upd.status = lang === 'english' ? 'assessment_english_complete' : 'assessment_chinese_complete';
+  const { error } = await supabaseClient.from('applications').update(upd).eq('id', session.user.id);
+  if (error){ btn.disabled = false; btn.textContent = 'Submit Assessment'; showErr('Could not save: '+error.message); return; }
+
+  root.innerHTML = `<div class="sec center"><h2>✓ Assessment submitted</h2>
+    <p class="lead">Thank you. Your written and listening sections were scored automatically; our team will read your writing and listen to your recordings as part of your application review. We don't show scores to applicants.</p>
+    <a class="btn" href="application.html" style="text-decoration:none;display:inline-block;margin-top:10px;">Continue your application</a></div>`;
+}
+init();
+</script>
+</body>
+</html>

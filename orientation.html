@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volunteer Orientation — Bridge to China</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',sans-serif; color:var(--ink); background:var(--tint); }
+  .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
+  .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
+  .wrap{ max-width:760px; margin:0 auto; padding:30px 24px 90px; }
+  h1{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 8px; }
+  .lead{ color:var(--ink-soft); line-height:1.6; font-size:.95rem; }
+  .sec{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-top:18px; }
+  .sec h2{ font-family:'Fraunces',serif; font-size:1.15rem; color:var(--blue-deep); margin:0 0 10px; display:flex; gap:10px; align-items:center; }
+  .sec h2 .n{ width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .sec ul{ margin:0; padding-left:20px; color:var(--ink-soft); font-size:.92rem; line-height:1.75; }
+  .sec p{ color:var(--ink-soft); font-size:.92rem; line-height:1.7; margin:0 0 10px; }
+  .warn{ background:#fdf1e0; border-left:4px solid #f2a73b; padding:12px 16px; border-radius:8px; font-size:.88rem; color:#7a5314; margin-top:12px; line-height:1.6; }
+  .q{ padding:16px 0; border-bottom:1px solid var(--line); }
+  .q:last-of-type{ border-bottom:none; }
+  .stem{ font-weight:600; font-size:.95rem; margin-bottom:10px; line-height:1.55; }
+  .opt{ display:block; padding:10px 14px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:.9rem; }
+  .opt:hover{ background:var(--tint); } .opt.sel{ border-color:var(--blue); background:#eaf1fa; }
+  .btn{ padding:13px 28px; border-radius:999px; border:none; font-weight:700; font-size:.9rem; cursor:pointer; background:var(--blue); color:#fff; text-decoration:none; display:inline-block; }
+  .btn:disabled{ opacity:.5; }
+  .msg{ padding:14px 16px; border-radius:10px; font-size:.9rem; margin-top:16px; display:none; line-height:1.55; }
+  .msg.bad{ background:#fdecea; color:#a3312a; display:block; } .msg.good{ background:#e7f5ee; color:var(--green-deep); display:block; }
+  .center{ text-align:center; padding:50px 20px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
+  <a href="application.html" style="font-size:.85rem;color:var(--blue);font-weight:600;text-decoration:none;">← Back to application</a>
+</div>
+<div class="wrap" id="root"></div>
+
+<script src="auth-config.js"></script>
+<script>
+/* DRAFT CONTENT — written as a sensible starting point. Please review it and
+   replace anything that doesn't match your organization's real policies
+   (especially the Safety & Boundaries and Reporting sections) before launch. */
+const PASS_MARK = 80;
+const SECTIONS = [
+ ['How the Program Works', ['Students are matched with approved volunteers for a weekly 30-minute online conversation session.','Each session follows a lesson template: warm-up, introduction, guided practice, free conversation, and wrap-up.','Sessions are free for students, and volunteers earn verified service hours for completed sessions.']],
+ ['How Online Lessons Work', ['Lessons are held over VooV Meeting, which works reliably in mainland China.','Start the meeting yourself and send the student the link shortly before the session.','Open the Lesson Library in your browser and share that window so the student can follow along.','Join from a quiet, well-lit, appropriate space with your camera on.']],
+ ['Preparing Your Lessons', ['Choose the lesson that matches the student\'s level and review its focus areas beforehand.','Fill in the lesson template — your name, vocabulary you plan to teach, and practice sentences.','Have a few follow-up questions ready so the conversation never stalls.']],
+ ['Communicating With Students', ['Speak clearly and a little slower than you normally would, and use short, simple sentences with beginners.','Check understanding often by asking students to explain things back in their own words.','Be patient with silence — give students time to think before helping.','Correct gently: focus on one or two important mistakes rather than every error.']],
+ ['Cultural Respect', ['Be curious, not judgmental. Ask students about their lives and share yours.','Avoid stereotypes and avoid pressing your opinions on sensitive topics such as politics or religion. Let students lead, and steer back to the lesson if a topic becomes uncomfortable.','Remember that you are a guest in a cultural exchange, not an authority on what is "right."']],
+ ['Privacy', ['Keep everything students tell you confidential, except where safety requires you to report it.','Never share a student\'s name, photo, or details publicly or on social media.','Do not record or screenshot lessons without explicit permission from the program.']],
+ ['Student Safety & Boundaries', ['Keep all communication on the program\'s approved channels. Do not exchange personal phone numbers, social media accounts, or private messaging contacts with students.','Do not arrange private meetings, send gifts, or ask students for money, favors, or personal information.','Keep conversations appropriate for students\' ages at all times.','If a student pushes for private contact, politely decline and let the program team know.']],
+ ['Reporting Concerns', ['If you are worried about a student\'s safety or wellbeing, or another volunteer\'s behavior, tell the program team promptly — do not try to handle it alone or promise to keep it secret.','Write down what you saw or heard as soon as you can, factually.','If a student appears to be in immediate danger, contact local emergency services in the student\'s location if you can, and then notify the program team.']],
+ ['Volunteer Hours & Lesson Reports', ['Hours are logged for completed sessions and confirmed by an administrator before they count toward your certificate.','Submit a short lesson report after every session while it\'s fresh: what you covered, how the student did, and anything to follow up on.']],
+];
+const QUIZ = [
+ ['A student asks for your personal WeChat or phone number so you can chat privately. What should you do?',['Add them — it\'s friendly and helps them practice','Give them your number but not your address','Politely decline, keep contact on the program\'s channels, and tell the program team if they keep asking','Ignore the message and say nothing'],2],
+ ['A student mentions something that makes you worry about their safety. What should you do?',['Keep it secret to protect their trust','Report it to the program team promptly','Wait a few weeks to see if it happens again','Post about it online asking for advice'],1],
+ ['A student keeps making the same mistake. What is the best approach?',['Tell them they are wrong each time','Skip the topic','Correct them in front of others','Re-explain in a different way, give an example, and encourage them'],3],
+ ['When should you submit your lesson report?',['Promptly after each session','Once a month','Only if something went wrong','Right before your certificate is issued'],0],
+ ['How do volunteer hours count toward your certificate?',['Instantly, with no review','Only after a student rates you','They are logged for completed sessions and confirmed by an administrator','Hours scheduled count even if the session was missed'],2],
+ ['Can you post a screenshot of a lesson, with the student visible, on social media?',['Yes, if you tag the program','No — never share student images or details without explicit permission','Yes, if the student smiles','Yes, if you blur their name'],1],
+ ['A conversation drifts to a sensitive political topic and the student seems uncomfortable. What should you do?',['Share your strongest opinion so they learn','End the session immediately','Gently steer back to the lesson topic','Ask them to explain their views in detail'],2],
+ ['Where and how should lessons be held?',['Over the program\'s approved video platform, from an appropriate quiet space, with your camera on','By private text chat only','In a public café with loud music','On any app the student prefers, with the camera off'],0],
+];
+const root = document.getElementById('root');
+let session, appRow, chosen = {};
+
+async function init(){
+  if (!isConfigured){ root.innerHTML = '<div class="sec">Supabase isn\'t connected yet — see auth-config.js.</div>'; return; }
+  const { data:{ session:s } } = await supabaseClient.auth.getSession();
+  if (!s){ location.href='login.html'; return; }
+  session = s;
+  const { data: row } = await supabaseClient.from('applications').select('*').eq('id', s.user.id).single();
+  appRow = row;
+  if (!appRow || !s.user.email_confirmed_at || appRow.chinese_mc_score == null){
+    root.innerHTML = '<div class="sec center"><h2 style="justify-content:center">Please finish the language assessments first</h2><p class="lead">Orientation comes after both assessments.</p><a class="btn" href="application.html">Back to application</a></div>'; return;
+  }
+  if (appRow.orientation_quiz_score != null && appRow.orientation_quiz_score >= PASS_MARK){
+    root.innerHTML = '<div class="sec center"><h2 style="justify-content:center">✓ Orientation complete</h2><p class="lead">You\'ve already passed the orientation quiz.</p><a class="btn" href="application.html">Back to application</a></div>'; return;
+  }
+  render();
+}
+function render(){
+  root.innerHTML = `<h1>Volunteer Orientation</h1>
+  <p class="lead">Read each section, then take the short quiz at the bottom. You need ${PASS_MARK}% to pass, and you can retry as many times as you need.</p>
+  ${SECTIONS.map((s,i)=>`<div class="sec"><h2><span class="n">${i+1}</span>${s[0]}</h2><ul>${s[1].map(t=>`<li>${t}</li>`).join('')}</ul></div>`).join('')}
+  <div class="sec"><h2>Orientation Quiz</h2>
+    ${QUIZ.map((q,i)=>`<div class="q"><div class="stem">${i+1}. ${q[0]}</div>${q[1].map((o,j)=>`<label class="opt" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div>`).join('')}
+    <div id="msg" class="msg"></div>
+    <div style="text-align:right;margin-top:18px;"><button class="btn" id="go">Submit Quiz</button></div>
+  </div>`;
+  root.querySelectorAll('.opt').forEach(el => el.onclick = () => {
+    root.querySelectorAll(`.opt[data-q="${el.dataset.q}"]`).forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); chosen[el.dataset.q] = +el.dataset.o;
+  });
+  document.getElementById('go').onclick = submit;
+}
+async function submit(){
+  const msg = document.getElementById('msg');
+  if (Object.keys(chosen).length < QUIZ.length){ msg.className='msg bad'; msg.textContent='Please answer every question.'; return; }
+  const correct = QUIZ.filter((q,i)=>chosen[i]===q[2]).length;
+  const score = Math.round(correct/QUIZ.length*100);
+  const upd = { orientation_quiz_score: score };
+  if (score >= PASS_MARK) upd.status = 'orientation_complete';
+  const { error } = await supabaseClient.from('applications').update(upd).eq('id', session.user.id);
+  if (error){ msg.className='msg bad'; msg.textContent='Could not save: '+error.message; return; }
+  if (score >= PASS_MARK){
+    root.innerHTML = `<div class="sec center"><h2 style="justify-content:center">✓ Orientation complete</h2><p class="lead">You scored ${score}%. Nice work — one step closer.</p><a class="btn" href="application.html">Continue your application</a></div>`;
+  } else {
+    msg.className='msg bad'; msg.textContent = `You scored ${score}% — you need ${PASS_MARK}%. Review the sections above and try again.`;
+    chosen = {}; root.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+    msg.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+init();
+</script>
+</body>
+</html>

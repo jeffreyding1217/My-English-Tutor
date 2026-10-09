@@ -84,7 +84,9 @@
 <div class="wrap">
   <h1 class="hello" id="helloName">Welcome back 👋</h1>
   <p class="hello-sub">Here's what's happening with your tutoring this week.</p>
-  <div style="display:inline-block; background:#fdf1e0; color:#9a6b1a; font-family:var(--font-mono); font-size:0.72rem; font-weight:700; padding:6px 12px; border-radius:999px; margin-bottom:22px;">⚠ SAMPLE DATA — lessons/hours below aren't real yet, only your login is</div>
+  <div style="display:inline-block; background:#fdf1e0; color:#9a6b1a; font-family:var(--font-mono); font-size:0.72rem; font-weight:700; padding:6px 12px; border-radius:999px; margin-bottom:16px;">⚠ SAMPLE DATA — lessons/hours below aren't real yet, only your login + application are</div>
+
+  <div id="statusBanner"></div>
 
   <div class="stat-row">
     <div class="stat-chip"><b>8.5</b><span>Hours this month</span></div>
@@ -94,7 +96,7 @@
   </div>
 
   <!-- The two things you asked about live here -->
-  <div class="action-grid">
+  <div class="action-grid" id="actionGrid" style="position:relative;">
     <div class="action-card green">
       <div class="eyebrow">VIDEO CALLS</div>
       <h2>Join Your Session</h2>
@@ -170,6 +172,7 @@
       document.getElementById('whoName').textContent = 'Sample Volunteer';
       document.getElementById('helloName').textContent = 'Welcome back, Sample 👋';
       document.getElementById('avatarInitial').textContent = 'S';
+      renderStatusBanner('approved');
       return;
     }
 
@@ -179,17 +182,72 @@
       return;
     }
 
+    // Unverified email → back to the application's "Check Your Email" step.
+    if (!session.user.email_confirmed_at) { window.location.href = 'application.html'; return; }
+
     let name = session.user.email;
     const { data: profile } = await supabaseClient
       .from('profiles')
-      .select('full_name')
+      .select('full_name, is_admin')
       .eq('id', session.user.id)
       .single();
     if (profile && profile.full_name) name = profile.full_name;
+    if (profile && profile.is_admin) {
+      document.getElementById('whoName').insertAdjacentHTML('afterend', ' &nbsp;·&nbsp; <a href="admin.html">Admin Review</a>');
+    }
 
     document.getElementById('whoName').textContent = name;
     document.getElementById('helloName').textContent = `Welcome back, ${name.split(' ')[0]} 👋`;
     document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase() || 'V';
+
+    const { data: app } = await supabaseClient.from('applications').select('status').eq('id', session.user.id).single();
+    renderStatusBanner(app ? app.status : 'account_created');
+  }
+
+  const STATUS_LABELS = {
+    account_created: 'Application just started',
+    email_verified: 'Email verified',
+    profile_complete: 'Profile complete',
+    background_complete: 'Language background complete',
+    scenarios_complete: 'Profile & background complete — language assessments next',
+    assessment_english_complete: 'English assessment complete',
+    assessment_chinese_complete: 'Chinese assessment complete',
+    orientation_complete: 'Orientation complete',
+    submitted: 'Application submitted — under review',
+    under_review: 'Under review by our team',
+    approved: 'Approved Volunteer',
+    needs_additional_training: 'Additional training requested',
+    not_approved: 'Application not approved',
+    suspended: 'Account suspended',
+  };
+
+  function renderStatusBanner(status){
+    const el = document.getElementById('statusBanner');
+    const label = STATUS_LABELS[status] || status;
+
+    if (status === 'approved') {
+      el.innerHTML = `<div style="background:#e7f5ee; color:#146a48; border-radius:12px; padding:14px 18px; margin-bottom:22px; font-size:0.9rem; font-weight:600;">✓ You're an approved volunteer — you can be matched with students.</div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div style="background:#fff; border:1.5px solid #f2a73b; border-radius:12px; padding:16px 20px; margin-bottom:22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700; font-size:0.95rem;">Not yet an approved volunteer</div>
+          <div style="font-size:0.85rem; color:var(--ink-soft); margin-top:2px;">Current status: <b>${label}</b>. You'll be matched with students once your application is reviewed and approved.</div>
+        </div>
+        <a href="application.html" class="btn btn-primary" style="padding:9px 18px; border-radius:999px; background:var(--blue); color:#fff; font-size:0.82rem; font-weight:700; white-space:nowrap;">Continue Application</a>
+      </div>`;
+
+    // Lock the "start teaching" actions until actually approved.
+    const grid = document.getElementById('actionGrid');
+    grid.style.opacity = '0.5';
+    grid.style.pointerEvents = 'none';
+    const lock = document.createElement('div');
+    lock.style.cssText = 'position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.3); border-radius:18px; font-weight:700; color:var(--blue-deep); font-size:0.95rem; pointer-events:none;';
+    lock.textContent = '🔒 Available once your application is approved';
+    grid.style.position = 'relative';
+    grid.appendChild(lock);
   }
 
   document.getElementById('logoutLink').addEventListener('click', async (e) => {

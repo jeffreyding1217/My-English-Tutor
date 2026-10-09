@@ -182,10 +182,16 @@
             full_name: fullName,
             role: 'volunteer',
           });
+          await supabaseClient.from('applications').insert({
+            id: data.user.id,
+            status: 'account_created',
+            first_name: fullName.split(' ')[0] || '',
+            last_name: fullName.split(' ').slice(1).join(' '),
+          });
         }
 
         if (data.session) {
-          window.location.href = 'volunteer-dashboard.html';
+          window.location.href = 'application.html';
         } else {
           showMsg('Account created! Check your email to confirm it, then log in. (Or turn off "Confirm email" in Supabase for instant access while testing.)', 'success');
           setMode('login');
