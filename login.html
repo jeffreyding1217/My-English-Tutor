@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Log In — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48;
     --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4;
-    --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif;
+    --font-display:Georgia,'Songti SC','Noto Serif SC',serif; --font-body:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg-tint);
@@ -68,9 +67,9 @@
     </div>
 
     <!-- VOLUNTEER PANEL -->
-    <div id="volunteerPanel">
+    <div id="authPanel">
       <div class="setup-note" id="setupNote" style="display:none;">
-        <b>Not connected yet:</b> this form needs a free Supabase project before it can create real accounts. Open <code>auth-config.js</code> and follow the instructions inside — it's a 5-minute setup.
+        <b>Not connected yet:</b> these forms need a free Supabase project before they can create real accounts. Open <code>auth-config.js</code> and follow the instructions inside — it's a 5-minute setup.
       </div>
 
       <h1 id="formTitle">Volunteer Log In</h1>
@@ -83,7 +82,7 @@
 
       <form id="loginForm" onsubmit="return handleSubmit(event)">
         <div class="field" id="nameField" style="display:none;">
-          <label>Full Name</label>
+          <label id="nameLabel">Full Name</label>
           <input type="text" id="nameInput" placeholder="e.g. Maren Ostrowski">
         </div>
         <div class="field">
@@ -100,15 +99,6 @@
       <div class="msg" id="formMsg"></div>
     </div>
 
-    <!-- STUDENT PANEL -->
-    <div id="studentPanel" class="student-info" style="display:none;">
-      <div class="icon">💬</div>
-      <h1>No Account Needed</h1>
-      <p>Students don't need to sign up or log in. Before each lesson, your volunteer will send you a link to join the video call directly — just tap it when it's time.</p>
-      <p>Want to see what a student's lesson tracker could look like once you're a regular? Here's a preview:</p>
-      <a class="btn" href="student-dashboard.html">Preview a Student Dashboard</a>
-    </div>
-
     <div class="back" style="margin-top:0; padding-top:20px;"><a href="index.html">&larr; Back to the homepage</a></div>
   </div>
 </div>
@@ -118,52 +108,66 @@
   let role = 'volunteer';
   let mode = 'login';
 
-  if (!isConfigured) {
-    document.getElementById('setupNote').style.display = 'block';
+  const COPY = {
+    volunteer: {
+      loginTitle: 'Volunteer Log In', signupTitle: 'Create Your Volunteer Account',
+      loginSub: 'Welcome back — log in to see your application, sessions and lesson materials.',
+      signupSub: 'Step one of the volunteer application. Creating an account does not make you an approved volunteer.',
+      namePH: 'e.g. Maren Ostrowski', nameLabel: 'Full Name', login: 'Log In', signup: 'Create Account', pw: 'Password',
+    },
+    student: {
+      loginTitle: 'Student Log In · 学生登录', signupTitle: 'Create a Student Account · 创建学生账号',
+      loginSub: 'Welcome back! Log in to see your lessons. 欢迎回来！请登录查看你的课程。',
+      signupSub: 'It is free. A parent or guardian should help students under 18. 完全免费。未满18岁的学生请在家长或监护人的帮助下注册。',
+      namePH: 'e.g. Li Wei / 李伟', nameLabel: 'Full Name · 姓名', login: 'Log In · 登录', signup: 'Create Account · 创建账号', pw: 'Password · 密码',
+    },
+  };
+
+  if (!isConfigured) document.getElementById('setupNote').style.display = 'block';
+
+  function applyCopy(){
+    const c = COPY[role];
+    document.getElementById('formTitle').textContent = mode === 'login' ? c.loginTitle : c.signupTitle;
+    document.getElementById('formSub').textContent = mode === 'login' ? c.loginSub : c.signupSub;
+    document.getElementById('submitBtn').textContent = mode === 'login' ? c.login : c.signup;
+    document.getElementById('nameInput').placeholder = c.namePH;
+    document.getElementById('nameLabel').textContent = c.nameLabel;
+    document.querySelector('#passwordInput').previousElementSibling.textContent = c.pw;
+    document.getElementById('modeLogin').textContent = role === 'student' ? 'Log In · 登录' : 'Log In';
+    document.getElementById('modeSignup').textContent = role === 'student' ? 'Create an Account · 注册' : 'Create an Account';
   }
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('mode') === 'signup') setMode('signup');
-  if (params.get('role') === 'student') setRole('student');
 
   function setRole(r){
     role = r;
     document.getElementById('tabVolunteer').classList.toggle('active', r==='volunteer');
     document.getElementById('tabStudent').classList.toggle('active', r==='student');
-    document.getElementById('volunteerPanel').style.display = r==='volunteer' ? 'block' : 'none';
-    document.getElementById('studentPanel').style.display = r==='student' ? 'block' : 'none';
+    applyCopy(); hideMsg();
   }
-
   function setMode(m){
     mode = m;
     document.getElementById('modeLogin').classList.toggle('active', m==='login');
     document.getElementById('modeSignup').classList.toggle('active', m==='signup');
     document.getElementById('nameField').style.display = m==='signup' ? 'block' : 'none';
     document.getElementById('nameInput').required = m==='signup';
-    document.getElementById('formTitle').textContent = m==='login' ? 'Volunteer Log In' : 'Create Your Volunteer Account';
-    document.getElementById('formSub').textContent = m==='login'
-      ? 'Welcome back — log in to see your sessions and lesson materials.'
-      : "Takes under a minute — you'll be on your dashboard right after.";
-    document.getElementById('submitBtn').textContent = m==='login' ? 'Log In' : 'Create Account';
-    hideMsg();
+    applyCopy(); hideMsg();
   }
 
-  function showMsg(text, type){
-    const el = document.getElementById('formMsg');
-    el.textContent = text;
-    el.className = 'msg show ' + type;
-  }
-  function hideMsg(){
-    document.getElementById('formMsg').className = 'msg';
+  function showMsg(text, type){ const el = document.getElementById('formMsg'); el.textContent = text; el.className = 'msg show ' + type; }
+  function hideMsg(){ document.getElementById('formMsg').className = 'msg'; }
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('role') === 'student') setRole('student'); else applyCopy();
+  if (params.get('mode') === 'signup') setMode('signup');
+
+  function dest(r, isSignup){
+    if (r === 'student') return isSignup ? 'student-application.html' : 'student-dashboard.html';
+    return isSignup ? 'application.html' : 'volunteer-dashboard.html';
   }
 
   async function handleSubmit(e){
     e.preventDefault();
     hideMsg();
-
-    if (!isConfigured) {
-      showMsg("Supabase isn't connected yet — see the note above and auth-config.js.", 'error');
-      return false;
-    }
+    if (!isConfigured) { showMsg("Supabase isn't connected yet — see the note above and auth-config.js.", 'error'); return false; }
 
     const email = document.getElementById('emailInput').value.trim();
     const password = document.getElementById('passwordInput').value;
@@ -177,29 +181,29 @@
         if (error) throw error;
 
         if (data.user) {
-          await supabaseClient.from('profiles').insert({
-            id: data.user.id,
-            full_name: fullName,
-            role: 'volunteer',
-          });
-          await supabaseClient.from('applications').insert({
-            id: data.user.id,
-            status: 'account_created',
-            first_name: fullName.split(' ')[0] || '',
-            last_name: fullName.split(' ').slice(1).join(' '),
+          const { error: pErr } = await supabaseClient.from('profiles').insert({ id: data.user.id, full_name: fullName, role });
+          if (pErr && !String(pErr.message).includes('duplicate')) throw pErr;
+          const parts = fullName.split(' ');
+          const table = role === 'student' ? 'student_applications' : 'applications';
+          await supabaseClient.from(table).insert({
+            id: data.user.id, status: 'account_created',
+            first_name: parts[0] || '', last_name: parts.slice(1).join(' '),
           });
         }
-
         if (data.session) {
-          window.location.href = 'application.html';
+          window.location.href = dest(role, true);
         } else {
-          showMsg('Account created! Check your email to confirm it, then log in. (Or turn off "Confirm email" in Supabase for instant access while testing.)', 'success');
+          showMsg(role === 'student'
+            ? 'Account created! Check your email and click the verification link, then log in. 账号已创建！请查收邮件并点击验证链接，然后登录。'
+            : 'Account created! Check your email and click the verification link, then log in.', 'success');
           setMode('login');
         }
       } else {
         const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        window.location.href = 'volunteer-dashboard.html';
+        // Send people to the right place based on their ACTUAL account type, not the tab they clicked.
+        const { data: prof } = await supabaseClient.from('profiles').select('role').eq('id', data.user.id).single();
+        window.location.href = dest((prof && prof.role) || role, false);
       }
     } catch (err) {
       showMsg(err.message || 'Something went wrong — please try again.', 'error');

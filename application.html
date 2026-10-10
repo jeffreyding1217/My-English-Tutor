@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Volunteer Application — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --bg-tint-2:#eef6f2; --blue:#1e4e8c; --blue-deep:#133761;
     --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4;
-    --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+    --font-display:Georgia,'Songti SC','Noto Serif SC',serif; --font-body:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; --font-mono:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg-tint); }
@@ -111,6 +110,8 @@
     const { data: { session: s } } = await supabaseClient.auth.getSession();
     if (!s) { window.location.href = 'login.html'; return; }
     session = s;
+    const { data: prof } = await supabaseClient.from('profiles').select('role').eq('id', s.user.id).single();
+    if (prof && prof.role === 'student') { window.location.href = 'student-application.html'; return; }
     document.getElementById('whoEmail').textContent = session.user.email;
 
     let { data: row } = await supabaseClient.from('applications').select('*').eq('id', session.user.id).single();

@@ -4,22 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lesson Library — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
     --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48;
     --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8;
   }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Inter',sans-serif; background:#eef3f2; color:var(--ink); }
-  input, textarea{ font-family:'Inter',sans-serif; }
+  body{ margin:0; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; background:#eef3f2; color:var(--ink); }
+  input, textarea{ font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; }
 
   .topbar{
     background:var(--blue-deep); color:#fff; padding:14px 22px; display:flex; align-items:center;
     justify-content:space-between; position:sticky; top:0; z-index:20; flex-wrap:wrap; gap:8px;
   }
-  .topbar .brand{ font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:10px; }
+  .topbar .brand{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; font-size:1.05rem; display:flex; align-items:center; gap:10px; }
   .brand .mark{ width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,var(--blue),var(--green)); display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:700; }
   .topbar .hint{ font-size:0.78rem; color:#bcd0e4; }
 
@@ -28,7 +26,7 @@
   .sidebar{ background:#fff; border-right:1px solid var(--line); padding: 18px 10px; overflow-y:auto; }
   .lesson-btn{
     width:100%; text-align:left; background:none; border:none; padding:11px 12px; border-radius:9px;
-    cursor:pointer; font-family:'Inter',sans-serif; font-size:0.86rem; font-weight:600; color:var(--ink-soft);
+    cursor:pointer; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; font-size:0.86rem; font-weight:600; color:var(--ink-soft);
     display:flex; align-items:center; gap:10px; margin-bottom:3px; transition: background .12s ease, color .12s ease;
   }
   .lesson-btn:hover{ background:var(--tint); color:var(--ink); }
@@ -36,13 +34,13 @@
   .lesson-btn .num{
     width:24px; height:24px; border-radius:50%; background:var(--tint); color:var(--green-deep);
     display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;
-    font-family:'IBM Plex Mono', monospace;
+    font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
   }
   .lesson-btn.active .num{ background:rgba(255,255,255,0.2); color:#fff; }
 
   .viewer{ display:flex; flex-direction:column; align-items:center; padding: 26px 20px 40px; }
   .stage-wrap{ width:100%; max-width: 1100px; }
-  .lesson-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.3rem; color:var(--blue-deep); margin: 0 0 4px; }
+  .lesson-title{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; font-size:1.3rem; color:var(--blue-deep); margin: 0 0 4px; }
   .lesson-sub{ font-size:0.86rem; color:var(--ink-soft); margin-bottom:16px; }
 
   .stage{
@@ -55,16 +53,16 @@
   .slide.tint{ background:var(--tint); }
   .slide.light{ background:#fff; }
 
-  .eyebrow{ font-family:'IBM Plex Mono', monospace; font-size:0.78em; font-weight:700; letter-spacing:0.12em; color:var(--green-deep); margin-bottom:0.6em; }
+  .eyebrow{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:0.78em; font-weight:700; letter-spacing:0.12em; color:var(--green-deep); margin-bottom:0.6em; }
   .slide.dark .eyebrow{ color:#7fd9b2; }
-  .slide h1{ font-family:'Fraunces',serif; font-weight:700; font-size:2.6em; line-height:1.08; margin:0 0 0.3em; color:var(--blue-deep); }
+  .slide h1{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; font-size:2.6em; line-height:1.08; margin:0 0 0.3em; color:var(--blue-deep); }
   .slide.dark h1{ color:#fff; }
   .slide .meta{ font-size:1.05em; color: var(--ink-soft); margin-bottom: 0.8em; }
   .slide.dark .meta{ color:#d7e4ee; }
 
   .field-row{ display:flex; gap: 2.2em; margin-top:auto; padding-top: 1em; flex-wrap:wrap; }
   .field{ flex:1; min-width: 110px; }
-  .field label{ display:block; font-family:'IBM Plex Mono',monospace; font-size:0.68em; font-weight:700; letter-spacing:0.08em; color:#9fb3c8; margin-bottom:0.4em; }
+  .field label{ display:block; font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:0.68em; font-weight:700; letter-spacing:0.08em; color:#9fb3c8; margin-bottom:0.4em; }
   .field input{
     width:100%; background:transparent; border:none; border-bottom:1.5px solid #44608a; color:#fff;
     font-size:1.05em; padding:0.25em 0.1em; outline:none;
@@ -87,9 +85,9 @@
   .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap: 1.4em; flex:1; min-height:0; }
   .card{ background:#fff; border:1px solid var(--line); border-radius:0.7em; padding: 1em 1.2em; overflow-y:auto; }
   .card.tintbg{ background:var(--tint); }
-  .card h4{ margin:0 0 0.8em; font-family:'IBM Plex Mono',monospace; font-size:0.78em; letter-spacing:0.1em; color:var(--green-deep); }
+  .card h4{ margin:0 0 0.8em; font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:0.78em; letter-spacing:0.1em; color:var(--green-deep); }
   .flow-item{ display:flex; gap:0.8em; margin-bottom:0.7em; }
-  .flow-time{ font-family:'IBM Plex Mono',monospace; font-size:0.78em; font-weight:700; color:var(--green-deep); width:5.4em; flex-shrink:0; white-space:nowrap; }
+  .flow-time{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:0.78em; font-weight:700; color:var(--green-deep); width:5.4em; flex-shrink:0; white-space:nowrap; }
   .flow-item b{ display:block; font-size:0.95em; }
   .flow-item span{ color:var(--ink-soft); font-size:0.82em; }
 
@@ -126,7 +124,7 @@
   }
   .nav-btn:hover:not(:disabled){ border-color:var(--blue); color:var(--blue); }
   .nav-btn:disabled{ opacity:0.35; cursor:default; }
-  .counter{ font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:var(--ink-soft); }
+  .counter{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:0.85rem; color:var(--ink-soft); }
   .fs-btn{ background: var(--green); color:#fff; border:none; padding:10px 18px; border-radius:999px; font-weight:600; font-size:0.9rem; cursor:pointer; }
   .fs-btn:hover{ background:var(--green-deep); }
   .clear-btn{ background:none; border:none; color:var(--ink-soft); font-size:0.78rem; text-decoration:underline; cursor:pointer; padding:4px; }

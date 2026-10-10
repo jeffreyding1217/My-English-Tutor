@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Placement Test — Bridge to China</title>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
+<style>
+  :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b;
+    --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; --tint2:#eef6f2; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; color:var(--ink); background:var(--tint); }
+  .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
+  .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
+  .wrap{ max-width:760px; margin:0 auto; padding:30px 24px 90px; }
+  h1{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; color:var(--blue-deep); margin:0 0 8px; }
+  .lead{ color:var(--ink-soft); line-height:1.6; font-size:.95rem; }
+  .sec{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; margin-top:22px; }
+  .sec h2{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-size:1.2rem; color:var(--blue-deep); margin:0 0 4px; }
+  .sec .tag{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.7rem; color:var(--green-deep); letter-spacing:.1em; }
+  .q{ padding:18px 0; border-bottom:1px solid var(--line); }
+  .q:last-child{ border-bottom:none; }
+  .q .stem{ font-weight:600; font-size:.95rem; margin-bottom:10px; line-height:1.55; }
+  .q .cat{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.65rem; color:var(--ink-soft); letter-spacing:.08em; }
+  .opt{ display:block; padding:10px 14px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:.9rem; }
+  .opt:hover{ background:var(--tint); }
+  .opt.sel{ border-color:var(--blue); background:#eaf1fa; }
+  .passage{ background:var(--tint); border-left:4px solid var(--green); padding:16px 18px; border-radius:8px; font-size:.92rem; line-height:1.7; margin:12px 0 4px; }
+  textarea{ width:100%; min-height:200px; padding:14px; border:1.5px solid var(--line); border-radius:10px; font-family:inherit; font-size:.95rem; line-height:1.6; background:var(--tint); }
+  .btn{ padding:11px 22px; border-radius:999px; border:none; font-weight:700; font-size:.88rem; cursor:pointer; background:var(--blue); color:#fff; }
+  .btn:hover{ background:var(--blue-deep); }
+  .btn.ghost{ background:#fff; color:var(--blue); border:1.5px solid var(--line); }
+  .btn.green{ background:var(--green); } .btn.red{ background:#c0392b; }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  .counter{ font-size:.8rem; color:var(--ink-soft); margin-top:6px; }
+  .rec-row{ padding:16px 0; border-bottom:1px solid var(--line); }
+  .rec-row:last-child{ border-bottom:none; }
+  .rec-row .prompt{ font-weight:600; margin-bottom:10px; line-height:1.55; }
+  .rec-state{ font-size:.8rem; margin-left:10px; color:var(--ink-soft); }
+  .rec-state.ok{ color:var(--green-deep); font-weight:600; }
+  .note{ font-size:.82rem; color:#9a6b1a; background:#fdf1e0; border-radius:10px; padding:12px 14px; line-height:1.55; margin-top:14px; }
+  .err{ color:#a3312a; background:#fdecea; padding:12px 14px; border-radius:10px; font-size:.88rem; margin-top:16px; display:none; }
+  .center{ text-align:center; padding:60px 20px; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
+  <a href="student-application.html" style="font-size:.85rem;color:var(--blue);font-weight:600;text-decoration:none;">← Back · 返回</a>
+</div>
+<div class="wrap" id="root"></div>
+
+<script src="auth-config.js"></script>
+<script>
+/* Items: [category, question, [options], correctIndex]. Ordered easy → hard. */
+const MC = [
+ ['grammar','My name ____ Li Wei.',['am','are','is','be'],2],
+ ['grammar','Look at Anna. ____ is my teacher.',['He','She','It','They'],1],
+ ['grammar','I have two ____.',['book','a book','books','bookes'],2],
+ ['grammar','Where do you ____?',['live','lives','living','lived'],0],
+ ['grammar','There is ____ apple on the table.',['a','an','the','two'],1],
+ ['grammar','Yesterday I ____ to school by bus.',['go','goes','went','going'],2],
+ ['grammar','He is ____ TV now.',['watch','watches','watched','watching'],3],
+ ['grammar','I get up ____ 7 o\'clock.',['in','on','at','to'],2],
+ ['grammar','We ____ dinner at six tomorrow.',['will have','had','are had','has'],0],
+ ['grammar','I like coffee, ____ I don\'t like tea.',['because','but','so','or'],1],
+ ['grammar','How ____ water do you drink every day?',['many','few','a lot','much'],3],
+ ['grammar','If it rains tomorrow, we ____ stay at home.',['will','would','are','did'],0],
+ ['grammar','I have lived here ____ 2019.',['for','from','during','since'],3],
+ ['grammar','This is the boy ____ won the competition.',['who','which','whose','where'],0],
+ ['grammar','She asks me where ____.',['do I live','I live','am I live','I do live'],1],
+ ['grammar','By the time you arrive, I ____ dinner.',['cook','will have cooked','am cooking','cooked'],1],
+ ['grammar','If I had known about the traffic, I ____ earlier.',['leave','would leave','would have left','had left'],2],
+ ['grammar','The meeting was ____ because of the storm.',['called off','called on','called up','called in'],0],
+ ['grammar','Despite ____ hard, he failed the exam.',['study','studied','studying','to study'],2],
+ ['grammar','Not only ____ late, but he also forgot the documents.',['he was','is he','he is','was he'],3],
+ ['reading','Where does Tom buy bread?',['At a supermarket','At the bakery','At his grandmother\'s house','At school'],1],
+ ['reading','Why does Tom like the bakery?',['The bread is cheap','It is very big','The owner is kind','It is near school'],2],
+ ['reading','What does Tom do on Sundays?',['He works','He cooks dinner alone','He goes to school','He visits his grandmother'],3],
+];
+const PASSAGE = 'Tom lives in a small town. Every morning he walks to the bakery near his house and buys bread. He likes the bakery because the owner, Mrs. Green, is very kind. On Sundays, Tom does not work, so he visits his grandmother and they cook lunch together.';
+const LISTEN = [
+ ['My birthday is on the twelfth of May.','When is the speaker\'s birthday?',['May 2','May 12','March 12','May 20'],1],
+ ['Could you tell me how to get to the station? Go straight, then turn left at the bank.','Where should you turn left?',['At the station','At the school','At the bank','At the park'],2],
+ ['I wanted to go to the park, but it started raining, so we watched a movie at home instead.','Why did they watch a movie?',['They were tired','It was raining','The park was closed','They had no money'],1],
+];
+const LEVELS = [[90,'Advanced'],[75,'Intermediate-High'],[60,'Intermediate'],[40,'Intermediate-Low'],[20,'Beginner-High'],[0,'Beginner']];
+const levelFor = p => LEVELS.find(([min]) => p >= min)[1];
+
+const root = document.getElementById('root');
+let session, row, answers = {}, listenAns = {}, listenPlays = {}, recorded = false;
+let recorder = null, chunks = [], stream = null;
+const FINAL = ['submitted','under_review','approved','needs_more_info','not_approved','suspended'];
+
+async function init(){
+  if (!isConfigured){ root.innerHTML = '<div class="sec">Supabase isn\'t connected yet.</div>'; return; }
+  const { data:{ session:s } } = await supabaseClient.auth.getSession();
+  if (!s){ location.href = 'login.html?role=student'; return; }
+  session = s;
+  const { data } = await supabaseClient.from('student_applications').select('*').eq('id', s.user.id).single();
+  row = data;
+  if (!row || !s.user.email_confirmed_at || !row.consent_rules){ location.href = 'student-application.html'; return; }
+  if (FINAL.includes(row.status)){ location.href = 'student-application.html'; return; }
+  if (row.placement_score != null){
+    root.innerHTML = '<div class="sec center"><h2>✓ You already finished the test · 你已完成测试</h2><p class="lead">The test can be taken once. 测试只能做一次。</p><a class="btn" href="student-application.html" style="text-decoration:none;display:inline-block">Back · 返回</a></div>'; return;
+  }
+  render();
+}
+
+function render(){
+  let html = `<h1>English Placement Test <span style="display:block;font-size:.6em;font-weight:500;">英语分级测试</span></h1>
+  <p class="lead">This test helps us find the right level for you. It starts easy and gets harder — <b>it is okay if some questions are too hard!</b> Just do your best, and please do it by yourself without a translator or AI.<br>
+  这个测试帮助我们为你找到合适的级别。题目由易到难，<b>有些题做不出来也没关系！</b>请尽力完成，并独立作答，不要使用翻译软件或AI。</p>
+  <p class="lead" style="margin-top:8px;">You can take it <b>once</b>. Don't close the page before you press Submit. 测试只能做<b>一次</b>，提交前请不要关闭页面。</p>`;
+
+  html += '<div class="sec"><span class="tag">PART 1 · 第一部分</span><h2>Grammar · 语法</h2>';
+  MC.forEach((q,i)=>{
+    if (q[0]==='reading' && MC[i-1][0]==='grammar') html += '</div><div class="sec"><span class="tag">PART 2 · 第二部分</span><h2>Reading · 阅读</h2><div class="passage">'+PASSAGE+'</div>';
+    html += `<div class="q"><div class="stem">${i+1}. ${q[1]}</div>${q[2].map((o,j)=>`<label class="opt" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div>`;
+  });
+  html += '</div>';
+
+  html += `<div class="sec"><span class="tag">PART 3 · 第三部分</span><h2>Listening · 听力</h2>
+    <p class="lead">Press Play to hear a sentence, then answer. You can play each one 2 times. 点击播放收听句子，然后回答。每段可以播放2次。</p>
+    <div id="ttsWarn" class="note" style="display:none;">Your browser can't play spoken audio. Please use Chrome, Edge or Safari on a computer. 你的浏览器无法播放语音，请在电脑上使用 Chrome、Edge 或 Safari。</div>
+    ${LISTEN.map((q,i)=>`<div class="q"><div class="stem">Audio ${i+1}: <button class="btn ghost play" data-i="${i}" style="padding:6px 14px;margin-left:6px;">▶ Play 播放</button> <span class="rec-state" id="plays${i}">2 plays left</span></div>
+      <div class="stem" style="margin-top:12px;">${q[1]}</div>${q[2].map((o,j)=>`<label class="opt" data-l="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div>`).join('')}</div>`;
+
+  html += `<div class="sec"><span class="tag">PART 4 · 第四部分</span><h2>Writing · 写作</h2>
+    <p class="lead">Write 3 to 5 sentences in English about yourself: your name, where you live, and what you like to do. Write only what you can — it's okay to make mistakes.<br>用英语写3到5句话介绍你自己：你的名字、住在哪里、喜欢做什么。写你会写的就好，有错误也没关系。</p>
+    <textarea id="essay" style="min-height:130px;" placeholder="Hello, my name is…"></textarea><div class="counter" id="essayCount">0 words</div></div>`;
+
+  html += `<div class="sec"><span class="tag">PART 5 · 第五部分 (optional 选做)</span><h2>Speaking · 口语</h2>
+    <p class="lead">Record yourself saying a few sentences: "Please introduce yourself." Speak for about 30 seconds. You can skip this if you can't record. 请录下你的自我介绍，大约30秒。如果无法录音可以跳过。</p>
+    <div id="micWarn" class="note" style="display:none;">Recording isn't available in this browser. 当前浏览器不支持录音。</div>
+    <div class="rec-row"><button class="btn green" id="recBtn">● Record 开始录音</button> <button class="btn red" id="stopBtn" style="display:none;">■ Stop 停止</button><span class="rec-state" id="recstate">Not recorded 尚未录音</span></div></div>`;
+
+  html += '<div class="err" id="err"></div><div style="text-align:right;margin-top:24px;"><button class="btn" id="submitBtn" style="padding:14px 34px;">Submit · 提交</button></div>';
+  root.innerHTML = html;
+  if (!('speechSynthesis' in window)) document.getElementById('ttsWarn').style.display = 'block';
+  if (!navigator.mediaDevices || !window.MediaRecorder) document.getElementById('micWarn').style.display = 'block';
+  wire();
+}
+
+function wire(){
+  root.querySelectorAll('.opt[data-q]').forEach(el => el.onclick = () => { root.querySelectorAll(`.opt[data-q="${el.dataset.q}"]`).forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); answers[el.dataset.q] = +el.dataset.o; });
+  root.querySelectorAll('.opt[data-l]').forEach(el => el.onclick = () => { root.querySelectorAll(`.opt[data-l="${el.dataset.l}"]`).forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); listenAns[el.dataset.l] = +el.dataset.o; });
+  root.querySelectorAll('.play').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i; listenPlays[i] = listenPlays[i] || 0;
+    if (listenPlays[i] >= 2 || !('speechSynthesis' in window)) return;
+    listenPlays[i]++;
+    document.getElementById('plays'+i).textContent = (2-listenPlays[i]) + ' play' + (2-listenPlays[i]===1?'':'s') + ' left';
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(LISTEN[i][0]); u.lang = 'en-US'; u.rate = 0.9;
+    const v = speechSynthesis.getVoices().filter(x => x.lang.toLowerCase().startsWith('en'));
+    if (v.length) u.voice = v[0];
+    speechSynthesis.speak(u);
+    if (listenPlays[i] >= 2) b.disabled = true;
+  });
+  const essay = document.getElementById('essay');
+  essay.oninput = () => { const t = essay.value.trim(); document.getElementById('essayCount').textContent = (t ? t.split(/\s+/).length : 0) + ' words'; };
+  document.getElementById('recBtn').onclick = startRec;
+  document.getElementById('stopBtn').onclick = () => { if (recorder && recorder.state !== 'inactive') recorder.stop(); };
+  document.getElementById('submitBtn').onclick = submit;
+}
+function setState(t, ok){ const el = document.getElementById('recstate'); el.textContent = t; el.className = 'rec-state' + (ok?' ok':''); }
+async function startRec(){
+  if (recorder) return;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio:true }); }
+  catch(e){ setState('Microphone blocked. Please allow it and try again. 麦克风被禁用，请允许后重试。'); return; }
+  chunks = []; recorder = new MediaRecorder(stream);
+  recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  recorder.onstop = uploadRec; recorder.start();
+  document.getElementById('recBtn').style.display = 'none'; document.getElementById('stopBtn').style.display = 'inline-block';
+  setState('Recording… 录音中…');
+}
+async function uploadRec(){
+  const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+  stream.getTracks().forEach(t=>t.stop()); recorder = null;
+  document.getElementById('recBtn').style.display = 'inline-block'; document.getElementById('recBtn').textContent = '● Re-record 重新录音';
+  document.getElementById('stopBtn').style.display = 'none';
+  if (blob.size < 2000){ setState('Empty recording — try again. 录音为空，请重试。'); return; }
+  setState('Uploading… 上传中…');
+  const ext = blob.type.includes('mp4') ? 'mp4' : blob.type.includes('ogg') ? 'ogg' : 'webm';
+  const path = `${session.user.id}/placement-${Date.now()}.${ext}`;
+  const { error } = await supabaseClient.storage.from('recordings').upload(path, blob, { contentType: blob.type });
+  if (error){ setState('Upload failed: ' + error.message); return; }
+  await supabaseClient.from('student_recordings').delete().eq('student_id', session.user.id);
+  const { error: e2 } = await supabaseClient.from('student_recordings').insert({ student_id: session.user.id, prompt_index: 0, storage_path: path });
+  if (e2){ setState('Could not save: ' + e2.message); return; }
+  recorded = true; setState('✓ Uploaded 已上传', true);
+}
+function showErr(t){ const e = document.getElementById('err'); e.textContent = t; e.style.display = 'block'; e.scrollIntoView({behavior:'smooth', block:'center'}); }
+
+async function submit(){
+  document.getElementById('err').style.display = 'none';
+  if (recorder){ showErr('Please stop your recording first. 请先停止录音。'); return; }
+  const left = MC.filter((_,i)=>answers[i]===undefined).length + LISTEN.filter((_,i)=>listenAns[i]===undefined).length;
+  if (left){ showErr(`Please answer every question — ${left} left. If you're not sure, guess! 请回答所有题目，还剩 ${left} 题。不确定可以猜一个！`); return; }
+  const essay = document.getElementById('essay').value.trim();
+  const words = essay ? essay.split(/\s+/).length : 0;
+  if (words < 5){ showErr('Please write at least a few words. 请至少写几个单词。'); return; }
+  if (!confirm('Submit the test? You can only take it once. 确定提交吗？测试只能做一次。')) return;
+
+  const t = { grammar:[0,0], reading:[0,0] };
+  MC.forEach((q,i)=>{ t[q[0]][1]++; if (answers[i]===q[3]) t[q[0]][0]++; });
+  const lc = LISTEN.filter((q,i)=>listenAns[i]===q[3]).length;
+  const total = MC.length + LISTEN.length, correct = t.grammar[0] + t.reading[0] + lc;
+  const score = Math.round(correct/total*100);
+  const pct = ([a,b]) => Math.round(a/b*100);
+  const breakdown = { grammar: pct(t.grammar), reading: pct(t.reading), listening: Math.round(lc/LISTEN.length*100) };
+
+  const btn = document.getElementById('submitBtn'); btn.disabled = true;
+  const upd = { placement_score: score, placement_breakdown: breakdown, placement_answers: { mc: answers, listening: listenAns },
+    placement_writing: essay, suggested_level: levelFor(score), status: 'placement_complete' };
+  const { error } = await supabaseClient.from('student_applications').update(upd).eq('id', session.user.id);
+  if (error){ btn.disabled = false; showErr('Could not save: ' + error.message); return; }
+  root.innerHTML = `<div class="sec center"><h2>✓ Test finished · 测试完成</h2>
+    <p class="lead">Thank you! Our team will read your writing and use your results to choose the best volunteer for you. Your level will be confirmed in your first lesson.<br>谢谢！我们的团队会阅读你的作文，并根据结果为你选择最合适的志愿者。你的级别会在第一节课中确认。</p>
+    <a class="btn" href="student-application.html" style="text-decoration:none;display:inline-block;margin-top:10px;">Continue · 继续</a></div>`;
+}
+init();
+</script>
+</body>
+</html>

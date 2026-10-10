@@ -4,39 +4,38 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Review — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; --tint2:#eef6f2; }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Inter','Noto Sans SC',sans-serif; color:var(--ink); background:var(--tint); }
+  body{ margin:0; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; color:var(--ink); background:var(--tint); }
   .topbar{ background:var(--blue-deep); color:#fff; padding:14px 28px; display:flex; justify-content:space-between; align-items:center; }
-  .topbar b{ font-family:'Fraunces',serif; } .topbar a{ color:#bcd0e4; font-size:.85rem; text-decoration:none; }
+  .topbar b{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; } .topbar a{ color:#bcd0e4; font-size:.85rem; text-decoration:none; }
   .wrap{ max-width:1100px; margin:0 auto; padding:28px 24px 80px; }
-  h1{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 6px; }
+  h1{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; color:var(--blue-deep); margin:0 0 6px; }
   .filters{ display:flex; gap:8px; flex-wrap:wrap; margin:16px 0 18px; }
   .chip{ padding:7px 14px; border-radius:999px; border:1.5px solid var(--line); background:#fff; font-size:.8rem; font-weight:600; color:var(--ink-soft); cursor:pointer; }
   .chip.on{ background:var(--blue); border-color:var(--blue); color:#fff; }
   table{ width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:.88rem; }
   th,td{ padding:12px 14px; text-align:left; border-bottom:1px solid var(--line); }
-  th{ background:var(--tint2); font-family:'IBM Plex Mono',monospace; font-size:.7rem; letter-spacing:.08em; color:var(--ink-soft); }
+  th{ background:var(--tint2); font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.7rem; letter-spacing:.08em; color:var(--ink-soft); }
   tr.row{ cursor:pointer; } tr.row:hover{ background:var(--tint); }
-  .pill{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; padding:4px 10px; border-radius:999px; background:var(--tint2); color:var(--green-deep); white-space:nowrap; }
+  .pill{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.68rem; padding:4px 10px; border-radius:999px; background:var(--tint2); color:var(--green-deep); white-space:nowrap; }
   .pill.warn{ background:#fdf1e0; color:#9a6b1a; } .pill.ok{ background:#e7f5ee; color:var(--green-deep); } .pill.bad{ background:#fdecea; color:#a3312a; }
   .panel{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px 26px; margin-bottom:16px; }
-  .panel h3{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 12px; font-size:1.05rem; }
+  .panel h3{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; color:var(--blue-deep); margin:0 0 12px; font-size:1.05rem; }
   .grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px 24px; font-size:.88rem; }
   .grid div span{ color:var(--ink-soft); display:inline-block; min-width:150px; }
   .text{ background:var(--tint); border-radius:10px; padding:14px 16px; font-size:.9rem; line-height:1.65; white-space:pre-wrap; margin:6px 0 14px; }
-  .lbl{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; letter-spacing:.08em; color:var(--green-deep); margin-top:8px; }
+  .lbl{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.68rem; letter-spacing:.08em; color:var(--green-deep); margin-top:8px; }
   .btn{ padding:9px 18px; border-radius:999px; border:none; font-weight:700; font-size:.82rem; cursor:pointer; background:var(--blue); color:#fff; margin:0 6px 8px 0; }
   .btn.green{ background:var(--green); } .btn.red{ background:#c0392b; } .btn.amber{ background:var(--amber); color:#3b2a06; } .btn.ghost{ background:#fff; color:var(--blue); border:1.5px solid var(--line); }
   textarea,input[type=number]{ width:100%; padding:10px 12px; border:1.5px solid var(--line); border-radius:9px; font-family:inherit; font-size:.88rem; background:var(--tint); }
   textarea{ min-height:90px; }
   .scores{ display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin:8px 0 12px; }
   .score{ background:var(--tint); border-radius:10px; padding:10px; text-align:center; }
-  .score b{ display:block; font-family:'Fraunces',serif; font-size:1.3rem; color:var(--blue-deep); } .score span{ font-size:.7rem; color:var(--ink-soft); }
+  .score b{ display:block; font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-size:1.3rem; color:var(--blue-deep); } .score span{ font-size:.7rem; color:var(--ink-soft); }
   .flag{ background:#fdf1e0; border-left:4px solid var(--amber); padding:10px 14px; border-radius:8px; font-size:.85rem; color:#7a5314; margin:8px 0; line-height:1.55; }
   audio{ width:100%; margin:4px 0 12px; }
   @media(max-width:760px){ .grid{ grid-template-columns:1fr; } .scores{ grid-template-columns:repeat(3,1fr); } }
@@ -55,8 +54,14 @@ const STATUS_LABELS = {
   needs_additional_training:'Needs Additional Training', not_approved:'Not Approved', suspended:'Suspended'
 };
 const root = document.getElementById('root');
-let apps = [], filter = 'submitted', session;
+let apps = [], students = [], mode = 'volunteers', filter = 'submitted', session;
 
+function modeToggle(){
+  return `<div class="filters" style="margin:0 0 6px;"><div class="chip ${mode==='volunteers'?'on':''}" data-mode="volunteers">Volunteers</div><div class="chip ${mode==='students'?'on':''}" data-mode="students">Students</div></div>`;
+}
+function wireMode(){
+  root.querySelectorAll('[data-mode]').forEach(c => c.onclick = () => { mode = c.dataset.mode; filter = 'submitted'; mode === 'students' ? loadStudents() : loadList(); });
+}
 function esc(t){ return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function yn(v){ return v === true ? 'Yes' : v === false ? 'No' : '—'; }
 
@@ -83,13 +88,14 @@ function renderList(){
   const groups = { submitted:['submitted'], review:['under_review'], progress:['account_created','email_verified','profile_complete','background_complete','scenarios_complete','assessment_english_complete','assessment_chinese_complete','orientation_complete'], decided:['approved','needs_additional_training','not_approved','suspended'], all:null };
   const tabs = [['submitted','Needs Review'],['review','Under Review'],['progress','In Progress'],['decided','Decided'],['all','All']];
   const rows = apps.filter(a => !groups[filter] || groups[filter].includes(a.status));
-  root.innerHTML = `<h1>Volunteer Applications</h1>
+  root.innerHTML = modeToggle() + `<h1>Volunteer Applications</h1>
     <p style="color:var(--ink-soft);margin:0;">Click an applicant to review everything they've submitted.</p>
     <div class="filters">${tabs.map(([k,l])=>`<div class="chip ${filter===k?'on':''}" data-f="${k}">${l} (${apps.filter(a=>!groups[k]||groups[k].includes(a.status)).length})</div>`).join('')}</div>
     <table><thead><tr><th>NAME</th><th>COUNTRY</th><th>STATUS</th><th>LAST UPDATED</th></tr></thead><tbody>
       ${rows.length ? rows.map(a=>`<tr class="row" data-id="${esc(a.id)}"><td><b>${esc((a.first_name||'')+' '+(a.last_name||'')) || '(no name yet)'}</b></td><td>${esc(a.country)||'—'}</td><td><span class="pill ${a.status==='submitted'?'warn':a.status==='approved'?'ok':['not_approved','suspended'].includes(a.status)?'bad':''}">${esc(STATUS_LABELS[a.status]||a.status)}</span></td><td>${new Date(a.updated_at).toLocaleDateString()}</td></tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:30px;">Nothing here.</td></tr>'}
     </tbody></table>`;
-  root.querySelectorAll('.chip').forEach(c => c.onclick = () => { filter = c.dataset.f; renderList(); });
+  root.querySelectorAll('.chip[data-f]').forEach(c => c.onclick = () => { filter = c.dataset.f; renderList(); });
+  wireMode();
   root.querySelectorAll('tr.row').forEach(r => r.onclick = () => openApp(r.dataset.id));
 }
 
@@ -221,6 +227,124 @@ async function openApp(id){
     if (await patch(f)) openApp(id);
   });
 }
+
+/* ====================== STUDENTS ====================== */
+const S_LABELS = {
+  account_created:'Account Created', email_verified:'Email Verified', profile_complete:'Registration In Progress', goals_complete:'Registration In Progress',
+  consent_complete:'Registration In Progress', placement_complete:'Placement Done (not submitted)', submitted:'Submitted — Needs Review',
+  under_review:'Under Review', approved:'Approved', needs_more_info:'Needs More Info', not_approved:'Not Approved', suspended:'Suspended'
+};
+const LEVEL_OPTIONS = ['Beginner','Beginner-High','Intermediate-Low','Intermediate','Intermediate-High','Advanced'];
+const SELF_RANK = { 'Beginner':0, 'Elementary':1, 'Intermediate':3, 'Advanced':5 };
+function ageOf(dob){ if(!dob) return null; const d=new Date(dob), n=new Date(); let a=n.getFullYear()-d.getFullYear(); const m=n.getMonth()-d.getMonth(); if(m<0||(m===0&&n.getDate()<d.getDate())) a--; return a; }
+
+async function loadStudents(){
+  const { data, error } = await supabaseClient.from('student_applications').select('*').order('updated_at', { ascending:false });
+  if (error){ root.innerHTML = modeToggle() + `<div class="panel">Could not load students: ${esc(error.message)}</div>`; wireMode(); return; }
+  students = data || [];
+  renderStudentList();
+}
+function renderStudentList(){
+  const groups = { submitted:['submitted'], review:['under_review','needs_more_info'], progress:['account_created','email_verified','profile_complete','goals_complete','consent_complete','placement_complete'], decided:['approved','not_approved','suspended'], all:null };
+  const tabs = [['submitted','Needs Review'],['review','Under Review'],['progress','In Progress'],['decided','Decided'],['all','All']];
+  const rows = students.filter(a => !groups[filter] || groups[filter].includes(a.status));
+  root.innerHTML = modeToggle() + `<h1>Student Registrations</h1>
+    <p style="color:var(--ink-soft);margin:0;">Students may be minors — review guardian details and consent carefully.</p>
+    <div class="filters">${tabs.map(([k,l])=>`<div class="chip ${filter===k?'on':''}" data-f="${k}">${l} (${students.filter(a=>!groups[k]||groups[k].includes(a.status)).length})</div>`).join('')}</div>
+    <table><thead><tr><th>NAME</th><th>AGE</th><th>SUGGESTED LEVEL</th><th>STATUS</th><th>LAST UPDATED</th></tr></thead><tbody>
+    ${rows.length ? rows.map(a=>`<tr class="row" data-id="${esc(a.id)}"><td><b>${esc(((a.first_name||'')+' '+(a.last_name||'')).trim()) || '(no name yet)'}</b></td><td>${ageOf(a.date_of_birth) ?? '—'}</td><td>${esc(a.assigned_level || a.suggested_level) || '—'}</td><td><span class="pill ${a.status==='submitted'?'warn':a.status==='approved'?'ok':['not_approved','suspended'].includes(a.status)?'bad':''}">${esc(S_LABELS[a.status]||a.status)}</span></td><td>${new Date(a.updated_at).toLocaleDateString()}</td></tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:30px;">Nothing here.</td></tr>'}
+    </tbody></table>`;
+  root.querySelectorAll('.chip[data-f]').forEach(c => c.onclick = () => { filter = c.dataset.f; renderStudentList(); });
+  wireMode();
+  root.querySelectorAll('tr.row').forEach(r => r.onclick = () => openStudent(r.dataset.id));
+}
+
+async function openStudent(id){
+  const a = students.find(x => x.id === id);
+  const { data: recs } = await supabaseClient.from('student_recordings').select('*').eq('student_id', id);
+  let audio = '<p style="color:var(--ink-soft);">No recording.</p>';
+  if (recs && recs.length){
+    const { data } = await supabaseClient.storage.from('recordings').createSignedUrl(recs[0].storage_path, 3600);
+    if (data) audio = `<audio controls src="${esc(data.signedUrl)}"></audio>`;
+  }
+  const age = ageOf(a.date_of_birth), minor = age !== null && age < 18;
+  const b = a.placement_breakdown || {};
+  const flags = [];
+  if (minor && !a.consent_guardian) flags.push('Student is under 18 but the guardian-consent box has not been ticked.');
+  if (minor && !a.guardian_email) flags.push('Student is under 18 and no guardian email is on file.');
+  if (a.placement_score != null && a.english_self_level in SELF_RANK && SELF_RANK[a.english_self_level] - LEVEL_OPTIONS.indexOf(a.suggested_level) >= 3) flags.push(`Self-reported "${a.english_self_level}" but the placement test suggests ${a.suggested_level}.`);
+  const cell = (v,l) => `<div class="score"><b>${v ?? '—'}</b><span>${l}</span></div>`;
+
+  root.innerHTML = `
+    <button class="btn ghost" id="back">← All students</button>
+    <h1>${esc(((a.first_name||'')+' '+(a.last_name||'')).trim())} ${a.preferred_name ? `<span style="font-size:1rem;color:var(--ink-soft);font-weight:400;">(${esc(a.preferred_name)}${a.chinese_name ? ' · '+esc(a.chinese_name) : ''})</span>`:''}</h1>
+    <span class="pill ${a.status==='submitted'?'warn':a.status==='approved'?'ok':''}">${esc(S_LABELS[a.status]||a.status)}</span>
+    ${flags.map(f=>`<div class="flag" style="margin-top:12px;">⚠ ${esc(f)}</div>`).join('')}
+
+    <div class="panel" style="margin-top:16px;"><h3>Decision</h3>
+      <div class="grid" style="align-items:end;margin-bottom:10px;">
+        <div><span style="display:block;margin-bottom:4px;">Assigned level (this is the level that counts)</span>
+          <select id="lvl" style="width:100%;padding:10px;border:1.5px solid var(--line);border-radius:9px;background:var(--tint);"><option value="">— not assigned —</option>${LEVEL_OPTIONS.map(l=>`<option ${a.assigned_level===l?'selected':''}>${l}</option>`).join('')}</select></div>
+        <div style="font-size:.85rem;color:var(--ink-soft);">Test suggests: <b>${esc(a.suggested_level) || '—'}</b></div></div>
+      <div class="lbl">REVIEWER NOTES (private)</div>
+      <textarea id="notes">${esc(a.reviewer_notes)}</textarea>
+      <div style="margin-top:12px;">
+        <button class="btn ghost" data-set="under_review">Mark Under Review</button>
+        <button class="btn green" data-set="approved">Approve</button>
+        <button class="btn amber" data-set="needs_more_info">Needs More Info</button>
+        <button class="btn red" data-set="not_approved">Not Approved</button>
+        <button class="btn red" data-set="suspended">Suspend</button>
+        <button class="btn ghost" id="saveNotes">Save level &amp; notes only</button>
+      </div>
+      <div style="font-size:.78rem;color:var(--ink-soft);">Students are not emailed automatically yet — status shows on their page.</div></div>
+
+    <div class="panel"><h3>About the Student</h3><div class="grid">
+      <div><span>Age:</span>${age ?? '—'}</div><div><span>Date of birth:</span>${esc(a.date_of_birth)}</div>
+      <div><span>City / region:</span>${esc(a.city_region)}</div><div><span>Time zone:</span>${esc(a.timezone)}</div>
+      <div><span>School / grade:</span>${esc(a.school_grade)}</div></div></div>
+
+    ${minor || a.guardian_name ? `<div class="panel"><h3>Parent / Guardian</h3><div class="grid">
+      <div><span>Name:</span>${esc(a.guardian_name)}</div><div><span>Relationship:</span>${esc(a.guardian_relationship)}</div>
+      <div><span>Email:</span>${esc(a.guardian_email)}</div><div><span>Phone:</span>${esc(a.guardian_phone)}</div>
+      <div><span>Guardian consent ticked:</span>${yn(a.consent_guardian)}</div><div><span>Consent recorded:</span>${a.consent_at ? new Date(a.consent_at).toLocaleString() : '—'}</div></div>
+      <div style="font-size:.78rem;color:var(--ink-soft);margin-top:8px;">A ticked box is not verified consent. Consider confirming with the guardian by email before approving a minor.</div></div>` : ''}
+
+    <div class="panel"><h3>Goals &amp; Availability</h3><div class="grid">
+      <div><span>Self-reported level:</span>${esc(a.english_self_level)}</div><div><span>Years studied:</span>${esc(a.years_studied)}</div>
+      <div><span>Goals:</span>${esc(a.learning_goals)}</div><div><span>Days:</span>${esc(a.preferred_days)}</div>
+      <div><span>Times (Beijing):</span>${esc(a.preferred_start_time)} – ${esc(a.preferred_end_time)}</div><div><span>Requested volunteer:</span>${esc(a.requested_volunteer)}</div>
+      <div><span>Agreed to safety rules:</span>${yn(a.consent_rules)}</div></div>
+      <div class="lbl" style="margin-top:12px;">NOTES FOR VOLUNTEER</div><div class="text">${esc(a.notes_for_volunteer)}</div></div>
+
+    <div class="panel"><h3>Placement Test</h3>
+      ${a.placement_score == null ? '<p style="color:var(--ink-soft);margin:0;">Not completed yet.</p>' : `
+      <div class="scores" style="grid-template-columns:repeat(4,1fr);">${cell(a.placement_score+'%','Overall')}${cell(b.grammar != null ? b.grammar+'%' : null,'Grammar')}${cell(b.reading != null ? b.reading+'%' : null,'Reading')}${cell(b.listening != null ? b.listening+'%' : null,'Listening')}</div>
+      <div style="font-size:.78rem;color:var(--ink-soft);margin-bottom:8px;">Auto-scored in the student's browser — advisory only. The level is confirmed in Lesson 0.</div>
+      <div class="lbl">WRITING</div><div class="text">${esc(a.placement_writing)}</div>
+      <div class="lbl">SPEAKING RECORDING (optional for students)</div>${audio}
+      <button class="btn ghost" id="retake">Allow retake</button>`}</div>`;
+
+  document.getElementById('back').onclick = () => loadStudents();
+  async function patch(fields, okMsg){
+    const { error } = await supabaseClient.from('student_applications').update(fields).eq('id', id);
+    if (error){ alert('Could not save: ' + error.message); return false; }
+    Object.assign(a, fields); if (okMsg) alert(okMsg); return true;
+  }
+  const common = () => ({ reviewer_notes: document.getElementById('notes').value, assigned_level: document.getElementById('lvl').value || null });
+  root.querySelectorAll('[data-set]').forEach(btn => btn.onclick = async () => {
+    const st = btn.dataset.set;
+    if (['approved','not_approved','suspended'].includes(st) && !confirm(`Set status to "${S_LABELS[st]}"?`)) return;
+    if (st === 'approved' && !document.getElementById('lvl').value && !confirm('No level has been assigned. Approve anyway?')) return;
+    if (await patch({ ...common(), status: st })) openStudent(id);
+  });
+  document.getElementById('saveNotes').onclick = () => patch(common(), 'Saved.');
+  const rt = document.getElementById('retake');
+  if (rt) rt.onclick = async () => {
+    if (!confirm('Erase this student\'s placement results so they can retake the test?')) return;
+    if (await patch({ placement_score:null, placement_breakdown:null, placement_answers:null, placement_writing:null, suggested_level:null, status:'consent_complete' })) openStudent(id);
+  };
+}
+
 init();
 </script>
 </body>

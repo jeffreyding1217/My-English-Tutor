@@ -4,27 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Language Assessment — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b;
     --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; --tint2:#eef6f2; }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Inter','Noto Sans SC',sans-serif; color:var(--ink); background:var(--tint); }
+  body{ margin:0; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; color:var(--ink); background:var(--tint); }
   .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
-  .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
   .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
   .wrap{ max-width:760px; margin:0 auto; padding:30px 24px 90px; }
-  h1{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 8px; }
+  h1{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; color:var(--blue-deep); margin:0 0 8px; }
   .lead{ color:var(--ink-soft); line-height:1.6; font-size:.95rem; }
   .sec{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; margin-top:22px; }
-  .sec h2{ font-family:'Fraunces',serif; font-size:1.2rem; color:var(--blue-deep); margin:0 0 4px; }
-  .sec .tag{ font-family:'IBM Plex Mono',monospace; font-size:.7rem; color:var(--green-deep); letter-spacing:.1em; }
+  .sec h2{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-size:1.2rem; color:var(--blue-deep); margin:0 0 4px; }
+  .sec .tag{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.7rem; color:var(--green-deep); letter-spacing:.1em; }
   .q{ padding:18px 0; border-bottom:1px solid var(--line); }
   .q:last-child{ border-bottom:none; }
   .q .stem{ font-weight:600; font-size:.95rem; margin-bottom:10px; line-height:1.55; }
-  .q .cat{ font-family:'IBM Plex Mono',monospace; font-size:.65rem; color:var(--ink-soft); letter-spacing:.08em; }
+  .q .cat{ font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.65rem; color:var(--ink-soft); letter-spacing:.08em; }
   .opt{ display:block; padding:10px 14px; border:1.5px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer; font-size:.9rem; }
   .opt:hover{ background:var(--tint); }
   .opt.sel{ border-color:var(--blue); background:#eaf1fa; }
@@ -186,7 +185,7 @@ function render(){
     let pre = '';
     if (q[0] !== lastCat){
       lastCat = q[0];
-      pre = `<div style="margin:22px 0 4px;font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--green-deep);letter-spacing:.1em;">${cats[q[0]]}</div>`;
+      pre = `<div style="margin:22px 0 4px;font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;font-size:.75rem;color:var(--green-deep);letter-spacing:.1em;">${cats[q[0]]}</div>`;
       if (q[0] === 'reading') pre += `<div class="passage" ${lang==='chinese'?'style="font-size:1rem"':''}>${L.passage}</div>`;
     }
     return pre + `<div class="q"><div class="stem">${i+1}. ${q[1]}</div>${q[2].map((o,j)=>`<label class="opt" data-q="${i}" data-o="${j}">${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div>`;

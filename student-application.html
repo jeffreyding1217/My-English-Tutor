@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration — Bridge to China</title>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
+<style>
+  :root{
+    --bg:#ffffff; --bg-tint:#f5faf8; --bg-tint-2:#eef6f2; --blue:#1e4e8c; --blue-deep:#133761;
+    --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4;
+    --font-display:Georgia,'Songti SC','Noto Serif SC',serif; --font-body:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; --font-mono:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg-tint); }
+  a{ text-decoration:none; color:inherit; }
+
+  .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:10; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:1.1rem; color:var(--blue-deep); }
+  .brand .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.75rem; font-weight:700; }
+  .who{ font-size:0.85rem; color:var(--ink-soft); }
+  .who a{ color:var(--blue); font-weight:600; }
+
+  .zh{ display:block; font-size:.85em; font-weight:500; color:var(--ink-soft); margin-top:2px; }
+  h1 .zh{ font-size:.62em; font-family:inherit; }
+  .consent-row{ display:flex; gap:12px; align-items:flex-start; padding:12px 0; font-size:.9rem; line-height:1.55; cursor:pointer; }
+  .consent-row input{ margin-top:4px; width:18px; height:18px; flex-shrink:0; }
+  .guardian-box{ background:var(--bg-tint); border:1.5px solid var(--line); border-radius:12px; padding:18px 20px; margin-bottom:18px; }
+  .wrap{ max-width:720px; margin:0 auto; padding:34px 24px 80px; }
+
+  .progress{ display:flex; gap:6px; margin-bottom:28px; }
+  .progress .seg{ flex:1; height:6px; border-radius:999px; background:var(--line); }
+  .progress .seg.done{ background:var(--green); }
+  .progress .seg.current{ background:var(--blue); }
+  .progress-label{ font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-soft); margin-bottom:10px; letter-spacing:0.05em; }
+
+  .card{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:34px; }
+  .card h1{ font-family:var(--font-display); font-size:1.5rem; color:var(--blue-deep); margin:0 0 10px; }
+  .card .lead{ color:var(--ink-soft); font-size:0.95rem; line-height:1.6; margin-bottom:24px; }
+
+  .step-list{ margin:0 0 22px; padding-left:20px; color:var(--ink-soft); font-size:0.9rem; line-height:2; }
+
+  .field{ margin-bottom:18px; }
+  .field label{ display:block; font-size:0.85rem; font-weight:700; color:var(--ink); margin-bottom:6px; }
+  .field .help{ font-size:0.78rem; color:var(--ink-soft); margin-top:5px; line-height:1.5; }
+  .field input[type=text], .field input[type=date], .field input[type=number], .field select, .field textarea{
+    width:100%; padding:11px 14px; border-radius:9px; border:1.5px solid var(--line); font-size:0.92rem;
+    font-family:var(--font-body); background:var(--bg-tint); color:var(--ink);
+  }
+  .field textarea{ min-height:110px; resize:vertical; }
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+  .radio-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .radio-pill{ padding:9px 16px; border-radius:999px; border:1.5px solid var(--line); font-size:0.85rem; font-weight:600; color:var(--ink-soft); cursor:pointer; background:#fff; }
+  .radio-pill.selected{ background:var(--blue); border-color:var(--blue); color:#fff; }
+
+  .scale-row{ display:flex; gap:8px; }
+  .scale-dot{ flex:1; text-align:center; padding:10px 4px; border-radius:9px; border:1.5px solid var(--line); font-size:0.78rem; font-weight:700; color:var(--ink-soft); cursor:pointer; background:#fff; }
+  .scale-dot.selected{ background:var(--green); border-color:var(--green); color:#fff; }
+
+  .btn{ padding:13px 26px; border-radius:999px; border:none; font-weight:700; font-size:0.92rem; cursor:pointer; }
+  .btn-primary{ background:var(--blue); color:#fff; }
+  .btn-primary:hover{ background:var(--blue-deep); }
+  .btn-ghost{ background:none; color:var(--ink-soft); border:1.5px solid var(--line); }
+  .btn:disabled{ opacity:0.55; cursor:default; }
+  .actions{ display:flex; justify-content:space-between; margin-top:28px; }
+
+  .status-msg{ font-size:0.82rem; padding:10px 14px; border-radius:9px; margin-top:16px; display:none; }
+  .status-msg.show{ display:block; }
+  .status-msg.error{ background:#fdecea; color:#a3312a; }
+  .status-msg.success{ background:#e7f5ee; color:var(--green-deep); }
+
+  .checklist{ list-style:none; margin:0; padding:0; }
+  .checklist li{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); font-size:0.92rem; }
+  .checklist li:last-child{ border-bottom:none; }
+  .checklist .dot{ width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.7rem; flex-shrink:0; }
+  .checklist .dot.done{ background:var(--green); color:#fff; }
+  .checklist .dot.todo{ background:var(--bg-tint-2); color:var(--ink-soft); border:1.5px solid var(--line); }
+  .checklist .future{ color:var(--ink-soft); }
+
+  .badge-soon{ font-family:var(--font-mono); font-size:0.65rem; background:var(--bg-tint-2); color:var(--ink-soft); padding:3px 8px; border-radius:999px; margin-left:auto; }
+
+  .setup-note{ font-size:0.85rem; color:#9a6b1a; background:#fdf1e0; border-radius:10px; padding:14px 16px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
+  <div class="who">Logged in as <b id="whoEmail">—</b> &nbsp;·&nbsp; <a href="#" id="logoutLink">Log Out · 退出</a></div>
+</div>
+<div class="wrap" id="appWrap"></div>
+
+<script src="auth-config.js"></script>
+<script>
+  const STEPS = ['welcome','verify','profile','goals','consent','hub'];
+  const STEP_LABELS = ['Welcome','Verify Email','About You','Your Goals','Safety Agreement','Checklist'];
+  const STATUS_ORDER = ['account_created','email_verified','profile_complete','goals_complete','consent_complete','placement_complete','submitted'];
+  const ADMIN_STATUSES = ['under_review','approved','needs_more_info','not_approved','suspended'];
+  let stepIndex = 0, session = null, app = {};
+  const wrap = document.getElementById('appWrap');
+
+  function ageFrom(dob){
+    if (!dob) return null;
+    const d = new Date(dob), n = new Date();
+    let a = n.getFullYear() - d.getFullYear();
+    const m = n.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && n.getDate() < d.getDate())) a--;
+    return a;
+  }
+  function esc(t){ return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  const bi = (en, zh) => `${en}<span class="zh">${zh}</span>`;
+
+  async function init(){
+    if (!isConfigured) { wrap.innerHTML = '<div class="card"><div class="setup-note"><b>Not connected yet:</b> see <code>auth-config.js</code>.</div></div>'; return; }
+    const { data: { session: s } } = await supabaseClient.auth.getSession();
+    if (!s) { window.location.href = 'login.html?role=student'; return; }
+    session = s;
+    document.getElementById('whoEmail').textContent = s.user.email;
+
+    let { data: row } = await supabaseClient.from('student_applications').select('*').eq('id', s.user.id).single();
+    if (!row) {
+      const { data: created } = await supabaseClient.from('student_applications').insert({ id: s.user.id, status: 'account_created' }).select().single();
+      row = created;
+    }
+    app = row || { status: 'account_created' };
+    const map = { account_created:1, email_verified:2, profile_complete:3, goals_complete:4 };
+    stepIndex = map[app.status] ?? 5;
+    if (s.user.email_confirmed_at && stepIndex === 1) stepIndex = 2;
+    if (!s.user.email_confirmed_at && stepIndex > 1) stepIndex = 1;
+    render();
+  }
+
+  document.getElementById('logoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (isConfigured) await supabaseClient.auth.signOut();
+    window.location.href = 'login.html?role=student';
+  });
+
+  async function saveApplication(fields, nextStatus){
+    const cur = app.status || 'account_created';
+    let finalStatus = cur;
+    if (!ADMIN_STATUSES.includes(cur)) {
+      finalStatus = STATUS_ORDER.indexOf(nextStatus) > STATUS_ORDER.indexOf(cur) ? nextStatus : cur;
+    }
+    const payload = { ...fields };
+    if (finalStatus !== cur) payload.status = finalStatus;
+    const { error } = await supabaseClient.from('student_applications').update(payload).eq('id', session.user.id);
+    if (error) { alert('Could not save: ' + error.message); return false; }
+    app = { ...app, ...fields, status: finalStatus };
+    return true;
+  }
+
+  function progressHTML(){
+    return `<div class="progress-label">STEP ${stepIndex + 1} OF ${STEPS.length} · ${STEP_LABELS[stepIndex].toUpperCase()}</div>
+      <div class="progress">${STEPS.map((_, i) => `<div class="seg ${i < stepIndex ? 'done' : i === stepIndex ? 'current' : ''}"></div>`).join('')}</div>`;
+  }
+  function render(){
+    const step = STEPS[stepIndex];
+    const body = { welcome: welcomeStep, verify: verifyStep, profile: profileStep, goals: goalsStep, consent: consentStep, hub: hubStep }[step]();
+    wrap.innerHTML = (step === 'welcome' || step === 'hub') ? body : progressHTML() + body;
+    wireStep(step);
+  }
+  function msgBox(id){ return `<div id="${id}" class="status-msg"></div>`; }
+  function showMsg(id, text, type){ const el = document.getElementById(id); el.className = 'status-msg show ' + (type||'error'); el.textContent = text; el.scrollIntoView({behavior:'smooth', block:'center'}); }
+
+  function welcomeStep(){
+    return `<div class="card">
+      <h1>${bi('Register as a Student','注册成为学生')}</h1>
+      <p class="lead">Welcome! Bridge to China connects you with a volunteer for free, friendly English conversation practice online.<span class="zh">欢迎！Bridge to China 为你匹配志愿者，进行免费、轻松的在线英语会话练习。</span></p>
+      <p class="lead" style="margin-bottom:10px;">Here is what happens next · 接下来的步骤：</p>
+      <ol class="step-list">
+        <li>Create your account ✓ · 创建账号 ✓</li>
+        <li>Verify your email · 验证邮箱</li>
+        <li>Tell us about yourself · 填写个人资料</li>
+        <li>Tell us your English goals and free times · 填写学习目标和可上课时间</li>
+        <li>Read and agree to the safety rules · 阅读并同意安全守则</li>
+        <li>Take a short English placement test · 完成简短的英语分级测试</li>
+        <li>Our team approves you and matches you with a volunteer · 我们审核通过后为你匹配志愿者</li>
+      </ol>
+      <p class="lead" style="margin-bottom:0;">Students under 18 need a parent or guardian to help.<span class="zh">未满18岁的学生需要家长或监护人的协助。</span></p>
+      <div class="actions" style="justify-content:flex-end;"><button class="btn btn-primary" onclick="stepIndex=1; render();">Get Started · 开始</button></div></div>`;
+  }
+
+  function verifyStep(){
+    return `<div class="card">
+      <h1>${bi('Check Your Email','请查收邮件')}</h1>
+      <p class="lead">We sent a verification email to <b>${esc(session.user.email)}</b>. Click the link in the email, then come back here. Check your spam folder too.<span class="zh">我们已向你的邮箱发送了验证邮件。请点击邮件中的链接，然后回到这里。也请检查垃圾邮件文件夹。</span></p>
+      ${msgBox('verifyMsg')}
+      <div class="actions">
+        <button class="btn btn-ghost" id="resendBtn">Resend email · 重新发送</button>
+        <button class="btn btn-primary" id="verifiedBtn">I have verified · 我已验证</button>
+      </div></div>`;
+  }
+
+  function profileStep(){
+    const v = k => esc(app[k] || '');
+    const age = ageFrom(app.date_of_birth);
+    return `<div class="card">
+      <h1>${bi('About You','关于你')}</h1>
+      <p class="lead">We use this to match you with the right volunteer and time. Only our team can see it — it is never shown to other students.<span class="zh">这些信息用于为你匹配合适的志愿者和时间，仅我们的团队可见，不会向其他学生显示。</span></p>
+      <div class="two-col">
+        <div class="field"><label>First name · 名</label><input type="text" id="f_first" value="${v('first_name')}"></div>
+        <div class="field"><label>Last name · 姓</label><input type="text" id="f_last" value="${v('last_name')}"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>English name · 英文名</label><input type="text" id="f_pref" value="${v('preferred_name')}"><div class="help">What should your volunteer call you? · 希望志愿者怎么称呼你？</div></div>
+        <div class="field"><label>Chinese name · 中文名 (optional 选填)</label><input type="text" id="f_cn" value="${v('chinese_name')}"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>Date of birth · 出生日期</label><input type="date" id="f_dob" value="${v('date_of_birth')}"></div>
+        <div class="field"><label>School / grade · 学校/年级</label><input type="text" id="f_grade" value="${v('school_grade')}"></div>
+      </div>
+      <div class="two-col">
+        <div class="field"><label>City / region · 城市/地区</label><input type="text" id="f_city" value="${v('city_region')}"></div>
+        <div class="field"><label>Time zone · 时区</label><input type="text" id="f_tz" value="${v('timezone') || 'China Standard Time (GMT+8)'}"></div>
+      </div>
+      <div class="guardian-box" id="guardianBox" style="display:${age !== null && age < 18 ? 'block' : 'none'};">
+        <div style="font-weight:700;margin-bottom:4px;">Parent / guardian · 家长/监护人</div>
+        <div class="help" style="margin:0 0 14px;">Required because you are under 18. We may contact your guardian by email. 因为你未满18岁，此项必填。我们可能会通过邮件联系你的监护人。</div>
+        <div class="two-col">
+          <div class="field"><label>Name · 姓名</label><input type="text" id="g_name" value="${v('guardian_name')}"></div>
+          <div class="field"><label>Relationship to you · 与你的关系</label><input type="text" id="g_rel" placeholder="e.g. Mother 母亲" value="${v('guardian_relationship')}"></div>
+        </div>
+        <div class="two-col">
+          <div class="field"><label>Email · 邮箱</label><input type="text" id="g_email" value="${v('guardian_email')}"></div>
+          <div class="field"><label>Phone · 电话 (optional 选填)</label><input type="text" id="g_phone" value="${v('guardian_phone')}"></div>
+        </div>
+      </div>
+      ${msgBox('profileMsg')}
+      <div class="actions"><button class="btn btn-ghost" onclick="stepIndex=1; render();">Back · 返回</button><button class="btn btn-primary" id="profileContinue">Continue · 继续</button></div></div>`;
+  }
+
+  function pills(group, items, selectedCsv, single){
+    const sel = (selectedCsv || '').split(',').map(x => x.trim());
+    return `<div class="radio-row">${items.map(([val, label]) => `<div class="radio-pill ${single ? 'single' : 'multi'} ${sel.includes(val) ? 'selected' : ''}" data-grp="${group}" data-val="${val}">${label}</div>`).join('')}</div>`;
+  }
+
+  function goalsStep(){
+    const v = k => esc(app[k] || '');
+    return `<div class="card">
+      <h1>${bi('Your English Goals','你的英语学习目标')}</h1>
+      <div class="field"><label>How would you describe your English? · 你觉得自己的英语水平是？</label>
+        ${pills('level',[['Beginner','Beginner 初学者'],['Elementary','Elementary 基础'],['Intermediate','Intermediate 中级'],['Advanced','Advanced 高级']], v('english_self_level'), true)}
+        <div class="help">Don't worry — you will take a short test later. · 别担心，之后还有简短的测试。</div></div>
+      <div class="field"><label>How long have you studied English? · 学了多久英语？</label><input type="text" id="f_years" placeholder="e.g. 3 years 3年" value="${v('years_studied')}"></div>
+      <div class="field"><label>What do you want to improve? (choose any) · 你想提高什么？（可多选）</label>
+        ${pills('goals',[['Everyday conversation','Everyday conversation 日常对话'],['School exams','School exams 学校考试'],['Travel','Travel 旅行'],['Study abroad','Study abroad 出国留学'],['Work','Work 工作'],['Pronunciation','Pronunciation 发音'],['Confidence','Confidence 增强自信']], v('learning_goals'))}</div>
+      <div class="field"><label>Days you can have a lesson · 可以上课的日子</label>
+        ${pills('days',[['Mon','周一 Mon'],['Tue','周二 Tue'],['Wed','周三 Wed'],['Thu','周四 Thu'],['Fri','周五 Fri'],['Sat','周六 Sat'],['Sun','周日 Sun']], v('preferred_days'))}</div>
+      <div class="two-col">
+        <div class="field"><label>Earliest time · 最早时间 (Beijing time 北京时间)</label><input type="time" id="f_start" value="${v('preferred_start_time')}"></div>
+        <div class="field"><label>Latest time · 最晚时间 (Beijing time 北京时间)</label><input type="time" id="f_end" value="${v('preferred_end_time')}"></div>
+      </div>
+      <div class="field"><label>Request a volunteer · 指定志愿者 (optional 选填)</label><input type="text" id="f_reqvol" value="${v('requested_volunteer')}"><div class="help">If you know a volunteer's name, write it. We cannot promise, but we will try. 如果你知道志愿者的名字可以填写，我们会尽量安排，但无法保证。</div></div>
+      <div class="field"><label>Anything your volunteer should know? · 还有什么想让志愿者知道的？ (optional 选填)</label><textarea id="f_notes">${v('notes_for_volunteer')}</textarea></div>
+      ${msgBox('goalsMsg')}
+      <div class="actions"><button class="btn btn-ghost" onclick="stepIndex=2; render();">Back · 返回</button><button class="btn btn-primary" id="goalsContinue">Continue · 继续</button></div></div>`;
+  }
+
+  function consentStep(){
+    const minor = (ageFrom(app.date_of_birth) ?? 99) < 18;
+    return `<div class="card">
+      <h1>${bi('Safety Agreement','安全守则')}</h1>
+      <p class="lead">These rules keep everyone safe and happy. Please read them carefully. · 这些规则让每个人都安全、愉快，请仔细阅读。</p>
+      <ol class="step-list" style="line-height:1.8;">
+        <li>Lessons are free, 30 minutes, and online. <br><span style="color:var(--ink-soft)">课程免费，每次30分钟，线上进行。</span></li>
+        <li>Be kind and respectful to your volunteer. <br><span style="color:var(--ink-soft)">请尊重并友好对待志愿者。</span></li>
+        <li>Do not give your phone number, WeChat, or address to your volunteer, and do not accept private contact from them. Keep everything on the program's channels. <br><span style="color:var(--ink-soft)">不要向志愿者提供电话、微信或住址，也不要接受对方的私下联系，所有交流请通过项目平台进行。</span></li>
+        <li>Do not record or share lessons without permission. <br><span style="color:var(--ink-soft)">未经允许，请勿录制或分享课程内容。</span></li>
+        <li>If anything makes you uncomfortable, tell a parent/guardian or our team right away. <br><span style="color:var(--ink-soft)">如果有任何让你感到不舒服的事，请立刻告诉家长/监护人或我们的团队。</span></li>
+      </ol>
+      <label class="consent-row"><input type="checkbox" id="c_rules" ${app.consent_rules ? 'checked' : ''}><span>I have read these rules and I agree to follow them. · 我已阅读并同意遵守这些规则。</span></label>
+      ${minor ? `<label class="consent-row"><input type="checkbox" id="c_guardian" ${app.consent_guardian ? 'checked' : ''}><span>My parent/guardian knows about this program and agrees to me taking part. · 我的家长/监护人了解本项目并同意我参加。</span></label>
+      <div class="help">Our team may email your guardian to confirm. · 我们的团队可能会发邮件向你的监护人确认。</div>` : ''}
+      ${msgBox('consentMsg')}
+      <div class="actions"><button class="btn btn-ghost" onclick="stepIndex=3; render();">Back · 返回</button><button class="btn btn-primary" id="consentContinue">I Agree · 我同意</button></div></div>`;
+  }
+
+  function hubStep(){
+    const lockedMsgs = {
+      submitted: ['Application Submitted · 申请已提交', 'Thank you! Our team will review your registration and placement test, then match you with a volunteer. We will email you when your status changes. 谢谢！我们的团队将审核你的注册信息和分级测试，然后为你匹配志愿者。状态更新时会通过邮件通知你。'],
+      under_review: ['Under Review · 审核中', 'Our team is reviewing your registration. 我们的团队正在审核你的注册信息。'],
+      approved: ["You're Approved! · 审核通过！", 'Great news — we will match you with a volunteer. 太好了！我们会为你匹配志愿者。'],
+      needs_more_info: ['We Need a Little More Information · 需要补充信息', 'Our team will email you about what is needed. 我们的团队会通过邮件告知需要补充的内容。'],
+      not_approved: ['Registration Not Approved · 未通过审核', 'Thank you for your interest. We are not able to approve this registration at this time. 感谢你的关注，目前我们暂时无法通过本次注册。'],
+      suspended: ['Account Suspended · 账号已暂停', 'Please contact our team. 请联系我们的团队。'],
+    };
+    if (lockedMsgs[app.status]) {
+      const [t, m] = lockedMsgs[app.status];
+      return `<div class="card"><h1>${t}</h1><p class="lead">${m}</p><div class="actions" style="justify-content:flex-end;"><a class="btn btn-primary" href="student-dashboard.html">Go to My Page · 我的主页</a></div></div>`;
+    }
+    const placeDone = app.placement_score != null;
+    const consentDone = !!app.consent_rules;
+    const row = (done, label, action, isLocked, note) => `<li><span class="dot ${done ? 'done' : 'todo'}">${done ? '✓' : '○'}</span><span class="${done || !isLocked ? '' : 'future'}">${label}</span>${done ? '<span class="badge-soon" style="background:#e7f5ee;color:#146a48;">DONE 完成</span>' : isLocked ? `<span class="badge-soon">${note}</span>` : action}</li>`;
+    return `<div class="card">
+      <h1>${bi('Your Checklist','你的任务清单')}</h1>
+      <p class="lead">Finish the last steps below. Registering does not guarantee a place — our team approves every student. · 完成下面的最后几步。注册并不保证名额，所有学生都需要我们的团队审核。</p>
+      <ul class="checklist">
+        <li><span class="dot done">✓</span> Create account · 创建账号</li>
+        <li><span class="dot done">✓</span> Verify email · 验证邮箱</li>
+        <li><span class="dot done">✓</span> About you · 个人资料</li>
+        <li><span class="dot done">✓</span> Your goals and times · 学习目标和时间</li>
+        ${row(consentDone, 'Safety agreement · 安全守则', `<button class="btn btn-primary" style="margin-left:auto;padding:7px 16px;font-size:.8rem;" onclick="stepIndex=4; render();">Start 开始</button>`, false)}
+        ${row(placeDone, 'English placement test · 英语分级测试', `<a class="btn btn-primary" style="margin-left:auto;padding:7px 16px;font-size:.8rem;" href="student-placement.html">Start 开始</a>`, !consentDone, 'AFTER AGREEMENT 先完成守则')}
+        <li><span class="dot todo">○</span> <span class="future">Review by our team · 团队审核</span><span class="badge-soon">BY OUR TEAM</span></li>
+        <li><span class="dot todo">○</span> <span class="future">Matched with a volunteer · 匹配志愿者</span><span class="badge-soon">BY OUR TEAM</span></li>
+      </ul>
+      ${msgBox('submitMsg')}
+      <div class="actions"><a class="btn btn-ghost" href="student-dashboard.html">My Page · 我的主页</a><button class="btn btn-primary" id="submitAppBtn" ${placeDone && consentDone ? '' : 'disabled'}>Submit · 提交</button></div></div>`;
+  }
+
+  function val(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+  function picked(group){ return [...wrap.querySelectorAll(`.radio-pill[data-grp="${group}"].selected`)].map(e => e.dataset.val).join(', '); }
+  const emailOk = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+
+  function wireStep(step){
+    wrap.querySelectorAll('.radio-pill.multi').forEach(el => el.addEventListener('click', () => el.classList.toggle('selected')));
+    wrap.querySelectorAll('.radio-pill.single').forEach(el => el.addEventListener('click', () => {
+      wrap.querySelectorAll(`.radio-pill[data-grp="${el.dataset.grp}"]`).forEach(p => p.classList.remove('selected'));
+      el.classList.add('selected');
+    }));
+
+    if (step === 'verify') {
+      document.getElementById('resendBtn').onclick = async () => {
+        const { error } = await supabaseClient.auth.resend({ type: 'signup', email: session.user.email });
+        showMsg('verifyMsg', error ? error.message : 'Sent again — check your inbox. 已重新发送，请查收。', error ? 'error' : 'success');
+      };
+      document.getElementById('verifiedBtn').onclick = async () => {
+        const { data: { session: refreshed } } = await supabaseClient.auth.refreshSession();
+        session = refreshed || session;
+        if (session.user.email_confirmed_at) { await saveApplication({}, 'email_verified'); stepIndex = 2; render(); }
+        else showMsg('verifyMsg', "We don't see a confirmation yet — click the link in your email, then try again. 还没有看到验证结果，请先点击邮件中的链接再试。");
+      };
+    }
+
+    if (step === 'profile') {
+      document.getElementById('f_dob').addEventListener('input', () => {
+        const a = ageFrom(val('f_dob'));
+        document.getElementById('guardianBox').style.display = (a !== null && a < 18) ? 'block' : 'none';
+      });
+      document.getElementById('profileContinue').onclick = async () => {
+        const dob = val('f_dob'), age = ageFrom(dob);
+        if (!val('f_first') || !val('f_last')) return showMsg('profileMsg', 'Please enter your first and last name. 请填写姓和名。');
+        if (!dob || age === null || age < 3 || age > 100) return showMsg('profileMsg', 'Please enter a valid date of birth. 请填写有效的出生日期。');
+        if (!val('f_pref')) return showMsg('profileMsg', 'Please enter the name you want your volunteer to call you. 请填写希望志愿者称呼你的名字。');
+        if (age < 18) {
+          if (!val('g_name') || !val('g_rel')) return showMsg('profileMsg', 'A parent or guardian name and relationship are required. 请填写监护人姓名及与你的关系。');
+          if (!emailOk(val('g_email'))) return showMsg('profileMsg', 'A valid parent/guardian email is required. 请填写有效的监护人邮箱。');
+        }
+        const fields = { first_name: val('f_first'), last_name: val('f_last'), preferred_name: val('f_pref'), chinese_name: val('f_cn'),
+          date_of_birth: dob, school_grade: val('f_grade'), city_region: val('f_city'), timezone: val('f_tz'),
+          guardian_name: age < 18 ? val('g_name') : null, guardian_relationship: age < 18 ? val('g_rel') : null,
+          guardian_email: age < 18 ? val('g_email') : null, guardian_phone: age < 18 ? val('g_phone') : null };
+        if (await saveApplication(fields, 'profile_complete')) { stepIndex = 3; render(); }
+      };
+    }
+
+    if (step === 'goals') {
+      document.getElementById('goalsContinue').onclick = async () => {
+        if (!picked('level')) return showMsg('goalsMsg', 'Please choose your English level. 请选择你的英语水平。');
+        if (!picked('goals')) return showMsg('goalsMsg', 'Please choose at least one goal. 请至少选择一个目标。');
+        if (!picked('days') || !val('f_start') || !val('f_end')) return showMsg('goalsMsg', 'Please choose your days and times. 请选择可上课的日子和时间。');
+        const fields = { english_self_level: picked('level'), years_studied: val('f_years'), learning_goals: picked('goals'),
+          preferred_days: picked('days'), preferred_start_time: val('f_start'), preferred_end_time: val('f_end'),
+          requested_volunteer: val('f_reqvol'), notes_for_volunteer: val('f_notes') };
+        if (await saveApplication(fields, 'goals_complete')) { stepIndex = 4; render(); }
+      };
+    }
+
+    if (step === 'consent') {
+      document.getElementById('consentContinue').onclick = async () => {
+        const minor = (ageFrom(app.date_of_birth) ?? 99) < 18;
+        const rules = document.getElementById('c_rules').checked;
+        const guardian = minor ? document.getElementById('c_guardian').checked : null;
+        if (!rules) return showMsg('consentMsg', 'Please tick the box to agree to the rules. 请勾选同意规则。');
+        if (minor && !guardian) return showMsg('consentMsg', 'A parent/guardian must agree. 需要家长/监护人同意。');
+        if (await saveApplication({ consent_rules: true, consent_guardian: guardian, consent_at: new Date().toISOString() }, 'consent_complete')) { stepIndex = 5; render(); }
+      };
+    }
+
+    if (step === 'hub') {
+      const sb = document.getElementById('submitAppBtn');
+      if (sb) sb.onclick = async () => {
+        if (!confirm('Submit your registration? 确认提交注册吗？')) return;
+        const { error } = await supabaseClient.from('student_applications').update({ status: 'submitted' }).eq('id', session.user.id);
+        if (error) return showMsg('submitMsg', error.message);
+        app.status = 'submitted'; render();
+      };
+    }
+  }
+  init();
+</script>
+</body>
+</html>

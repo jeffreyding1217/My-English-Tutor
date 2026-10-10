@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Dashboard — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>My Page — Bridge to China</title>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --bg-tint-2:#eef6f2; --blue:#1e4e8c; --blue-deep:#133761;
     --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4;
-    --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+    --font-display:Georgia,'Songti SC','Noto Serif SC',serif; --font-body:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; --font-mono:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg-tint); }
@@ -66,74 +66,86 @@
 </style>
 </head>
 <body>
-
 <div class="topbar">
   <a href="index.html" class="brand"><span class="mark">BC</span> Bridge to China</a>
-  <div class="who">
-    <span class="avatar-sm">👁</span>
-    <b>Preview Mode</b> — students don't need an account &nbsp;·&nbsp; <a href="index.html">Exit Preview</a>
-  </div>
+  <div class="who"><span class="avatar-sm" id="avatarInitial">S</span> <b id="whoName">Student</b> &nbsp;·&nbsp; <a href="#" id="logoutLink">Log Out · 退出</a></div>
 </div>
 
 <div class="wrap">
-  <h1 class="hello">A Student's View</h1>
-  <p class="hello-sub">This is an example of what a student would see — with sample lesson data, since students log in to join a call, not to track an account.</p>
+  <h1 class="hello" id="helloName">Welcome 👋</h1>
+  <p class="hello-sub" id="helloSub"></p>
+  <div id="statusBanner"></div>
 
   <div class="stat-row">
-    <div class="stat-chip"><b>Thu, 7:00 PM</b><span>Your next lesson</span></div>
-    <div class="stat-chip"><b>6</b><span>Lessons completed</span></div>
-    <div class="stat-chip"><b>Intermediate</b><span>Your current level</span></div>
-    <div class="stat-chip"><b>Maren O.</b><span>Your volunteer</span></div>
+    <div class="stat-chip"><b id="statStatus">—</b><span>Registration status · 注册状态</span></div>
+    <div class="stat-chip"><b id="statLevel">—</b><span>Your level · 你的级别</span></div>
+    <div class="stat-chip"><b id="statVol">Not matched yet</b><span>Your volunteer · 你的志愿者</span></div>
   </div>
 
   <div class="action-card">
-    <div class="eyebrow">JOIN YOUR LESSON</div>
-    <h2>Ready for Thursday at 7:00 PM?</h2>
-    <p>Your volunteer will start the call on VooV Meeting and send you the link a few minutes before your lesson. If you don't have the app yet, download it ahead of time so you're ready to go.</p>
+    <div class="eyebrow">JOIN YOUR LESSON · 参加课程</div>
+    <h2>How lessons work · 上课方式</h2>
+    <p>Lessons happen on VooV Meeting. Once you are matched and a lesson is booked, your volunteer will send you a meeting link a few minutes before it starts. Download the app now so you are ready.<br>课程通过腾讯会议国际版 VooV Meeting 进行。匹配成功并预约课程后，志愿者会在开课前几分钟把会议链接发给你。请提前下载好应用。</p>
     <ol class="steps-mini">
-      <li>Download VooV Meeting if you haven't already</li>
-      <li>Wait for your volunteer's meeting link before your lesson time</li>
-      <li>Tap the link — no account needed to join</li>
+      <li>Download VooV Meeting · 下载 VooV Meeting</li>
+      <li>Wait for your volunteer's link · 等待志愿者发送链接</li>
+      <li>Tap the link at lesson time · 到时间点击链接加入</li>
     </ol>
-    <a class="a-btn" href="https://voovmeeting.com/download" target="_blank" rel="noopener">Download VooV Meeting</a>
+    <a class="a-btn" href="https://voovmeeting.com/download" target="_blank" rel="noopener">Download VooV Meeting · 下载</a>
   </div>
 
-  <h2 class="section-title">Your Lessons</h2>
-  <div class="card" style="margin-bottom:34px;">
-    <div class="lesson-row">
-      <div><div class="lr-label">Lesson 3: Subject-Verb Mechanics</div><div class="lr-sub">Thursday, Jul 2 · 7:00 PM GMT+8 · with Maren O.</div></div>
-      <span class="lr-pending">UPCOMING</span>
-    </div>
-    <div class="lesson-row">
-      <div><div class="lr-label">Lesson 2: Functional Survival Phrases</div><div class="lr-sub">Completed Jun 25 · with Maren O.</div></div>
-      <span class="lr-done">✓ Completed</span>
-    </div>
-    <div class="lesson-row">
-      <div><div class="lr-label">Lesson 1: Pronunciation Basics</div><div class="lr-sub">Completed Jun 18 · with Maren O.</div></div>
-      <span class="lr-done">✓ Completed</span>
-    </div>
-    <div class="lesson-row">
-      <div><div class="lr-label">Lesson 0: Welcome &amp; Level Check</div><div class="lr-sub">Completed Jun 11 · with Maren O.</div></div>
-      <span class="lr-done">✓ Completed</span>
-    </div>
-  </div>
-
-  <div class="bottom-grid">
-    <div class="card prog-card">
-      <div style="font-weight:700; margin-bottom:4px;">Your Progress</div>
-      <div style="font-size:0.82rem; color:var(--ink-soft); margin-bottom:14px;">Beginner &rarr; Intermediate &rarr; Advanced</div>
-      <div class="prog-bar-track"><div class="prog-bar-fill" style="width:55%;"></div></div>
-      <div style="font-size:0.8rem; color:var(--ink-soft);">You're about halfway through Intermediate — keep it up!</div>
-    </div>
-    <div class="card msg-card">
-      <div style="font-weight:700; margin-bottom:10px;">Message Maren</div>
-      <textarea placeholder="Ask a question or let your volunteer know about a scheduling change..."></textarea>
-      <a class="a-btn" href="#" onclick="alert('This is a design preview — messaging isn\'t connected yet.'); return false;">Send Message</a>
-    </div>
+  <h2 class="section-title">Your Lessons · 你的课程</h2>
+  <div class="card" style="margin-bottom:34px;padding:26px 24px;color:var(--ink-soft);font-size:.92rem;line-height:1.7;" id="lessonsBox">
+    No lessons are scheduled yet. After you are approved and matched, your lessons will appear here.<br>目前还没有安排课程。审核通过并匹配志愿者后，课程会显示在这里。
   </div>
 </div>
 
+<script src="auth-config.js"></script>
+<script>
+  const LABELS = {
+    account_created:'Just started 刚开始', email_verified:'Email verified 邮箱已验证', profile_complete:'In progress 进行中', goals_complete:'In progress 进行中',
+    consent_complete:'In progress 进行中', placement_complete:'Ready to submit 待提交', submitted:'Under review 审核中', under_review:'Under review 审核中',
+    approved:'Approved 已通过', needs_more_info:'Needs info 需补充信息', not_approved:'Not approved 未通过', suspended:'Suspended 已暂停'
+  };
+  function esc(t){ return String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+  async function load(){
+    if (!isConfigured) { document.getElementById('helloName').textContent = 'Not connected yet'; document.getElementById('helloSub').textContent = 'Connect your Supabase project in auth-config.js to use accounts.'; return; }
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) { window.location.href = 'login.html?role=student'; return; }
+    const { data: prof } = await supabaseClient.from('profiles').select('role, full_name').eq('id', session.user.id).single();
+    if (prof && prof.role === 'volunteer') { window.location.href = 'volunteer-dashboard.html'; return; }
+    if (!session.user.email_confirmed_at) { window.location.href = 'student-application.html'; return; }
 
+    const { data: app } = await supabaseClient.from('student_applications').select('*').eq('id', session.user.id).single();
+    const a = app || { status: 'account_created' };
+    const name = a.preferred_name || (prof && prof.full_name) || session.user.email;
+    document.getElementById('whoName').textContent = name;
+    document.getElementById('avatarInitial').textContent = name.trim().charAt(0).toUpperCase();
+    document.getElementById('helloName').textContent = `Welcome, ${name.split(' ')[0]} 👋`;
+    document.getElementById('helloSub').textContent = '欢迎你！这里是你的学习主页。Your learning page.';
+    document.getElementById('statStatus').textContent = LABELS[a.status] || a.status;
+    document.getElementById('statLevel').textContent = a.assigned_level || 'Confirmed in lesson 1 · 第一节课确认';
+    document.getElementById('statLevel').style.fontSize = a.assigned_level ? '' : '.95rem';
+    document.getElementById('statStatus').style.fontSize = '1.05rem';
+
+    const b = document.getElementById('statusBanner');
+    if (a.status === 'approved') {
+      b.innerHTML = '<div style="background:#e7f5ee;color:#146a48;border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:.9rem;font-weight:600;line-height:1.6;">✓ You are approved! We will email you when we find a volunteer for you. 你已通过审核！找到合适的志愿者后我们会邮件通知你。</div>';
+    } else if (['not_approved','suspended'].includes(a.status)) {
+      b.innerHTML = '<div style="background:#fdecea;color:#a3312a;border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:.9rem;line-height:1.6;">Your registration is not active. Please contact our team. 你的注册目前无效，请联系我们的团队。</div>';
+    } else if (['submitted','under_review'].includes(a.status)) {
+      b.innerHTML = '<div style="background:#fff;border:1.5px solid #1e4e8c;border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:.9rem;line-height:1.6;"><b>Our team is reviewing your registration.</b> You will be matched with a volunteer after approval. 我们的团队正在审核你的注册，通过后将为你匹配志愿者。</div>';
+    } else {
+      b.innerHTML = '<div style="background:#fff;border:1.5px solid #f2a73b;border-radius:12px;padding:16px 20px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;"><div><div style="font-weight:700;">Finish your registration · 请完成注册</div><div style="font-size:.85rem;color:#4a5c6b;margin-top:2px;">You can only be matched with a volunteer after you finish and our team approves. 完成注册并通过审核后才能匹配志愿者。</div></div><a href="student-application.html" style="background:#1e4e8c;color:#fff;font-weight:700;font-size:.82rem;padding:10px 18px;border-radius:999px;white-space:nowrap;">Continue · 继续</a></div>';
+    }
+  }
+  document.getElementById('logoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (isConfigured) await supabaseClient.auth.signOut();
+    window.location.href = 'login.html?role=student';
+  });
+  load();
+</script>
 </body>
 </html>

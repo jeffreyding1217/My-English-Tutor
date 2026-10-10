@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Volunteer Dashboard — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{
     --bg:#ffffff; --bg-tint:#f5faf8; --bg-tint-2:#eef6f2; --blue:#1e4e8c; --blue-deep:#133761;
     --green:#1f8a5f; --green-deep:#146a48; --amber:#f2a73b; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4;
-    --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+    --font-display:Georgia,'Songti SC','Noto Serif SC',serif; --font-body:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; --font-mono:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg-tint); }
@@ -188,9 +187,10 @@
     let name = session.user.email;
     const { data: profile } = await supabaseClient
       .from('profiles')
-      .select('full_name, is_admin')
+      .select('full_name, is_admin, role')
       .eq('id', session.user.id)
       .single();
+    if (profile && profile.role === 'student') { window.location.href = 'student-dashboard.html'; return; }
     if (profile && profile.full_name) name = profile.full_name;
     if (profile && profile.is_admin) {
       document.getElementById('whoName').insertAdjacentHTML('afterend', ' &nbsp;·&nbsp; <a href="admin.html">Admin Review</a>');

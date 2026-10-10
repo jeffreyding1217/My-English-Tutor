@@ -4,22 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Volunteer Orientation — Bridge to China</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script>window.supabase || document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\/script>')</script>
 <style>
   :root{ --blue:#1e4e8c; --blue-deep:#133761; --green:#1f8a5f; --green-deep:#146a48; --ink:#132436; --ink-soft:#4a5c6b; --line:#dfe7e4; --tint:#f5faf8; }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Inter',sans-serif; color:var(--ink); background:var(--tint); }
+  body{ margin:0; font-family:system-ui,-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; color:var(--ink); background:var(--tint); }
   .topbar{ background:#fff; border-bottom:1px solid var(--line); padding:14px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
-  .brand{ display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
+  .brand{ display:flex; align-items:center; gap:10px; font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-weight:700; color:var(--blue-deep); text-decoration:none; }
   .mark{ width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,var(--blue),var(--green)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.75rem; }
   .wrap{ max-width:760px; margin:0 auto; padding:30px 24px 90px; }
-  h1{ font-family:'Fraunces',serif; color:var(--blue-deep); margin:0 0 8px; }
+  h1{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; color:var(--blue-deep); margin:0 0 8px; }
   .lead{ color:var(--ink-soft); line-height:1.6; font-size:.95rem; }
   .sec{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px 28px; margin-top:18px; }
-  .sec h2{ font-family:'Fraunces',serif; font-size:1.15rem; color:var(--blue-deep); margin:0 0 10px; display:flex; gap:10px; align-items:center; }
-  .sec h2 .n{ width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-family:'IBM Plex Mono',monospace; font-size:.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .sec h2{ font-family:Georgia,'Songti SC','Noto Serif SC',serif; font-size:1.15rem; color:var(--blue-deep); margin:0 0 10px; display:flex; gap:10px; align-items:center; }
+  .sec h2 .n{ width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .sec ul{ margin:0; padding-left:20px; color:var(--ink-soft); font-size:.92rem; line-height:1.75; }
   .sec p{ color:var(--ink-soft); font-size:.92rem; line-height:1.7; margin:0 0 10px; }
   .warn{ background:#fdf1e0; border-left:4px solid #f2a73b; padding:12px 16px; border-radius:8px; font-size:.88rem; color:#7a5314; margin-top:12px; line-height:1.6; }

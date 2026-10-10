@@ -5,7 +5,7 @@
 create table if not exists profiles (
   id uuid references auth.users on delete cascade primary key,
   full_name text not null,
-  role text not null default 'volunteer' check (role in ('volunteer')),
+  role text not null default 'volunteer' check (role in ('volunteer','student')),
   country text,
   languages text,
   bio text,
@@ -234,6 +234,9 @@ begin
   if new.is_admin is distinct from old.is_admin then
     raise exception 'is_admin can only be changed by the site owner';
   end if;
+  if new.role is distinct from old.role then
+    raise exception 'role cannot be changed';
+  end if;
   return new;
 end $$;
 
@@ -250,6 +253,9 @@ begin
   if caller_is_admin then return new; end if;
 
   if tg_op = 'INSERT' then
+    if (select role from profiles where id = auth.uid()) is distinct from 'volunteer' then
+      raise exception 'only volunteer accounts can create a volunteer application';
+    end if;
     new.status := 'account_created';
     new.reviewer_notes := null;
     return new;
@@ -279,3 +285,106 @@ create trigger applications_guard before insert or update on applications
 -- decision, and why the raw answers, essay, and voice recordings (which
 -- can't be faked the same way) are what an admin actually reads. The proper
 -- long-term fix is grading on the server (a Supabase Edge Function).
+
+-- ----------------------------------------------------------------------
+-- PHASE 3 ADDITION: STUDENT accounts, application, placement test
+-- ----------------------------------------------------------------------
+create table if not exists student_applications (
+  id uuid references auth.users on delete cascade primary key,
+  status text not null default 'account_created' check (status in (
+    'account_created','email_verified','profile_complete','goals_complete',
+    'consent_complete','placement_complete','submitted',
+    'under_review','approved','needs_more_info','not_approved','suspended'
+  )),
+
+  -- profile
+  first_name text, last_name text, preferred_name text, chinese_name text,
+  date_of_birth date, city_region text, timezone text, school_grade text,
+
+  -- guardian (required in the app when the student is under 18)
+  guardian_name text, guardian_relationship text, guardian_email text, guardian_phone text,
+
+  -- goals & preferences
+  english_self_level text, years_studied text, learning_goals text,
+  preferred_days text, preferred_start_time text, preferred_end_time text,
+  requested_volunteer text, notes_for_volunteer text,
+
+  -- consent
+  consent_rules boolean, consent_guardian boolean, consent_at timestamp with time zone,
+
+  -- placement test (auto-scored in the browser = advisory; see known limitation above)
+  placement_score int, placement_breakdown jsonb, placement_answers jsonb,
+  placement_writing text, suggested_level text,
+  assigned_level text,            -- set by an admin; this is the level that counts
+
+  reviewer_notes text,            -- admin-only
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now()
+);
+
+alter table student_applications enable row level security;
+
+create policy "Students manage their own application"
+  on student_applications for all
+  using (auth.uid() = id) with check (auth.uid() = id);
+create policy "Admins can view all student applications"
+  on student_applications for select
+  using (exists (select 1 from profiles where id = auth.uid() and is_admin = true));
+create policy "Admins can update any student application"
+  on student_applications for update
+  using (exists (select 1 from profiles where id = auth.uid() and is_admin = true));
+
+drop trigger if exists student_applications_updated_at on student_applications;
+create trigger student_applications_updated_at
+  before update on student_applications
+  for each row execute function set_updated_at();
+
+create table if not exists student_recordings (
+  id uuid default gen_random_uuid() primary key,
+  student_id uuid references student_applications(id) on delete cascade not null,
+  prompt_index int not null,
+  storage_path text not null,
+  created_at timestamp with time zone default now()
+);
+alter table student_recordings enable row level security;
+create policy "Students manage their own recordings"
+  on student_recordings for all
+  using (auth.uid() = student_id) with check (auth.uid() = student_id);
+create policy "Admins can view all student recordings"
+  on student_recordings for select
+  using (exists (select 1 from profiles where id = auth.uid() and is_admin = true));
+
+create or replace function guard_student_changes() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare caller_is_admin boolean;
+begin
+  if auth.uid() is null then return new; end if;
+  select coalesce((select is_admin from profiles where id = auth.uid()), false) into caller_is_admin;
+  if caller_is_admin then return new; end if;
+
+  if tg_op = 'INSERT' then
+    if (select role from profiles where id = auth.uid()) is distinct from 'student' then
+      raise exception 'only student accounts can create a student application';
+    end if;
+    new.status := 'account_created';
+    new.reviewer_notes := null;
+    new.assigned_level := null;
+    return new;
+  end if;
+
+  if new.reviewer_notes is distinct from old.reviewer_notes then raise exception 'reviewer notes are admin-only'; end if;
+  if new.assigned_level is distinct from old.assigned_level then raise exception 'assigned level is admin-only'; end if;
+  if new.status is distinct from old.status then
+    if new.status in ('under_review','approved','needs_more_info','not_approved','suspended') then
+      raise exception 'only an administrator can set that status';
+    end if;
+    if old.status in ('under_review','approved','needs_more_info','not_approved','suspended') then
+      raise exception 'status was set by an administrator and cannot be changed by the student';
+    end if;
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists student_applications_guard on student_applications;
+create trigger student_applications_guard before insert or update on student_applications
+  for each row execute function guard_student_changes();
